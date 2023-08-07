@@ -44,8 +44,30 @@
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers.
 %% \usepackage{lineno}
+\usepackage[hidelinks]{hyperref}
+\usepackage[printonlyused]{acronym}
 
 \journal{Computer Physics Communications}
+
+% Acronyms
+\newacro{AoS}{array of structures}
+\newacro{AoSoA}{array of structures of arrays}
+\newacro{CPI}{cycles per instruction}
+\newacro{DEM}{discrete element method}
+\newacro{EAM}{embedded atom method}
+\newacro{FCC}{face-centered cubic}
+\newacro{FN}{full neighbor-lists}
+\newacro{HN}{half neighbor-lists}
+\newacro{ILP}{instruction-level parallelism}
+\newacro{IR}{intermediate representation}
+\newacro{ISA}{instruction set architecture}
+\newacro{LJ}{Lennard-Jones}
+\newacro{MD}{Molecular dynamics}
+\newacro{MPI}{message passing interface}
+\newacro{SIMD}{single instruction, multiple data}
+\newacro{SoA}{structure of arrays}
+\newacro{PBC}{periodic boundary conditions}
+\newacro{HPM}{hardware performance monitoring}
 
 \begin{document}
 
@@ -107,8 +129,11 @@
 	country={Germany}}
 
 \begin{abstract}
-%% Text of abstract
-
+Various physics simulations today rely on simulating particle interactions, where particles can represent point masses (as in Molecular Dynamics), rigid bodies (as in Discrete Element Method) or even massive bodies such as planets.
+Evaluating and calculating the required particle interactions in a simulation is computationally expensive, hence suitable algorithms and proper optimizations to properly exploit available parallelism in the target hardware are important to reach good performance.
+However, it is difficult to maintain flexible implementations while keeping state-of-the-art performance, as most packages are developed individually and have their own hard-coded, fine-tuned implementations.
+To combine flexibility and optimal performance, we introduce P4IRS, an intermediate representation and compiler for particle simulations which is aimed at delivering good performance.
+We describe P4IRS, display usage examples and evaluate the performance from its generated code in both MD and DEM fields.
 \end{abstract}
 
 %%Graphical abstract
@@ -140,11 +165,151 @@ code generation \sep particle simulations \sep molecular dynamics \sep discrete 
 \section{Introduction}
 \label{sec:introduction}
 
+The computation of particle-pair interactions is widely used in physics simulations, especially in the fields of Molecular Dynamics and Discrete Element Method.
+To efficiently compute the inter-particle contributions, different strategies can be used to increase efficiency and make use of the parallelism offered by the target hardware.
+Most simulation packages, however, have their own hard-coded implementations, which are strictly tighted to their data structures and programming artifacts.
+Also, several kernel implementations for the same potential or force field are present in a single package to target different hardwares such as GPUs and to exploit different optimization strategies, which leads to higher maintainability and substantially increases the portability effort.
+
+To tackle these limitations, we developed P4IRS --- Parallel and Performance-Portable Particles Intermediate Representation and Simulator, an intermediate representation and compiler tool where particle interactions can be simply expressed as Python methods, and efficient and parallel code for the interaction description can be generated for multi-CPU and multi-GPU targets.
+P4IRS provide its own intermediate representation, which allows it to perform compiler analysis and transformations, to then generate code for the proper backend such as C++ and CUDA with OpenMP/MPI.
+
+P4IRS can generate several kernel flavours of the same potential such as Linked Cells and Verlet Lists, where data layouts for properties and specific arrays (such as the neighbor-lists) can be switched to the case with best performance.
+A runtime interface in C++ is also available to integrate P4IRS with other simulation tools, as an example we show how P4IRS can use the load-balancing communication algorithm from waLBerLa to compute simulations with a more heterogeneous distribution of particles.
+
+Most of P4IRS internal routines such as building Linked Cells and Verlet Lists are implemented in Python by constructing the intermediate representation for them with the assistance of operator overloading.
+In this way, we leverage P4IRS analysis and transformations to achieve performance-portability for these routines as well, without requiring multiple tailored implementations.
+
+The goals of this paper are summarized as follows:
+\begin{itemize}
+	\item We present our code generator tool P4IRS, describing how it works and how it can be used to generate efficient particle simulation codes.
+	\item We discuss the advantages of using P4IRS to achieve performance-portability, also comparing with other previous approaches such as tinyMD and MESA-PD.
+	\item We describe P4IRS interfaces to allow its generated code to be integrated with other simulation tools, and provide an example with the waLBerLa framework.
+	\item We provide performance results for several CPU and GPU machines, as well as scaling results for multi-CPU and multi-GPU in our in-house supercomputers Fritz and Alex.
+\end{itemize}
+
+This paper is structured as follows: In \autoref{sec:related_work} we list related work for MD and DEM simulation packages, code generation tools for particle simulations and performance evaluation of such simulations. In \autoref{sec:background} we explain the basic theory for particle simulations focusing on MD and DEM methods, also covering optimization strategies and choices. In \autoref{sec:pairs} we present P4IRS with its current features and application design. In \autoref{sec:evaluation} we evaluate the performance from P4IRS comparing it to other tools. Finally, \autoref{sec:conclusion} presents our conclusion and outlook for P4IRS, also covering our future work.
+
 \section{Related Work}
 \label{sec:related_work}
 
+\subsection{Simulation Packages}
+\label{sec:packages}
+
+Diverse simulation fields can be described by updating particle trajectories based on their interactions with other particles.
+In this paper, we mainly focus on MD and DEM, where in MD particles represent point masses (i.e. atoms) in the simulation, and in DEM particles represent rigid bodies with specific shapes (i.e. spheres, hyperplanes, ellipses).
+Most packages available use similar techniques to compute trajectories, but each of them have their own specific algorithms, parallelism strategies and hand-tuned implementations for specific hardware.
+With P4IRS, we focus on using a single description of the problem, and then leverage its implemented routines and code transformations to provide the high-end implementation for the specific target, which currently can be C++ with OpenMP and CUDA, also supporting MPI for multiple computing nodes.
+
+In MD, there exist many packages with distinct strategies and simulation fields.
+LAMMPS is a molecular package for the material-modeling field which uses the standard Verlet Lists algorithm to optimize the non-bonded short-range force calculations.
+It offers many interatomic potentials, each one with different kernel implementations for a specific target (like CPU, GPU, Kokkos).
+GROMACS is another package for MD with focus on bio-sciences simulation which uses its own Cluster Pair algorithm to optimize the short-range forces computation.
+It does not support as many potentials as LAMMPS, but its algorithm tends to be significantly faster than the Verlet Lists since it employs SIMD parallelism more efficiently.
+Furthermore, the optimal GROMACS kernel implementations rely on SIMD intrinsics to attain higher performance, which makes them harder to be maintained and ported to other architectures.
+Also, the GPU algorithm in GROMACS differs from the CPU, since it relies on a strategy named ``super-clustering'' to reduce the amount of redundant computations in the GPU.
+Other MD packages such as NAMD, AMBER and CHARMM also contain dedicated and hand-tuned implementations in general purpose languages for each supported backend.
+Each version is tested, maintained, debugged and optimized independently.
+
+Packages that support DEM simulations are in general more flexible (since simulation with more particle properties such as rotations and shapes are needed), however they usually do not have the same optimization techniques as the MD simulation packages.
+The reason is most likely that it is not so feasible to support flexibility with sophisticated optimization algorithms as the complexity of the code grows considerably.
+Examples of such packages are the LIGGGHTS DEM (based on LAMMPS), GranOO and YADE.
+To mitigate such limitations, a few code generation approaches were developed for both MD and DEM.
+
+\subsection{Code Generation Frameworks}
+\label{sec:codegen}
+
+% TODO: HOOMD-blue, OpenMM, MDL, ppmd, OpenFPM, PPME
+% TODO: MESA-PD, tinyMD
+
+\subsection{Performance Evaluation}
+\label{sec:perfeval}
+
+Several performance investigation researches for MD systems exist, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
+In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions.
+Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
+Our performance-focused prototyping harness MD-Bench is a toolbox developed for performance-engineering MD non-bonded short-range force calculation algorithms, with focus on in-core execution on CPUs and GPUs.
+It currently supports the Verlet Lists and Cluster Pair algorithms from LAMMPS and GROMACS, respectively.
+One of our goals is to use the knowledge obtained with MD-Bench and integrate it into P4IRS to achieve state-of-the-art performance and flexibilty altogether, which is the main reason we develop P4IRS.
+
+DEM simulations, however, do not contain many in-depth performance studies, and most of them focus on evaluating distributed-memory parallelism in weak-scaling settings.
+With P4IRS, we intend to bridge the gap between performance strategies across different simulation domains, and use the most efficient algorithm whenever it is possible, without requiring significant efforts such as re-implementing kernels and re-designing applications with tailored data structures for improving performance.
+
+To evaluate performance in a single CPU core or GPU in this paper, we use MD-Bench and miniMD as the baseline performance, as they are well-known implementations that reach state-of-the-art performance for MD simulations.
+For DEM cases, we use MESA-PD as the comparison target, since our focus is to show that we can achieve performance-portability with the flexibility that MESA-PD provides. 
+
 \section{Background and Theory}
 \label{sec:background}
+
+Particle simulations consist of solving N-body problems and has a wide range of applications as many fields can be represented as a system of interacting particles.
+In this sense, particles can be either atoms, rigid bodies or even planets, stars and galaxies.
+Interaction contributions can come either from inter-atomic van-der-Walls forces based on the Lennard-Jones potential, or even from gravitational forces generated by super-massive particles.
+In order to simulate such systems, however, we need well-defined and closed system of particles with known boundary conditions.
+In the scope of this paper, particle contributions are computed for particles that lie within a range or ``cutoff radius''. 
+Strategies to compute approximations from particles beyond this range (also known as long-range contributions) also exist, but are not disclosed.
+To provide distinct examples of simulations and display a certain level of flexibility from P4IRS, we focus on MD and DEM simulations in this work.
+
+\subsection{Molecular Dynamics}
+\label{sec:md}
+
+\ac{MD} simulations are widely used today to study the behavior of microscopic structures.
+These simulations reproduce the interactions among atoms in these structures on a macroscopic scale while allowing us to observe the evolution in the system of particles in a time-scale that is simpler to analyze.
+
+Different areas such as material science to study the evolution of the system for specific materials, chemistry to analyze the evolution of chemical processes, or biology to reproduce the behavior of certain proteins and bio-molecules resort to simulations of \ac{MD} systems.
+
+A \ac{MD} system to be simulated constitutes of a number of atoms, the initial state (such as the atoms' position or velocities), and the boundary conditions of the system.
+Here, we use \ac{PBC} in all directions, hence when one atom crosses the domain, it reappears on the opposite side with the same velocity.
+%These simulations are defined by establishing the number of atoms in a system, the initial state of the system (such as the atoms' positions or velocities), and the boundary conditions for the system.
+Fundamentally, atom trajectories in classical \ac{MD} systems are computed by integrating Newton-Euler equations for every atom $i$:
+\begin{equation}
+    \hat F_i = m \dot{\hat v}_i \label{eq:newton_force}
+\end{equation}
+\begin{equation}
+    \hat v_i = m \dot{\hat x}_i \label{eq:newton_velocity}
+\end{equation}
+The forces $F_i$ are described by the negative gradient of the potential of interest.
+The mutual force between atom $i$ and $j$ as governed by the \ac{LJ} potential
+is given as
+\begin{equation}
+    \hat{F}_{LJ}(\hat{x_i}, \hat{x_j}) = -\frac{24\varepsilon}{x_{ij}} \left( \frac{\sigma}{x_{ij}} \right)^{6} \left[ 2\left(\frac{\sigma}{x_{ij}}\right)^{6} - 1\right] \hat{x}_{ij}~,
+    %V_{LJ} = 4\varepsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+    \label{eq:lennard_jones}
+\end{equation}
+where $\hat{x}_{ij}$ is the distance vector between atoms $i$ and $j$, $x_{ij}$ is the distance between atoms $i$ and $j$, $\varepsilon$ is the width of the potential well, and $\sigma$ specifies at which distance the potential is~$0$.
+
+\subsection{Discrete Element Method}
+\label{sec:dem}
+
+Besides computing trajectories for zero-dimensional point masses as done in MD, we can model particles as objects with specific shapes and spatial extension using the Discrete Element Method (DEM).
+This requires the simulation tool to support more degrees of freedom for particles, as it needs to take some of their spatial properties (such as rotation) into consideration.
+In this work, we consider particles with homogeneous density, and then use the center of mass for each particle as its position, which due to its density properties coincides with its geometrical center.
+Equations of motions are extended with the following terms for the torque and angular velocity:
+
+\begin{equation}
+    \hat{\tau}{_i} = I \dot{\hat \omega}_i + {\hat \omega}_i \times I {\hat \omega}_i \label{eq:newton_torque}
+\end{equation}
+\begin{equation}
+    \hat{\omega}{_i} = \dot{\hat{\phi}}_i \label{eq:newton_angular_velocity}
+\end{equation}
+
+Also, a collision detection step is also needed to check when two particles overlap.
+When particles overlap, a collision is detected and information regarding the collision such as the contact point and penetration depth are calculated.
+Note that there may be penetration when a collision happens because there is no guarantee that it is detect right when it starts, as the simulation is discretized by the timestep size.
+For simplification purposes, we only calculate collision detections analytically in this work since there are no particles with complex shapes involved.
+
+In this work, we use the penalty-based Linear Spring-Dashpot model to calculate forces among particles for the DEM cases.
+The collision force is splitted into two components, the force in the normal direction and in the tangential direction.
+
+\begin{equation}
+	\hat{F}_{SD}^{n}(\hat{x_i}, \hat{x_j}) = k^{n}\delta_{ij}\hat{n}_{ij} - \xi^{n}\hat{u}_{ij}^{n}
+    %-\frac{24\varepsilon}{x_{ij}} \left( \frac{\sigma}{x_{ij}} \right)^{6} \left[ 2\left(\frac{\sigma}{x_{ij}}\right)^{6} - 1\right] \hat{x}_{ij}~,
+    %V_{LJ} = 4\varepsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+    \label{eq:linear_spring_dashpot_normal}
+\end{equation}
+
+% Spring-Dashpot
+
+\subsection{Optimization Strategies}
+\label{sec:opts}
 
 \section{P4IRS}
 \label{sec:pairs}
@@ -152,7 +317,7 @@ code generation \sep particle simulations \sep molecular dynamics \sep discrete 
 \section{Evaluation}
 \label{sec:evaluation}
 
-\section{Conclusion}
+\section{Conclusion and Outlook}
 \label{sec:conclusion}
 
 %% The Appendices part is started with the command \appendix;
