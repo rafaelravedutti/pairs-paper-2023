@@ -44,10 +44,33 @@
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers.
 %% \usepackage{lineno}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{subfigure}
 \usepackage[hidelinks]{hyperref}
 \usepackage[printonlyused]{acronym}
+\usepackage{listings}
+\usepackage{algorithm,algpseudocode}
+%\usepackage{math}
 
 \journal{Computer Physics Communications}
+
+\lstset{
+    showstringspaces=false,
+    extendedchars=true,
+    basicstyle=\footnotesize\ttfamily,
+    commentstyle=\slshape,
+    stringstyle=\ttfamily,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=flexible,
+    numbers=left,
+    numberstyle=\tiny,
+    basewidth=.5em,
+    xleftmargin=.5cm,
+    captionpos=b,
+    frame=lines
+}
 
 % Acronyms
 \newacro{AoS}{array of structures}
@@ -336,6 +359,105 @@ At the end, this strategy is likely to be beneficial for more arithmetic-intensi
 
 \section{P4IRS}
 \label{sec:pairs}
+
+P4IRS is a standalone compiler and domain-specific language for particle simulations which aims at generating optimized code for different target hardwares.
+It is released as a Python package and allows users to define kernels, integrators and other particle routines in a high-level and straightforward fashion.
+
+\subsection{Frontend and features}
+\label{sec:frontend}
+
+\autoref{lst:pairslj} shows a simple Lennard-Jones kernel implemented in P4IRS.
+Functions can be provided through a method, and the parameters in the method refer to different particles in the system.
+In this way, many-body potentials can also be described with methods with more than two parameters.
+Functions that only updates every particle separately can also be described with a single parameter.
+\autoref{lst:euler} displays how to implement a simple Euler integrator for \ac{MD}.
+
+\begin{lstlisting}[language=Python,
+		   label={lst:pairslj},
+		   caption={Lennard-Jones force description in P4IRS.}]
+def lj(i, j):
+    sr2 = 1.0 / squared_distance(i, j)
+    sr6 = sr2 * sr2 * sr2 * sigma6[i, j]
+    apply(force, delta(i, j) * (48.0 * sr6 * (sr6 - 0.5) * sr2 * epsilon[i, j]))
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python,
+		   label={lst:euler},
+		   caption={Euler integrator description in P4IRS.}]
+def euler(i):
+    linear_velocity[i] += dt * force[i] / mass[i]
+    position[i] += dt * linear_velocity[i]
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python,
+		   label={lst:pairs_md_setup},
+		   caption={Simple example for MD simulation setup in P4IRS.}]
+import pairs
+
+# ...
+
+# Simulation setup
+psim = pairs.simulation(
+	"md", 			# Simulation identifier
+	[pairs.point_mass()], 	# List of shapes
+	timesteps=200,		# Number of time-steps
+	double_prec=True)	# Use double-precision
+
+# Particle properties
+psim.add_position('position')
+psim.add_property('mass', pairs.real(), 1.0)
+psim.add_property('linear_velocity', pairs.vector())
+psim.add_property('force', pairs.vector(), volatile=True)
+
+# Features and their properties
+psim.add_feature('type', ntypes)
+psim.add_feature_property('type', 'epsilon', pairs.real(), [...])
+psim.add_feature_property('type', 'sigma6', pairs.real(), [...])
+
+# Simulation domain
+psim.set_domain([xmin, ymin, zmin, xmax, ymax, zmax])
+
+# Initial state
+psim.read_particle_data(
+	"data/minimd_setup_32x32x32.input",
+	['type', 'mass', 'position', 'linear_velocity', 'flags'],
+	pairs.point_mass())
+
+# Optimization settings
+psim.reneighbor_every(20)
+psim.compute_half()
+psim.build_neighbor_lists(cutoff_radius + skin)
+psim.vtk_output(f"output/lj_{target}")
+
+# Kernels to compute
+psim.compute(lj, cutoff_radius)
+psim.compute(euler, symbols={'dt': dt})
+
+# Target hardware
+if target == 'gpu':
+    psim.target(pairs.target_gpu())
+else:
+    psim.target(pairs.target_cpu())
+
+psim.generate()
+\end{lstlisting}
+
+%\begin{lstlisting}[language=Python,
+%		   label={lst:pairslj},
+%		   caption={Lennard-Jones force description in P4IRS.}]
+%\end{lstlisting}
+
+\subsection{Contact history and contact properties}
+\label{sec:contact_history}
+
+\subsection{Backend and code generation}
+\label{sec:backend}
+
+\subsection{Shape partitioning}
+\label{sec:shape_partitioning}
+
+\subsection{Domain partitioning and communication}
+\label{sec:domain_partitioning}
 
 % Show examples (LJ, EAM)
 % Linked Cells / Verlet Lists
