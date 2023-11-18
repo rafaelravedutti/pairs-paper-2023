@@ -311,11 +311,54 @@ The collision force is splitted into two components, the force in the normal dir
 \subsection{Optimization Strategies}
 \label{sec:opts}
 
+To obtain the force for a particle in a specific time-step, it is necessary to compute its partial contributions from each of the other particles present in the system.
+In a naive strategy, this results in a quadractic complexity and severely affects the application performance, which limits the system sizes and time-scales of such simulations.
+
+When force contributions become negligible at long-distance interactions, different algorithm strategies can be employed to perform computations only for particles within a specific cut-off region.
+There are two main strategies which are commonly used for particle simulations in state-of-the-art packages: the Linked Cells approach and the Verlet Lists.
+
+Linked Cells strategy sorts atoms spatially according to their position in cells (also called bins), where cells have a fixed size, and mapping particles into cells can be done straightforward by computing in which cell a particle is contained within.
+After, forces can be computed for each particle by traversing its current and neighbor cells, and only adding contributions for particles within these cells.
+
+The Linked Cells results in computing only forces for particles within a region that is discretized by their current and neighbor cells/bins, which can still results in a significant amount of redundant computations.
+In order avoid even more redundant computations, the Verlet Lists strategy can be used jointly with Linked Cells.
+The Verlet Lists constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, and doing particle-particle distance comparison to evaluate wether a particle should be added into the list.
+At the end, the region for each particle search is defined by a sphere.
+Note that, for the neighbor-lists construction to be worthwhile, it should be used more than once force calculation, hence neighbor-lists are not created at every simulation time-step, and a "skin" can be added to the cutoff radius to extend the neighbor-search and avoid missing computations from atoms that end up entering the cut-off region.
+
+Despite avoiding computations from long-distance particles, another common optimization is to take advantage of Newton's Third Law and computing forces in only one direction.
+This means that only half of particle-pairs are traversed during force computation, and forces are decreased for the neighbor atom during their computation.
+Ideally, this should lead to a factor of two speedup, but this strategy has a few drawbacks: (a) parallelism is harmed since decreasing force of j-atoms requires atomic operations to avoid race conditions and (b) it is required to gather and scatter forces for j-atoms into a SIMD fashion, which results in scattered accesses and extra instructions to properly organize the SIMD vectors.
+At the end, this strategy is likely to be beneficial for more arithmetic-intensive kernels, and preferably when the trade-off between parallelism and less arithmetic operation is compensated.
+
+% Linked Cells, Verlet Lists, Cluster Pair
+% Half-neighbor lists, Full-neighbor lists
+
 \section{P4IRS}
 \label{sec:pairs}
 
+% Show examples (LJ, EAM)
+% Linked Cells / Verlet Lists
+% Can generate CPU/GPU code
+% Vectors, quaternions and matrices
+% Properties, feature properties and contact properties
+% Contact history
+% Shape partitioning
+
 \section{Evaluation}
 \label{sec:evaluation}
+
+% Testbed
+
+% Single core CPU vs. MD-Bench (Runtime, MFLOPS/s, ...?)
+% CPU MD weak-scaling
+% Single GPU (vs. MD-Bench?)
+% GPU MD weak-scaling
+
+% DEM vs MESA-PD on CPU
+%  - Linked Cells and Neighbor-lists
+% DEM on a single GPU
+% GPU DEM weak-scaling (or strong scaling?)
 
 \section{Conclusion and Outlook}
 \label{sec:conclusion}
