@@ -466,6 +466,45 @@ The proper kernels are specified using the \emph{compute} method. The cutoff rad
 \subsection{Contact history and contact properties}
 \label{sec:contact_history}
 
+When implementing DEM kernels such as the Linear Spring-Dashpot, properties computed during two contacted particles must be used across subsequent time-step interactions whenever they happen.
+For this reason, P4IRS supports contact properties, which are properties tighted to a contact in the simulation.
+These can be simply added through the \emph{add\_contact\_property} method as can be seen in \autoref{lst:contactprops1} for the sticking, tangential spring displacement and the impact velocity magnitude:
+
+\begin{lstlisting}[language=Python,
+		   label={lst:contactprops1},
+		   caption={Setup example for contact properties.}]
+psim.add_contact_property('is_sticking', pairs.int32(), 0)
+psim.add_contact_property('tangential_spring_displacement', pairs.vector(), [0.0, 0.0, 0.0])
+psim.add_contact_property('impact_velocity_magnitude', pairs.real(), 0.0)
+\end{lstlisting}
+
+These properties can be used directly in kernels in the same way as feature properties.
+\autoref{lst:contactprops2} shows an example of their usage in the Linear Spring-Dashpot kernel.
+Note that when such properties are not stored for the particle pair, then the default values are always used.
+
+\begin{lstlisting}[language=Python,
+		   label={lst:contactprops2},
+		   caption={Setup example for contact properties.}]
+def linear_spring_dashpot(i, j):
+    # ...
+    tan_spring_disp = tangential_spring_displacement[i, j]
+    impact_vel_magnitude = impact_velocity_magnitude[i, j]
+    impact_magnitude = select(impact_vel_magnitude > 0.0, impact_vel_magnitude, length(rel_vel))
+    # ...
+    tangential_spring_displacement[i, j] = new_tan_spring_disp
+    impact_velocity_magnitude[i, j] = impact_magnitude
+    is_sticking[i, j] = n_sticking
+\end{lstlisting}
+
+To provide fast and efficient accesses of contact properties when using neighbor-lists, P4IRS keep the particles in the same indexes in both data structures.
+This prevents a lookup operation within the kernel for finding the contact index, and also keeps data access contiguous for the contact history data structure.
+When Linked Cells are used without a Verlet Lists, such optimizations are not possible, which should significantly impact the performance for the kernel.
+
+%\begin{lstlisting}[language=Python,
+%		   label={lst:pairslj},
+%		   caption={Lennard-Jones force description in P4IRS.}]
+%\end{lstlisting}
+
 \subsection{Backend and code generation}
 \label{sec:backend}
 
