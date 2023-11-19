@@ -367,10 +367,11 @@ It is released as a Python package and allows users to define kernels, integrato
 \label{sec:frontend}
 
 \autoref{lst:pairslj} shows a simple Lennard-Jones kernel implemented in P4IRS.
-Functions can be provided through a method, and the parameters in the method refer to different particles in the system.
-In this way, many-body potentials can also be described with methods with more than two parameters.
-Functions that only updates every particle separately can also be described with a single parameter.
-\autoref{lst:euler} displays how to implement a simple Euler integrator for \ac{MD}.
+Functions can be provided through a method (line 1), and the parameters in the method refer to different particles in the system.
+In this way, many-body potentials can also be described using methods with more than two parameters.
+Some keywords are also provided by P4IRS for writing the kernels, in line 2 the \emph{squared\_distance} method is used for obtaining the squared distance for the atoms \emph{i} and \emph{j}, and in line 4 the \emph{delta} method is used for obtaining the delta vector.
+Also, in lines 3 and 4 it is possible to see accesses to feature properties called \emph{sigma6} and \emph{epsilon}, which are defined during the simulation setup as properties that depends on the atom types feature.
+In line 4, the \emph{apply} method is used for applying the computed term into the \emph{force} property of the particles, the method allows for identifying particle properties reductions and is also used when generating the kernel variant using the half neighbor-lists.
 
 \begin{lstlisting}[language=Python,
 		   label={lst:pairslj},
@@ -381,6 +382,12 @@ def lj(i, j):
     apply(force, delta(i, j) * (48.0 * sr6 * (sr6 - 0.5) * sr2 * epsilon[i, j]))
 \end{lstlisting}
 
+Functions that update every particle separately can also be described with a single parameter.
+\autoref{lst:euler} displays how to implement a simple Euler integrator for \ac{MD} (see line 1).
+In lines 2-3, there are also property accesses for the particles' linear velocities, forces, masses and positions.
+Note that vector operations are intrinsically supported in P4IRS, which is also the case for matrices and quaternions data structures.
+P4IRS methods also allow the specification of parameters such as the \emph{dt} specified in line 3, these must be given when setting up the simulation.
+
 \begin{lstlisting}[language=Python,
 		   label={lst:euler},
 		   caption={Euler integrator description in P4IRS.}]
@@ -388,6 +395,12 @@ def euler(i):
     linear_velocity[i] += dt * force[i] / mass[i]
     position[i] += dt * linear_velocity[i]
 \end{lstlisting}
+
+\autoref{lst:pairs_md_setup} shows the simulation setup for the \ac{MD} case. In the first part, a \emph{simulation} instance is created, and its identifier, the list of particle shapes used, the number of time-steps and the floating-point precision are specified.
+Further, the properties needed for each particle in the simulation are specified, together with their data types and (if needed) initial values.
+Some properties are also defined as volatile (in this case the \emph{force}) property, which means they are reset after every time-step.
+To add feature properties, it is first required to add the specified feature (in this example, each atom has a feature named \emph{type}), and then specifiy the feature name for these properties.
+Next, the simulation domain is specified and the initial state of the system is defined by reading data from a file, a list of properties must be given in the same order as they appear in the file, and the particles shape must also be included.
 
 \begin{lstlisting}[language=Python,
 		   label={lst:pairs_md_setup},
@@ -441,6 +454,9 @@ else:
 
 psim.generate()
 \end{lstlisting}
+
+After the properties and simulation settings, the optimization settings must also be specified (whether neighbor-lists are used, the reneighbouring frequency and if these must be half-neighbor lists).
+The proper kernels are specified using the \emph{compute} method. The cutoff radius must be specified for kernels with more than one parameter/particle and other parameters used in such kernels (such as the \emph{dt} in the Euler kernel) must also be provided as a Python dictionary.
 
 %\begin{lstlisting}[language=Python,
 %		   label={lst:pairslj},
