@@ -548,6 +548,12 @@ The meta-data object is feed at the start of the simulation with the code genera
 \subsection{Shape Partitioning for SIMD Improvement}
 \label{sec:shape_partitioning}
 
+When computing forces for DEM simulations that contain different shapes, contact elements such as the penetration depth, contact point and even the distance are computed differently.
+From a computational point of view, this introduces branching in the inner-most loop where each path leads to different arithmetic instructions be executed and therefore difficults SIMD vectorization.
+
+To provide a simpler way to achieve vectorized code for such DEM kernels, we partition particles by shape in our acceleration data structures (Linked Cells and Verlet Lists), which allows us to distinguish them during the force computation.
+After, we use code generation to apply a loop-splitting in the generated code for every pair of shapes, these resulting loops should be then easier to vectorize since no branches are needed to calculate different contact elements for the particles being computed.
+
 \subsection{Domain Partitioning and Communication}
 \label{sec:domain_partitioning}
 
