@@ -154,7 +154,7 @@
 
 \begin{abstract}
 Various physics simulations today rely on simulating particle interactions, where particles can represent point masses (as in Molecular Dynamics), rigid bodies (as in Discrete Element Method) or even massive bodies such as planets.
-Evaluating and calculating the required particle interactions in a simulation is computationally expensive, hence suitable algorithms and proper optimizations to properly exploit available parallelism in the target hardware are important to reach good performance.
+Evaluating and calculating the required particle interactions in a simulation is computationally expensive, hence suitable algorithms and proper optimizations to exploit available parallelism in the target hardware are important to reach good performance.
 However, it is difficult to maintain flexible implementations while keeping state-of-the-art performance, as most packages are developed individually and have their own hard-coded, fine-tuned implementations.
 To combine flexibility and optimal performance, we introduce P4IRS, an intermediate representation and compiler for particle simulations which is aimed at delivering good performance.
 We describe P4IRS, display usage examples and evaluate the performance from its generated code in both MD and DEM fields.
@@ -231,7 +231,7 @@ GROMACS is another package for MD with focus on bio-sciences simulation which us
 It does not support as many potentials as LAMMPS, but its algorithm tends to be significantly faster than the Verlet Lists since it employs SIMD parallelism more efficiently.
 Furthermore, the optimal GROMACS kernel implementations rely on SIMD intrinsics to attain higher performance, which makes them harder to be maintained and ported to other architectures.
 Also, the GPU algorithm in GROMACS differs from the CPU, since it relies on a strategy named ``super-clustering'' to reduce the amount of redundant computations in the GPU.
-Other MD packages such as NAMD, AMBER and CHARMM also contain dedicated and hand-tuned implementations in general purpose languages for each supported backend.
+Other MD packages such as HOOMD-blue, NAMD, AMBER and CHARMM also contain dedicated and hand-tuned implementations in general purpose languages for each supported backend.
 Each version is tested, maintained, debugged and optimized independently.
 
 Packages that support DEM simulations are in general more flexible (since simulation with more particle properties such as rotations and shapes are needed), however they usually do not have the same optimization techniques as the MD simulation packages.
@@ -242,8 +242,25 @@ To mitigate such limitations, a few code generation approaches were developed fo
 \subsection{Code Generation Frameworks}
 \label{sec:codegen}
 
-% TODO: HOOMD-blue, OpenMM, MDL, ppmd, OpenFPM, PPME
+% TODO: OpenMM, MDL, ppmd, OpenFPM, PPME
 % TODO: MESA-PD, tinyMD
+
+Solutions based on code generation are also available for specific fields of particle simulations, and these tend to provide a higher level of extensibility while keeping pace with of performance in modern accelerators.
+
+OpenMM is a \ac{MD} package that makes use of Python as a front-end for simulation protocols and file I/O, it contains a C++ API for forces and integrators as well as optimized kernel implementations for CUDA, C++ and OpenCL.
+Integrators and forces can be implemented by using mathematical descriptions in OpenMM, but its use cases are restricted to \ac{MD} simulations and several features required for a DEM simulation or other types of particles simulation (such as contact history and different shapes) are not available.
+
+MESA-PD is a general particle dynamics framework that is built-in the waLBerla framework for the simulation of particles and fluids (with the Lattice-Boltzmann method).
+Its design principle of separation of code and data allows to introduce arbitrary interaction models with ease, which makes it also useful for \ac{MD}
+By using its code generation approach using Jinja templates it can be adapted very effectively to any simulation scenario.
+As successor of the pe rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
+One of the limitations of MESA-PD is that it does not support simulations in the GPU, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
+
+In previous work we developed tinyMD, a proxy-app (also based on miniMD) created to evaluate the portability of MD and DEM applications with the AnyDSL framework.
+TinyMD uses higher-order functions to abstract device iteration loops, data layouts and communication strategies, providing a domain-specific library to implement pair-wise interaction kernels that execute efficiently on multi-CPU and multi-GPU targets.
+One of tinyMD's limitation is that its flexibility and optimization settings are restricted to what can be achieve through higher-order functions and the AnyDSL compilation framework (the generated LLVM IR restricts the backend compilation to the Clang compiler), overcoming such limitation is one of the reason we develop P4IRS.
+
+
 
 \subsection{Performance Evaluation}
 \label{sec:perfeval}
