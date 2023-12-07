@@ -669,19 +669,41 @@ Note that the reason for using buffers instead of evaluating the particle positi
 %     - -Ofast -xCORE-AVX512 -qopt-zmm-usage=high (Ice Lake)
 %   - Alex: icpc (ICC) 2021.6.0 20220226
 %     - -Ofast -xHost -qopt-zmm-usage=high (Milan) 
-%
+
+\subsection{Materials and Methods}
+
+In this paper we conducted experiments in FAU's clusters Fritz (CPU) and Alex (GPU), these systems have the following configurations:
+
+\begin{itemize}
+  \item \textbf{Fritz:} 992 compute nodes, each one with two Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
+  \item \textbf{Alex:} 44 GPGPU nodes, each with two AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3Cache per chip, 512 GB of DDR4-RAM, eight Nvidia A40 (each with 48 GB DDR6 @ 696 GB/s; 37.42 TFlop/s in FP32), 25 GbE, and 7 TB on local NVMe SSDs.
+\end{itemize}
+
+For single-core CPU experiments, we make use of the same clusters, where the two CPUs listed above will be referred to as Ice Lake and Milan, respectively.
+For single GPU experiments, we use the referred A40 Nvidia GPUs, as well as the Nvidia A100 also available in the Alex cluster.
+
+Experiments for \ac{MD} use the standard Copper FCC lattice testcase from miniMD/MD-Bench, and we use our results from MD-Bench as a performance reference since it is a well optimized code for \ac{MD}.
+The \ac{DEM} test case is a "Settling Spheres" benchmark, where spheres fall into the ground (half-space) to generate a "bed" of spherical particles, and due to its multiple shapes and dynamics with many interactions among spheres and half-spaces provide a good reference for DEM simulations.
+We compare our single-core results with MESA-PD using 2 MPI ranks (since it is not possible to run in a single rank with PBC in MESA-PD), GPU results are not available for MESA-PD as it is one of its limitations, but we show the performance gain when using GPUs for P4IRS generated codes.
+
+Scaling results are also shown for demostrating P4IRS scaling capabilities, and regular domnain-partitioning is used as these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous testcases in all dimensions, and Settling Spheres can obtain good weak-scaling by regularly partitioning the domain in X and Y dimensions).
+We use double floating-point precision and display results when enabling and disabling Newton 3rd Law optimization (half neighbor-lists), for DEM we show both cases with Linked Cells and Verlet Lists.
+
+\subsection{Molecular Dynamics}
+
 % MD
 %   - Single core/GPU (vs MD-Bench)
 %     - Full and half-neighbor lists (one figure for each)
 %     - Runtime, MFLOP/s, Vectorization ratio, # instructions, ... (table)
-%
 % Weak-scaling
 %   Fritz (figure) - base = 128x128x128 per node
 %     - Full and half-neighbor lists
 %   Alex (figure)
 %     - Full and half-neighbor lists
 %     - A40 and A100
-%
+
+\subsection{Discrete Element Method}
+
 % DEM
 %   - Comparison with MESA-PD (figure)
 %     - Linked Cells and Neighbor-lists
