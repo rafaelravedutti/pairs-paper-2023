@@ -1,0 +1,282 @@
+### Starting TaskPrologue of job 1018966 on f0307 at Tue Nov 28 16:35:37 CET 2023
+#   SLURM_JOB_NODELIST=f0307
+#   SLURM_JOB_NUM_NODES=1
+#   SLURM_NTASKS=72
+#   SLURM_NPROCS=72
+#   SLURM_TASKS_PER_NODE=72
+#   SLURM_JOB_CPUS_PER_NODE=72
+#   SLURM_EXPORT_ENV=NONE
+Running on cores 0-71 with governor powersave
+### Finished TaskPrologue
+NOTE: If and ONLY IF you want to use likwid-perfctr you have to add '--constraint=hwperf' to your batch jobs.
+      likwid-features and likwid-setFrequencies are not available. The frequency/governor can be set using SLURM features.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21565
+0.76065	0.642141
+0.746001	0.629774
+all: 14500.5
+reset_volatile_properties: 125.517
+lj: 9754.84
+initial_integrate: 517.831
+final_integrate: 285.138
+other: 0.17823
+neighbors: 2425.13
+communication: 648.253
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21565
+0.76065	0.642141
+0.746001	0.629774
+all: 14517.8
+reset_volatile_properties: 123.998
+lj: 9394.09
+initial_integrate: 503.282
+final_integrate: 340.726
+other: 0.154236
+neighbors: 2312.88
+communication: 629.065
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21565
+0.76065	0.642141
+0.746001	0.629774
+all: 14629.1
+reset_volatile_properties: 132.851
+lj: 9872.03
+initial_integrate: 524.194
+final_integrate: 406.089
+other: 0.179437
+neighbors: 2486.17
+communication: 586.009
+=== JOB_STATISTICS ===
+=== current date     : Tue Nov 28 16:36:40 CET 2023
+= Job-ID             : 1018966 on fritz
+= Job-Name           : single_node_fritz.srun
+= Job-Command        : /home/hpc/iwia/iwia021h/repo/pairs/single_node_fritz.srun
+= Initial workdir    : /home/hpc/iwia/iwia021h/repo/pairs
+= Queue/Partition    : singlenode
+= Slurm account      : iwia with QOS=normal
+= Requested resources: cpu=72,mem=250000M,node=1,billing=72 for 04:00:00
+= Elapsed runtime    : 00:01:04
+= Total RAM usage    : 0.3 GiB 
+= Node list          : f0307
+= Subm/Elig/Start/End: 2023-11-28T16:35:34 / 2023-11-28T16:35:34 / 2023-11-28T16:35:35 / 2023-11-28T16:36:39
+======================
+=== Quota infos ======
+    Path              Used     SoftQ    HardQ    Gracetime  Filec    FileQ    FiHaQ    FileGrace    
+    /home/woody          4.0K   500.0G   750.0G        N/A       1    5,000K   7,500K        N/A    
+    /home/hpc           29.1G    52.4G   104.9G        N/A     137K     500K   1,000K        N/A    
+    /home/vault         47.0G   524.3G  1048.6G        N/A     148K     200K     400K        N/A    
+    /lustre              4.0K     0.0K     0.0K        N/A       1       80K     250K        N/A    
+======================

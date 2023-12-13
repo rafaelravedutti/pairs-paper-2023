@@ -1,0 +1,265 @@
+iwia021h@a0126:~/repo/MD-Bench$ ./MDBench-lammps-ICC-AVX2-DP -half 1
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: plain-C
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 32, 32, 32
+	Domain box sizes (x, y, z): 5.374708e+01, 5.374708e+01, 5.374708e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 1
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215639e+00
+100	8.200911e-01	6.923156e-01
+200	7.961535e-01	6.721076e-01
+----------------------------------------------------------------------------
+System: 131072 atoms 46927 ghost atoms, Steps: 200
+TOTAL 19.60s FORCE 15.14s NEIGH 4.26s REST 0.20s
+----------------------------------------------------------------------------
+Performance: 1.34 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 40.1706
+	Average SIMD iterations per atom: 10.4224
+	Total number of computed pair interactions: 1058312882
+	Total number of SIMD iterations: 274582155
+	Useful read data volume for force computation: 35.34GB
+	Cycles/SIMD iteration: 132.3238
+iwia021h@a0126:~/repo/MD-Bench$ ./MDBench-lammps-ICC-AVX2-DP -half 1
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: plain-C
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 32, 32, 32
+	Domain box sizes (x, y, z): 5.374708e+01, 5.374708e+01, 5.374708e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 1
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215639e+00
+100	8.200911e-01	6.923156e-01
+200	7.961535e-01	6.721076e-01
+----------------------------------------------------------------------------
+System: 131072 atoms 46927 ghost atoms, Steps: 200
+TOTAL 19.20s FORCE 14.79s NEIGH 4.22s REST 0.19s
+----------------------------------------------------------------------------
+Performance: 1.37 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 40.1706
+	Average SIMD iterations per atom: 10.4224
+	Total number of computed pair interactions: 1058312882
+	Total number of SIMD iterations: 274582155
+	Useful read data volume for force computation: 35.34GB
+	Cycles/SIMD iteration: 129.2699
+iwia021h@a0126:~/repo/MD-Bench$ ./MDBench-lammps-ICC-AVX2-DP -half 1
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: plain-C
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 32, 32, 32
+	Domain box sizes (x, y, z): 5.374708e+01, 5.374708e+01, 5.374708e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 1
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215639e+00
+100	8.200911e-01	6.923156e-01
+200	7.961535e-01	6.721076e-01
+----------------------------------------------------------------------------
+System: 131072 atoms 46927 ghost atoms, Steps: 200
+TOTAL 19.18s FORCE 14.77s NEIGH 4.22s REST 0.19s
+----------------------------------------------------------------------------
+Performance: 1.37 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 40.1706
+	Average SIMD iterations per atom: 10.4224
+	Total number of computed pair interactions: 1058312882
+	Total number of SIMD iterations: 274582155
+	Useful read data volume for force computation: 35.34GB
+	Cycles/SIMD iteration: 129.0998
+
+
+iwia021h@a0126:~/repo/MD-Bench$ likwid-perfctr -C 0 -g FLOPS_DP -m ./MDBench-lammps-ICC-AVX2-DP -half 1
+--------------------------------------------------------------------------------
+CPU name:	AMD EPYC 7713 64-Core Processor                
+CPU type:	AMD K19 (Zen3) architecture
+CPU clock:	2.00 GHz
+--------------------------------------------------------------------------------
+Parameters:
+	Force field: lj
+	Kernel: plain-C
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 32, 32, 32
+	Domain box sizes (x, y, z): 5.374708e+01, 5.374708e+01, 5.374708e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 1
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215639e+00
+100	8.200911e-01	6.923156e-01
+200	7.961535e-01	6.721076e-01
+----------------------------------------------------------------------------
+System: 131072 atoms 46927 ghost atoms, Steps: 200
+TOTAL 19.24s FORCE 14.84s NEIGH 4.21s REST 0.19s
+----------------------------------------------------------------------------
+Performance: 1.36 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 40.1706
+	Average SIMD iterations per atom: 10.4224
+	Total number of computed pair interactions: 1058312882
+	Total number of SIMD iterations: 274582155
+	Useful read data volume for force computation: 35.34GB
+	Cycles/SIMD iteration: 129.6901
+WARN: Skipping region force-0 for evaluation.
+WARN: Regions are skipped because:
+      - The region was only registered
+      - The region was started but never stopped
+      - The region was never started but stopped
+--------------------------------------------------------------------------------
+Region forceLJ-halfneigh, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |  14.798990 |
+|     call count    |        201 |
++-------------------+------------+
+
++---------------------------+---------+-------------+
+|           Event           | Counter |  HWThread 0 |
++---------------------------+---------+-------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  | 29575160000 |
+|       MAX_CPU_CLOCK       |  FIXC2  | 29578440000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 40614460000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  | 29395240000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  | 21985140000 |
+|           MERGE           |   PMC3  |           0 |
++---------------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |    14.7990 |
+| Runtime unhalted [s] |    14.8171 |
+|      Clock [MHz]     |  1995.7982 |
+|          CPI         |     0.7238 |
+|     DP [MFLOP/s]     |  1485.5838 |
++----------------------+------------+
+
+Region reneighbour, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   4.212073 |
+|     call count    |         10 |
++-------------------+------------+
+
++---------------------------+---------+-------------+
+|           Event           | Counter |  HWThread 0 |
++---------------------------+---------+-------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  |  8407471000 |
+|       MAX_CPU_CLOCK       |  FIXC2  |  8408394000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 19250710000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  |  8365753000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  |  3416012000 |
+|           MERGE           |   PMC3  |           0 |
++---------------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     4.2121 |
+| Runtime unhalted [s] |     4.2121 |
+|      Clock [MHz]     |  1995.8005 |
+|          CPI         |     0.4346 |
+|     DP [MFLOP/s]     |   811.0049 |
++----------------------+------------+

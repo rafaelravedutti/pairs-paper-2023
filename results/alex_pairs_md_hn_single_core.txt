@@ -1,0 +1,157 @@
+iwia021h@a0126:~/repo/pairs$ ./lj_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 19413.6
+reset_volatile_properties: 21.9083
+communication: 131.633
+neighbors: 3545.26
+transfers: 0.683355
+lj: 15434.5
+mpi: 31.4373
+initial_integrate: 171.082
+final_integrate: 72.8593
+other: 0.137351
+iwia021h@a0126:~/repo/pairs$ ./lj_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 19375.5
+reset_volatile_properties: 21.8441
+communication: 135.24
+neighbors: 3542.73
+transfers: 0.690565
+lj: 15437.6
+mpi: 34.2883
+initial_integrate: 126.657
+final_integrate: 72.2271
+other: 0.154038
+iwia021h@a0126:~/repo/pairs$ ./lj_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 19362.6
+reset_volatile_properties: 20.2933
+communication: 133.602
+neighbors: 3541.97
+transfers: 0.656892
+lj: 15431
+mpi: 35.2243
+initial_integrate: 126.688
+final_integrate: 69.0119
+other: 0.150112
+
+
+
+
+
+iwia021h@a0126:~/repo/pairs$ likwid-perfctr -C 0 -g FLOPS_DP -m ./lj_cpu 
+--------------------------------------------------------------------------------
+CPU name:	AMD EPYC 7713 64-Core Processor                
+CPU type:	AMD K19 (Zen3) architecture
+CPU clock:	2.00 GHz
+--------------------------------------------------------------------------------
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 19427.2
+reset_volatile_properties: 21.6147
+communication: 132.175
+neighbors: 3545.69
+transfers: 0.657639
+lj: 15422.3
+mpi: 32.0102
+initial_integrate: 162.128
+final_integrate: 106.654
+other: 0.130787
+--------------------------------------------------------------------------------
+Region initial_integrate, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.126440 |
+|     call count    |        200 |
++-------------------+------------+
+
++---------------------------+---------+------------+
+|           Event           | Counter | HWThread 0 |
++---------------------------+---------+------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  |  289663000 |
+|       MAX_CPU_CLOCK       |  FIXC2  |  290011800 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  |  814724500 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  |  253422900 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  |  419432400 |
+|           MERGE           |   PMC3  |          0 |
++---------------------------+---------+------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.1264 |
+| Runtime unhalted [s] |     0.1451 |
+|      Clock [MHz]     |  1993.8297 |
+|          CPI         |     0.3111 |
+|     DP [MFLOP/s]     |  3317.2445 |
++----------------------+------------+
+
+Region lj, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |  15.383890 |
+|     call count    |        201 |
++-------------------+------------+
+
++---------------------------+---------+-------------+
+|           Event           | Counter |  HWThread 0 |
++---------------------------+---------+-------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  | 30742100000 |
+|       MAX_CPU_CLOCK       |  FIXC2  | 30745850000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 41655930000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  | 30546120000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  | 21982950000 |
+|           MERGE           |   PMC3  |           0 |
++---------------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |    15.3839 |
+| Runtime unhalted [s] |    15.4001 |
+|      Clock [MHz]     |  1995.9871 |
+|          CPI         |     0.7333 |
+|     DP [MFLOP/s]     |  1428.9591 |
++----------------------+------------+
+
+Region final_integrate, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.070227 |
+|     call count    |        200 |
++-------------------+------------+
+
++---------------------------+---------+------------+
+|           Event           | Counter | HWThread 0 |
++---------------------------+---------+------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  |  178003600 |
+|       MAX_CPU_CLOCK       |  FIXC2  |  178355800 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  |  526344400 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  |  139668300 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  |  262146000 |
+|           MERGE           |   PMC3  |          0 |
++---------------------------+---------+------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0702 |
+| Runtime unhalted [s] |     0.0892 |
+|      Clock [MHz]     |  1992.2886 |
+|          CPI         |     0.2654 |
+|     DP [MFLOP/s]     |  3732.8320 |
++----------------------+------------+
+

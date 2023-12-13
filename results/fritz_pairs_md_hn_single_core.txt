@@ -1,0 +1,177 @@
+iwia021h@f0479:~/repo/pairs$ mpirun -np 1 ./lj_cpu                                       
+Running without Marker API. Activate Marker API with -m on commandline.
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 16077
+reset_volatile_properties: 27.2435
+communication: 166.259
+neighbors: 3297.93
+transfers: 0.576204
+lj: 12332.5
+mpi: 35.5247
+initial_integrate: 130.34
+final_integrate: 84.1275
+other: 0.140188
+iwia021h@f0479:~/repo/pairs$ mpirun -np 1 ./lj_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 16090.3
+reset_volatile_properties: 26.0818
+communication: 165.95
+neighbors: 3295.04
+transfers: 0.525401
+lj: 12358.1
+mpi: 34.7838
+initial_integrate: 127.855
+final_integrate: 79.5524
+other: 0.138844
+iwia021h@f0479:~/repo/pairs$ mpirun -np 1 ./lj_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 16119.9
+reset_volatile_properties: 26.7043
+communication: 169.592
+neighbors: 3305.57
+transfers: 0.536732
+lj: 12363.3
+mpi: 36.3563
+initial_integrate: 131.208
+final_integrate: 84.1327
+other: 0.138991
+
+iwia021h@f0479:~/repo/pairs$ likwid-perfctr -C 0 -g FLOPS_DP -m mpirun -np 1 ./lj_cpu 
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Platinum 8360Y CPU @ 2.40GHz
+CPU type:	Intel Icelake SP processor
+CPU clock:	2.39 GHz
+--------------------------------------------------------------------------------
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+1.44	1.21564
+0.820671	0.692805
+0.79644	0.67235
+all: 16328.6
+reset_volatile_properties: 27.8089
+communication: 166.928
+neighbors: 3331.66
+transfers: 0.51587
+lj: 12427.7
+mpi: 35.6981
+initial_integrate: 192.061
+final_integrate: 143.634
+other: 0.140231
+--------------------------------------------------------------------------------
+Region initial_integrate, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.131967 |
+|     call count    |        200 |
++-------------------+------------+
+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |  761809500 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  315338300 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  315340800 |
+|               TOPDOWN_SLOTS              |  FIXC3  | 1576691000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |  419434000 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |     0.1320 |
+|   Runtime unhalted [s]  |     0.1317 |
+|       Clock [MHz]       |  2394.3078 |
+|           CPI           |     0.4139 |
+|       DP [MFLOP/s]      |  3178.3249 |
+|     AVX DP [MFLOP/s]    |          0 |
+|   AVX512 DP [MFLOP/s]   |          0 |
+|     Packed [MUOPS/s]    |          0 |
+|     Scalar [MUOPS/s]    |  3178.3249 |
+| Vectorization ratio [%] |          0 |
++-------------------------+------------+
+
+Region lj, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |  12.364120 |
+|     call count    |        201 |
++-------------------+------------+
+
++------------------------------------------+---------+--------------+
+|                   Event                  | Counter |  HWThread 0  |
++------------------------------------------+---------+--------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |  41668680000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  29494940000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  29495070000 |
+|               TOPDOWN_SLOTS              |  FIXC3  | 147474700000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |            0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |  21983090000 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |            0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |            0 |
++------------------------------------------+---------+--------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |    12.3641 |
+|   Runtime unhalted [s]  |    12.3187 |
+|       Clock [MHz]       |  2394.3163 |
+|           CPI           |     0.7078 |
+|       DP [MFLOP/s]      |  1777.9745 |
+|     AVX DP [MFLOP/s]    |          0 |
+|   AVX512 DP [MFLOP/s]   |          0 |
+|     Packed [MUOPS/s]    |          0 |
+|     Scalar [MUOPS/s]    |  1777.9745 |
+| Vectorization ratio [%] |          0 |
++-------------------------+------------+
+
+Region final_integrate, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.083339 |
+|     call count    |        200 |
++-------------------+------------+
+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |  525756100 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  197408000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  197412400 |
+|               TOPDOWN_SLOTS              |  FIXC3  |  987039900 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |  262146400 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |     0.0833 |
+|   Runtime unhalted [s]  |     0.0824 |
+|       Clock [MHz]       |  2394.2735 |
+|           CPI           |     0.3755 |
+|       DP [MFLOP/s]      |  3145.5482 |
+|     AVX DP [MFLOP/s]    |          0 |
+|   AVX512 DP [MFLOP/s]   |          0 |
+|     Packed [MUOPS/s]    |          0 |
+|     Scalar [MUOPS/s]    |  3145.5482 |
+| Vectorization ratio [%] |          0 |
++-------------------------+------------+

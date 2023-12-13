@@ -1,0 +1,140 @@
+### Starting TaskPrologue of job 946590 on a0124 at Tue Dec 12 04:25:09 CET 2023
+Running on cores 0-127 with governor ondemand
+Tue Dec 12 04:25:09 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 545.23.08              Driver Version: 545.23.08    CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A40                     On  | 00000000:01:00.0 Off |                  Off |
+|  0%   32C    P8              23W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   1  NVIDIA A40                     On  | 00000000:25:00.0 Off |                  Off |
+|  0%   30C    P8              21W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   2  NVIDIA A40                     On  | 00000000:41:00.0 Off |                  Off |
+|  0%   32C    P8              21W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   3  NVIDIA A40                     On  | 00000000:61:00.0 Off |                  Off |
+|  0%   32C    P8              21W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   4  NVIDIA A40                     On  | 00000000:81:00.0 Off |                  Off |
+|  0%   31C    P8              22W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   5  NVIDIA A40                     On  | 00000000:A1:00.0 Off |                  Off |
+|  0%   30C    P8              28W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   6  NVIDIA A40                     On  | 00000000:C1:00.0 Off |                  Off |
+|  0%   30C    P8              21W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   7  NVIDIA A40                     On  | 00000000:E1:00.0 Off |                  Off |
+|  0%   29C    P8              21W / 300W |      4MiB / 49140MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+### Finished TaskPrologue
+
+NOTE: If and ONLY IF you want to use likwid-perfctr you have to add '--constraint=hwperf' to your batch jobs.
+      likwid-features and likwid-setFrequencies are not available. The frequency/governor can be set using SLURM features.
+1.44	1.21565
+0.853701	0.720694
+0.792754	0.669243
+all: 12639.6
+reset_volatile_properties: 381.21
+communication: 981.828
+neighbors: 702.653
+transfers: 1181.91
+lj: 4741.37
+mpi: 3245.1
+initial_integrate: 369.904
+final_integrate: 840.802
+other: 5.81276
+1.44	1.21565
+0.853701	0.720694
+0.792754	0.669243
+all: 12756.8
+reset_volatile_properties: 289.194
+communication: 852.771
+neighbors: 726.399
+transfers: 1506
+lj: 4477.07
+mpi: 3068.64
+initial_integrate: 293.662
+final_integrate: 1336.59
+other: 6.42973
+1.44	1.21565
+0.853701	0.720694
+0.792754	0.669243
+all: 12735
+reset_volatile_properties: 446.423
+communication: 736.216
+neighbors: 874.93
+transfers: 2028.84
+lj: 5269.64
+mpi: 2324.83
+initial_integrate: 303.183
+final_integrate: 549.971
+other: 3.41537
+=== JOB_STATISTICS ===
+=== current date     : Tue Dec 12 04:26:16 CET 2023
+= Job-ID             : 946590 on alex
+= Job-Name           : multi_node_alex.srun
+= Job-Command        : /home/hpc/iwia/iwia021h/repo/pairs/multi_node_alex.srun
+= Initial workdir    : /home/hpc/iwia/iwia021h/repo/pairs
+= Queue/Partition    : a40
+= Slurm account      : iwia with QOS=a100multi
+= Requested resources: cpu=1024,mem=3750G,node=8,billing=1024,gres/gpu=64,gres/gpu:a40=64 for 06:00:00
+= Elapsed runtime    : 00:01:09
+= Total RAM usage    : 0.0 GiB of assigned 3750 GiB (0.0%)   
+= Node list          : a[0124,0321-0327]
+= Subm/Elig/Start/End: 2023-12-12T04:25:06 / 2023-12-12T04:25:06 / 2023-12-12T04:25:07 / 2023-12-12T04:26:16
+======================
+=== Quota infos ======
+    Path              Used     SoftQ    HardQ    Gracetime  Filec    FileQ    FiHaQ    FileGrace    
+    /home/woody          4.0K   500.0G   750.0G        N/A       1    5,000K   7,500K        N/A    
+    /home/hpc           19.8G    52.4G   104.9G        N/A     131K     500K   1,000K        N/A    
+    /home/vault         47.2G   524.3G  1048.6G        N/A     148K     200K     400K        N/A    
+    /lustre              4.0K     0.0K     0.0K        N/A       1       80K     250K        N/A    
+======================
+=== GPU utilization ==
+gpu_name, gpu_bus_id, pid, gpu_utilization [%], mem_utilization [%], max_memory_usage [MiB], time [ms]
+NVIDIA A40, 00000000:01:00.0, 2566567, 13 %, 1 %, 822 MiB, 18871 ms
+NVIDIA A40, 00000000:01:00.0, 2566568, 3 %, 0 %, 822 MiB, 18890 ms
+NVIDIA A40, 00000000:01:00.0, 2566574, 6 %, 1 %, 822 MiB, 19032 ms
+NVIDIA A40, 00000000:01:00.0, 2566570, 6 %, 0 %, 822 MiB, 19113 ms
+NVIDIA A40, 00000000:01:00.0, 2566573, 6 %, 1 %, 822 MiB, 19115 ms
+NVIDIA A40, 00000000:01:00.0, 2566571, 4 %, 0 %, 822 MiB, 19277 ms
+NVIDIA A40, 00000000:01:00.0, 2566569, 10 %, 1 %, 822 MiB, 19304 ms
+NVIDIA A40, 00000000:01:00.0, 2566572, 3 %, 0 %, 822 MiB, 19660 ms
+NVIDIA A40, 00000000:01:00.0, 2566747, 6 %, 0 %, 822 MiB, 18472 ms
+NVIDIA A40, 00000000:01:00.0, 2566746, 8 %, 1 %, 822 MiB, 18506 ms
+NVIDIA A40, 00000000:01:00.0, 2566744, 4 %, 0 %, 822 MiB, 18601 ms
+NVIDIA A40, 00000000:01:00.0, 2566750, 14 %, 2 %, 822 MiB, 18732 ms
+NVIDIA A40, 00000000:01:00.0, 2566748, 4 %, 0 %, 822 MiB, 18810 ms
+NVIDIA A40, 00000000:01:00.0, 2566751, 6 %, 0 %, 822 MiB, 18888 ms
+NVIDIA A40, 00000000:01:00.0, 2566745, 4 %, 0 %, 822 MiB, 18921 ms
+NVIDIA A40, 00000000:01:00.0, 2566749, 8 %, 1 %, 822 MiB, 19218 ms
+NVIDIA A40, 00000000:01:00.0, 2566945, 3 %, 0 %, 822 MiB, 18544 ms
+NVIDIA A40, 00000000:01:00.0, 2566950, 6 %, 1 %, 822 MiB, 18660 ms
+NVIDIA A40, 00000000:01:00.0, 2566951, 5 %, 0 %, 822 MiB, 18710 ms
+NVIDIA A40, 00000000:01:00.0, 2566944, 10 %, 1 %, 822 MiB, 18751 ms
+NVIDIA A40, 00000000:01:00.0, 2566948, 16 %, 2 %, 822 MiB, 18917 ms
+NVIDIA A40, 00000000:01:00.0, 2566947, 4 %, 0 %, 822 MiB, 18956 ms
+NVIDIA A40, 00000000:01:00.0, 2566949, 2 %, 0 %, 822 MiB, 19024 ms
+NVIDIA A40, 00000000:01:00.0, 2566946, 5 %, 0 %, 822 MiB, 19330 ms
