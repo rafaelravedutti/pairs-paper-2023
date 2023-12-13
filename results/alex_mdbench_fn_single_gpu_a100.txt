@@ -1,0 +1,147 @@
+iwia021h@a0605:~/repo/MD-Bench$ ./MDBench-lammps-NVCC-AVX2-DP -nx 50 -ny 50 -nz 50
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: CUDA
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 50, 50, 50
+	Domain box sizes (x, y, z): 8.397981e+01, 8.397981e+01, 8.397981e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 0
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215646e+00
+100	7.770796e-01	6.560093e-01
+200	7.610592e-01	6.424849e-01
+----------------------------------------------------------------------------
+System: 500000 atoms 110718 ghost atoms, Steps: 200
+TOTAL 0.27s FORCE 0.13s NEIGH 0.11s REST 0.04s
+----------------------------------------------------------------------------
+Performance: 364.55 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 0.0000
+	Average SIMD iterations per atom: 0.0000
+	Total number of computed pair interactions: 0
+	Total number of SIMD iterations: 0
+	Useful read data volume for force computation: 5.63GB
+	Cycles/SIMD iteration: inf
+^[[Aiwia021h@a0605:~/repo/MD-Bench$ ./MDBench-lammps-NVCC-AVX2-DP -nx 50 -ny 50 -nz 50
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: CUDA
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 50, 50, 50
+	Domain box sizes (x, y, z): 8.397981e+01, 8.397981e+01, 8.397981e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 0
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215646e+00
+100	7.770796e-01	6.560093e-01
+200	7.610592e-01	6.424849e-01
+----------------------------------------------------------------------------
+System: 500000 atoms 110718 ghost atoms, Steps: 200
+TOTAL 0.30s FORCE 0.13s NEIGH 0.12s REST 0.05s
+----------------------------------------------------------------------------
+Performance: 331.12 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 0.0000
+	Average SIMD iterations per atom: 0.0000
+	Total number of computed pair interactions: 0
+	Total number of SIMD iterations: 0
+	Useful read data volume for force computation: 5.63GB
+	Cycles/SIMD iteration: inf
+iwia021h@a0605:~/repo/MD-Bench$ ./MDBench-lammps-NVCC-AVX2-DP -nx 50 -ny 50 -nz 50
+Running without Marker API. Activate Marker API with -m on commandline.
+Parameters:
+	Force field: lj
+	Kernel: CUDA
+	Data layout: AoS
+	Floating-point precision: double
+	Unit cells (nx, ny, nz): 50, 50, 50
+	Domain box sizes (x, y, z): 8.397981e+01, 8.397981e+01, 8.397981e+01
+	Periodic (x, y, z): 1, 1, 1
+	Lattice size: 1.679596e+00
+	Epsilon: 1.000000e+00
+	Sigma: 1.000000e+00
+	Spring constant: 1.000000e+00
+	Damping constant: 1.000000e+00
+	Temperature: 1.440000e+00
+	RHO: 8.442000e-01
+	Mass: 1.000000e+00
+	Number of types: 4
+	Number of timesteps: 200
+	Report stats every (timesteps): 100
+	Reneighbor every (timesteps): 20
+	Sort atoms when reneighboring: no
+	Prune every (timesteps): 1000
+	Output positions every (timesteps): 20
+	Output velocities every (timesteps): 5
+	Delta time (dt): 5.000000e-03
+	Cutoff radius: 2.500000e+00
+	Skin: 3.000000e-01
+	Half neighbor lists: 0
+	Processor frequency (GHz): 2.4000
+----------------------------------------------------------------------------
+step	temp		pressure
+0	1.440000e+00	1.215646e+00
+100	7.770796e-01	6.560093e-01
+200	7.610592e-01	6.424849e-01
+----------------------------------------------------------------------------
+System: 500000 atoms 110718 ghost atoms, Steps: 200
+TOTAL 0.27s FORCE 0.12s NEIGH 0.11s REST 0.04s
+----------------------------------------------------------------------------
+Performance: 368.95 million atom updates per second
+Statistics:
+	Vector width: 4, Processor frequency: 2.4000 GHz
+	Average neighbors per atom: 0.0000
+	Average SIMD iterations per atom: 0.0000
+	Total number of computed pair interactions: 0
+	Total number of SIMD iterations: 0
+	Useful read data volume for force computation: 5.63GB
+	Cycles/SIMD iteration: inf
