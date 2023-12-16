@@ -759,42 +759,24 @@ Note that the reason for using buffers instead of evaluating the particle positi
 
 In this paper we conducted experiments in FAU's clusters Fritz (CPU) and Alex (GPU), these systems have the following configurations:
 
-\begin{table*}[htb]
-  \centering
-  \begin{tabular}{c|c|c|c}
-%    \hline
-    Micro-architecture & Cascade Lake & Ice Lake server & Zen3 \\
-    \hline
-    Model & Xeon Gold 6248 & Xeon Platinum 8360Y & EPYC 7543 \\
-    Base frequency & 2.4\,\GHZ & 2.5\,\GHZ & 2.1\,\GHZ \\
-    Cores per chip & 20 & 36 & 32 \\
-    Latest SIMD extension& AVX512 & AVX512 & AVX2+FMA \\
-    L1D capacity & $20 \times 32$\,\KiB & $36 \times 48$\,\KiB & $32 \times 32$\,\KiB \\
-    L2 capacity & $20 \times 1024$\,\KiB & $36 \times 1.25$\,\MiB & $32 \times 512$\,\KiB \\
-    L3 capacity & 27.5\,\MiB & 54\,\MiB & 256\,\MiB \\
-    %L1/L2 bandwidth &
-    %L2/L3 bandwidth &
-    Memory configuration & 6 ch. DDR4-2933 & 8 ch. DDR4-3200 & 8 ch. DDR4-3200 \\
-%    \hline
-  \end{tabular}
-  \caption{Specifications for testbed CPUs.}
-  \label{tab:testbedcpus}
-\end{table*}
-
 \begin{itemize}
   \item \textbf{Fritz:} 992 compute nodes, each one with two Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
   \item \textbf{Alex:} 44 GPGPU nodes, each with two AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3Cache per chip, 512 GB of DDR4-RAM, eight Nvidia A40 (each with 48 GB DDR6 @ 696 GB/s; 37.42 TFlop/s in FP32), 25 GbE, and 7 TB on local NVMe SSDs.
 \end{itemize}
 
-For single-core CPU experiments, we make use of the same clusters, where the two CPUs listed above will be referred to as Ice Lake and Milan, respectively.
+We perform single-core CPU experiments in both clusters, and refer to both CPUs listed above as Ice Lake and Milan, respectively.
 For single GPU experiments, we use the referred A40 Nvidia GPUs, as well as the Nvidia A100 also available in the Alex cluster.
 
 Experiments for \ac{MD} use the standard Copper FCC lattice testcase from miniMD/MD-Bench, and we use our results from MD-Bench as a performance reference since it is a well optimized code for \ac{MD}.
-The \ac{DEM} test case is a "Settling Spheres" benchmark, where spheres fall into the ground (half-space) to generate a "bed" of spherical particles, and due to its multiple shapes and dynamics with many interactions among spheres and half-spaces provide a good reference for DEM simulations.
-We compare our single-core results with MESA-PD using 2 MPI ranks (since it is not possible to run in a single rank with PBC in MESA-PD), GPU results are not available for MESA-PD as it is one of its limitations, but we show the performance gain when using GPUs for P4IRS generated codes.
+The \ac{DEM} test case is a "Settling Spheres" benchmark, where several spheres fall into a "ground" (half-space), thus generating a "bed" of spherical particles.
+Due to its multiple shapes and dynamics that consists of many interactions among spheres and half-spaces, it should provide a good reference for DEM simulations.
+We compare our single-core results from P4IRS with MESA-PD using 2 MPI ranks since it is not possible to run this setup in MESA-PD using a single rank.
+GPU results are not available for MESA-PD as it is not capable of generating GPU code, but we show the performance benefits when using GPUs for P4IRS generated codes.
 
-Scaling results are also shown for demostrating P4IRS scaling capabilities, and regular domnain-partitioning is used as these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous testcases in all dimensions, and Settling Spheres can obtain good weak-scaling by regularly partitioning the domain in X and Y dimensions).
-We use double floating-point precision and display results when enabling and disabling Newton 3rd Law optimization (half neighbor-lists), for DEM we show both cases with Linked Cells and Verlet Lists.
+Scaling results are also shown for demostrating P4IRS scaling capabilities.
+For this we use regular domain-partitioning since these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous testcase in all dimensions, and Settling Spheres can obtain good weak-scaling by regularly partitioning the domain in X and Y dimensions).
+We use double floating-point precision and display results when enabling and disabling Newton's 3rd Law optimization (half neighbor-lists).
+For \ac{MD} we show results for the Verlet Lists case since it is widely employed in such simulations, and for \ac{DEM} we stick to Linked Cells as this is the algorithm used in MESA-PD.
 
 \subsection{Molecular Dynamics}
 
@@ -870,11 +852,18 @@ We use double floating-point precision and display results when enabling and dis
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $32^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases.}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $32^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for both full and half neighbor-lists (FN/HN).}
 \vspace{-2ex}
 \centering
 \label{fig:md_single_core_runtimes}
 \end{figure}
+
+\autoref{fig:md_single_core_runtimes} display the runtime measurements for P4IRS and MD-Bench simulations of the Copper FCC lattice case with $32^{3}$ unit cells (4 atoms per unit-cell).
+It is noticeable that the kernels generated by P4IRS achieve competitive results to MD-Bench, a hand-tuned implementation for MD cases, which demonstrates P4IRS capabitilies to generate fast code.
+In Ice Lake, The performance is slightly better for MD-Bench using \ac{FN}, but P4IRS provide a slightly faster result when using \ac{HN}.
+P4IRS code tend to be build neighbor-lists faster but the force computation is slower, but runtime differences vary in the range of 10\% for the measured runtime, which is still not too significant and can vary when using different compilers and flags.
+In Milan, P4IRS is faster than MD-Bench for the \ac{FN}case, and results are pretty similar when using \ac{HN} case.
+The force calculation is still slower for P4IRS with \ac{HN} when compared to MD-Bench, but this is compensated by the less time spent building the neighbor lists.
 
 \begin{table*}[htb]
     \centering
@@ -892,9 +881,16 @@ We use double floating-point precision and display results when enabling and dis
         Vectorization ratio [\%] & 99.0574 & 0.0 & 99.0609 & 0.0 \\
 %        \hline
     \end{tabular}
-    \caption{Measurements from P4IRS and MD-Bench Lennard-Jones force kernels for both full and half neighbor-lists variants on a single Ice Lake CPU core.}
+    \caption{Measurements from P4IRS and MD-Bench Lennard-Jones force kernels for both full and half neighbor-lists cases on a single Ice Lake CPU core.}
     \label{tab:md_single_core_stats}
 \end{table*}
+
+\autoref{tab:md_single_core_stats} displays HPM measurements for the force calculation kernels in Ice Lake with AVX512.
+The important thing to notice is that the compiler was not able to vectorize the cases with \ac{HN}, but the runtimes are still smaller for these cases.
+The performance with \ac{HN} is significantly worse but it is compensated by the fact it computes roughly half the interactions.
+The arithmetic instructions ratio for all cases lie between 50-55\%, which means that about half of the instructions are used for organizing data into the vector registers.
+For more computational-intensive kernels, the arithmetic ratio should increase and the measured AVX512/Scalar performance should have a more significant impact in the runtime.
+
 
 \colorlet{force-gpu}{purple!80}
 \colorlet{neigh-gpu}{purple!50}
@@ -948,7 +944,7 @@ We use double floating-point precision and display results when enabling and dis
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $50^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on A40 and A100 GPUs. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases, and atomic operations affect the performance for the HN case.}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $50^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on A40 and A100 GPUs. Results are shown for both full and half neighbor-lists (FN/HN) cases, and atomic operations affect the performance for the HN case.}
 \vspace{-2ex}
 \centering
 \label{fig:md_single_gpu_runtimes}
@@ -1025,7 +1021,7 @@ We use double floating-point precision and display results when enabling and dis
 \subsection{Discrete Element Method}
 
 % DEM
-%   - Comparison with MESA-PD (figure)
+%   - Comparison with MESA-PD (figure + table)
 %     - Linked Cells (ignore Verlet Lists)
 %     - Full and half computations
 %
