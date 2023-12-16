@@ -1,0 +1,185 @@
+### Starting TaskPrologue of job 947918 on a0631 at Thu Dec 14 13:51:45 CET 2023
+Running on cores 0-127 with governor ondemand
+Thu Dec 14 13:51:46 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 545.23.08              Driver Version: 545.23.08    CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  | 00000000:0E:00.0 Off |                    0 |
+| N/A   35C    P0              63W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  | 00000000:13:00.0 Off |                    0 |
+| N/A   35C    P0              63W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   2  NVIDIA A100-SXM4-80GB          On  | 00000000:49:00.0 Off |                    0 |
+| N/A   34C    P0              64W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   3  NVIDIA A100-SXM4-80GB          On  | 00000000:4F:00.0 Off |                    0 |
+| N/A   37C    P0              66W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   4  NVIDIA A100-SXM4-80GB          On  | 00000000:90:00.0 Off |                    0 |
+| N/A   37C    P0              67W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   5  NVIDIA A100-SXM4-80GB          On  | 00000000:96:00.0 Off |                    0 |
+| N/A   34C    P0              68W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   6  NVIDIA A100-SXM4-80GB          On  | 00000000:CC:00.0 Off |                    0 |
+| N/A   35C    P0              65W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+|   7  NVIDIA A100-SXM4-80GB          On  | 00000000:D1:00.0 Off |                    0 |
+| N/A   34C    P0              67W / 400W |      4MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+### Finished TaskPrologue
+
+Loading openmpi/4.1.6-intel2021.10.0-cuda
+  Loading requirement: intel/2023.2.1
+
+NOTE: If and ONLY IF you want to use likwid-perfctr you have to add '--constraint=hwperf' to your batch jobs.
+      likwid-features and likwid-setFrequencies are not available. The frequency/governor can be set using SLURM features.
+1.44	1.21565
+0.853707	0.7207
+0.792766	0.669253
+all: 11513.1
+reset_volatile_properties: 853.286
+communication: 1069.42
+neighbors: 378.629
+transfers: 320.068
+lj: 4033.23
+mpi: 3778.87
+initial_integrate: 282.95
+final_integrate: 576.449
+other: 13.9687
+1.44	1.21565
+0.853706	0.720698
+0.792766	0.669253
+all: 11357.4
+reset_volatile_properties: 824.617
+communication: 1030.85
+neighbors: 370.611
+transfers: 313.141
+lj: 3890.22
+mpi: 3782.91
+initial_integrate: 277.135
+final_integrate: 635.354
+other: 9.98438
+1.44	1.21565
+0.853705	0.720698
+0.792768	0.669255
+all: 11762.5
+reset_volatile_properties: 579.793
+communication: 826.105
+neighbors: 358.351
+transfers: 311.614
+lj: 4147.72
+mpi: 4190.41
+initial_integrate: 282.237
+final_integrate: 797.231
+other: 15.781
+1.44	1.21565
+0.853706	0.720699
+0.792772	0.669258
+all: 11340.8
+reset_volatile_properties: 412.393
+communication: 873.247
+neighbors: 363.259
+transfers: 345.487
+lj: 4599.25
+mpi: 3530.8
+initial_integrate: 293.652
+final_integrate: 651.692
+other: 18.7575
+1.44	1.21565
+0.853706	0.720699
+0.792768	0.669255
+all: 11630.2
+reset_volatile_properties: 824.01
+communication: 1082.58
+neighbors: 394.036
+transfers: 295.19
+lj: 3580.76
+mpi: 4151.52
+initial_integrate: 248.984
+final_integrate: 796.935
+other: 18.948
+=== JOB_STATISTICS ===
+=== current date     : Thu Dec 14 13:53:45 CET 2023
+= Job-ID             : 947918 on alex
+= Job-Name           : multi_node_alex.srun
+= Job-Command        : /home/hpc/iwia/iwia021h/repo/pairs/multi_node_alex.srun
+= Initial workdir    : /home/hpc/iwia/iwia021h/repo/pairs
+= Queue/Partition    : a100
+= Slurm account      : iwia with QOS=a100multi
+= Requested resources: cpu=1024,mem=7500G,node=8,billing=1024,gres/gpu=64,gres/gpu:a100=64 for 06:00:00
+= Elapsed runtime    : 00:02:01
+= Total RAM usage    : 0.0 GiB of assigned 7500 GiB (0.0%)   
+= Node list          : a[0631-0632,0701-0704,0803-0804]
+= Subm/Elig/Start/End: 2023-12-14T13:51:43 / 2023-12-14T13:51:43 / 2023-12-14T13:51:43 / 2023-12-14T13:53:44
+======================
+=== Quota infos ======
+    Path              Used     SoftQ    HardQ    Gracetime  Filec    FileQ    FiHaQ    FileGrace    
+    /home/woody          4.0K   500.0G   750.0G        N/A       1    5,000K   7,500K        N/A    
+    /home/hpc           16.5G    52.4G   104.9G        N/A     131K     500K   1,000K        N/A    
+    /home/vault         47.2G   524.3G  1048.6G        N/A     148K     200K     400K        N/A    
+    /lustre              4.0K     0.0K     0.0K        N/A       1       80K     250K        N/A    
+======================
+=== GPU utilization ==
+gpu_name, gpu_bus_id, pid, gpu_utilization [%], mem_utilization [%], max_memory_usage [MiB], time [ms]
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2720999, 11 %, 0 %, 980 MiB, 19473 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2720998, 8 %, 0 %, 980 MiB, 19610 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721000, 7 %, 0 %, 980 MiB, 19714 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721001, 3 %, 0 %, 980 MiB, 19803 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721005, 2 %, 0 %, 980 MiB, 19899 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721004, 4 %, 0 %, 980 MiB, 20005 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721002, 4 %, 0 %, 980 MiB, 20080 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721003, 9 %, 0 %, 980 MiB, 20658 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721256, 8 %, 0 %, 980 MiB, 20588 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721259, 5 %, 0 %, 980 MiB, 20756 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721257, 5 %, 0 %, 980 MiB, 20921 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721253, 4 %, 0 %, 980 MiB, 20929 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721255, 4 %, 0 %, 980 MiB, 21115 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721254, 4 %, 0 %, 980 MiB, 21200 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721258, 6 %, 0 %, 980 MiB, 21296 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721252, 6 %, 0 %, 980 MiB, 21849 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721517, 3 %, 0 %, 980 MiB, 19448 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721523, 5 %, 0 %, 980 MiB, 19561 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721520, 4 %, 0 %, 980 MiB, 19689 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721521, 9 %, 0 %, 980 MiB, 19741 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721524, 2 %, 0 %, 980 MiB, 19843 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721518, 7 %, 0 %, 980 MiB, 19948 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721522, 7 %, 0 %, 980 MiB, 20065 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721519, 11 %, 0 %, 980 MiB, 20610 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721743, 5 %, 0 %, 980 MiB, 19196 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721742, 1 %, 0 %, 980 MiB, 19212 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721745, 7 %, 0 %, 980 MiB, 19391 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721741, 13 %, 0 %, 980 MiB, 19486 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721744, 3 %, 0 %, 980 MiB, 19489 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721746, 6 %, 0 %, 980 MiB, 19593 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721747, 8 %, 0 %, 980 MiB, 19760 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721748, 6 %, 0 %, 980 MiB, 20325 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721991, 6 %, 0 %, 980 MiB, 19495 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721988, 2 %, 0 %, 980 MiB, 19653 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721994, 12 %, 0 %, 980 MiB, 19708 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721992, 1 %, 0 %, 980 MiB, 19850 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721995, 7 %, 0 %, 980 MiB, 19887 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721993, 5 %, 0 %, 980 MiB, 20009 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721989, 8 %, 0 %, 980 MiB, 20109 ms
+NVIDIA A100-SXM4-80GB, 00000000:0E:00.0, 2721990, 5 %, 0 %, 980 MiB, 20661 ms

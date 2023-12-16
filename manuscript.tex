@@ -52,6 +52,8 @@
 \usepackage{listings}
 \usepackage{algorithm,algpseudocode}
 %\usepackage{math}
+\usepackage{tikz}
+\usepackage{pgfplots}
 
 \journal{Computer Physics Communications}
 
@@ -692,8 +694,8 @@ We use double floating-point precision and display results when enabling and dis
 \subsection{Molecular Dynamics}
 
 % MD
-%   - Single core/GPU (vs MD-Bench)
-%     - Full and half-neighbor lists (one figure for each)
+%   - Single core/GPU (vs MD-Bench) --- one figure for CPU and one for GPU
+%     - Full and half-neighbor lists
 %     - Runtime, MFLOP/s, Vectorization ratio, # instructions, ... (table)
 % Weak-scaling
 %   Fritz (figure) - base = 128x128x128 per node
@@ -701,6 +703,131 @@ We use double floating-point precision and display results when enabling and dis
 %   Alex (figure)
 %     - Full and half-neighbor lists
 %     - A40 and A100
+
+\colorlet{force-cpu}{teal!80}
+\colorlet{neigh-cpu}{teal!50}
+\colorlet{other-cpu}{teal!20}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.95]
+    \pgfplotsset{
+        ybar stacked, ymin=0, ymax=32, xmin=0.5, xmax=2.5, xtick=data,
+        xtick={1,...,2},
+        xticklabels={Ice Lake, Milan},
+        xticklabel style={yshift=-10pt},
+        ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+        legend cell align={left},
+        /pgf/bar width=12pt,% bar width
+        scatter/position=absolute,
+        node near coords style={
+            font=\footnotesize,
+            at={(axis cs:\pgfkeysvalueof{/data point/x},\pgfkeysvalueof{/pgfplots/ymin})},
+            anchor=north,
+            yshift={-\pgfkeysvalueof{/pgfplots/major tick length} + 4pt},
+        },
+    }
+    \begin{axis}[bar shift=-18pt, nodes near coords style={xshift=-18pt},
+        legend pos = outer north east, legend style = {name = pairs}]
+        \addplot [fill=force-cpu, nodes near coords=A] table [x=arch, y=pairsfn] {data/single-core-force.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairsfn] {data/single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairsfn] {data/single-core-other.csv};
+        \legend{Force, Neigh, Other}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{A:} P4IRS (FN)}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{B:} MD-Bench (FN)}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS (HN)}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{D:} MD-Bench (HN)}
+    \end{axis}
+    \begin{axis}[bar shift= -6pt, nodes near coords style={xshift=-6pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=B] table [x=arch, y=mdbenchfn] {data/single-core-force.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=mdbenchfn] {data/single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=mdbenchfn] {data/single-core-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift= 6pt, nodes near coords style={xshift=6pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=C] table [x=arch, y=pairshn] {data/single-core-force.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairshn] {data/single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairshn] {data/single-core-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift= 18pt, nodes near coords style={xshift=18pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=D] table [x=arch, y=mdbenchhn] {data/single-core-force.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=mdbenchhn] {data/single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=mdbenchhn] {data/single-core-other.csv};
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $32^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases.}
+\vspace{-2ex}
+\centering
+\label{fig:cpu_single_node_results}
+\end{figure}
+
+\colorlet{force-gpu}{purple!80}
+\colorlet{neigh-gpu}{purple!50}
+\colorlet{other-gpu}{purple!20}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.95]
+    \pgfplotsset{
+        ybar stacked, ymin=0, ymax=1.5, xmin=0.5, xmax=2.5, xtick=data,
+        xtick={1,...,2},
+        xticklabels={A40, A100},
+        xticklabel style={yshift=-10pt},
+        ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+        legend cell align={left},
+        /pgf/bar width=12pt,% bar width
+        scatter/position=absolute,
+        node near coords style={
+            font=\footnotesize,
+            at={(axis cs:\pgfkeysvalueof{/data point/x},\pgfkeysvalueof{/pgfplots/ymin})},
+            anchor=north,
+            yshift={-\pgfkeysvalueof{/pgfplots/major tick length} + 4pt},
+        },
+    }
+    \begin{axis}[bar shift=-12pt, nodes near coords style={xshift=-12pt},
+        legend pos = outer north east, legend style = {name = pairs}]
+        \addplot [fill=force-gpu, nodes near coords=A] table [x=arch, y=pairsfn] {data/single-gpu-force.csv};
+        \addplot [fill=neigh-gpu] table [x=arch, y=pairsfn] {data/single-gpu-neigh.csv};
+        \addplot [fill=other-gpu] table [x=arch, y=pairsfn] {data/single-gpu-other.csv};
+        \legend{Force, Neigh, Other}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{A:} P4IRS (FN)}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{B:} MD-Bench (FN)}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS (HN)}
+    \end{axis}
+    \begin{axis}[bar shift= -0pt, nodes near coords style={xshift=-0pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-gpu, nodes near coords=B] table [x=arch, y=mdbenchfn] {data/single-gpu-force.csv};
+        \addplot [fill=neigh-gpu] table [x=arch, y=mdbenchfn] {data/single-gpu-neigh.csv};
+        \addplot [fill=other-gpu] table [x=arch, y=mdbenchfn] {data/single-gpu-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift= 12pt, nodes near coords style={xshift=12pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-gpu, nodes near coords=C] table [x=arch, y=pairshn] {data/single-gpu-force.csv};
+        \addplot [fill=neigh-gpu] table [x=arch, y=pairshn] {data/single-gpu-neigh.csv};
+        \addplot [fill=other-gpu] table [x=arch, y=pairshn] {data/single-gpu-other.csv};
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $50^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on A40 and A100 GPUs. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases, and atomic operations affect the performance for the HN case.}
+\vspace{-2ex}
+\centering
+\label{fig:md_single_gpu_results}
+\end{figure}
 
 \subsection{Discrete Element Method}
 
