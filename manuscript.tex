@@ -829,6 +829,74 @@ We use double floating-point precision and display results when enabling and dis
 \label{fig:md_single_gpu_results}
 \end{figure}
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.80]
+    \tikzstyle{every node}=[font=\small]
+    \begin{axis}[
+            width=\textwidth, height=8cm,
+            xmode=log,log basis x={2},
+            %xmin=0.75,   xmax=3072,
+            xmin=1,   xmax=64,
+            ymin=10,   ymax=30,
+            log ticks with fixed point,
+            xlabel={\# nodes}, xlabel style={yshift= 1ex},
+            xticklabel={ % hack for precision issues with 1024 and 2048
+                \pgfkeys{/pgf/fpu=true}
+                \pgfmathparse{int(2^\tick)}
+                \pgfmathprintnumber[fixed]{\pgfmathresult}
+            },
+            ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+            grid=major,
+            legend pos=north east,
+            %legend style={at={(0.97,0.5)},anchor=east},
+        ]
+        \addplot table[x=nodes,y=pairsfn] {data/md-scaling-fritz.csv};
+        \addplot table[x=nodes,y=pairshn] {data/md-scaling-fritz.csv};
+        \legend{P4IRS-FN, P4IRS-HN}
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+\caption{Weak-scaling results for P4IRS (FN and HN) on Fritz, each node simulates 200 time-steps of a Copper FCC lattice system with $128^3$ unit cells, with approximately 116508 atoms per CPU core.}
+\vspace{-2ex}
+\label{fig:md_weak_scaling_cpu}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.80]
+    \tikzstyle{every node}=[font=\small]
+    \begin{axis}[
+            width=\textwidth, height=8cm,
+            xmode=log,log basis x={2},
+            %xmin=0.75,   xmax=3072,
+            xmin=1,   xmax=8,
+            ymin=4,   ymax=20,
+            log ticks with fixed point,
+            xlabel={\# nodes}, xlabel style={yshift= 1ex},
+            xticklabel={ % hack for precision issues with 1024 and 2048
+                \pgfkeys{/pgf/fpu=true}
+                \pgfmathparse{int(2^\tick)}
+                \pgfmathprintnumber[fixed]{\pgfmathresult}
+            },
+            ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+            grid=major,
+            legend pos=north east,
+            %legend style={at={(0.97,0.5)},anchor=east},
+        ]
+        \addplot table[x=nodes,y=pairsfna40] {data/md-scaling-alex.csv};
+        \addplot table[x=nodes,y=pairshna40] {data/md-scaling-alex.csv};
+        \addplot table[x=nodes,y=pairsfna100] {data/md-scaling-alex.csv};
+        \addplot table[x=nodes,y=pairshna100] {data/md-scaling-alex.csv};
+        \legend{P4IRS-FN-A40, P4IRS-HN-A40, P4IRS-FN-A100, P4IRS-HN-A100}
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+\caption{Weak-scaling results for P4IRS (FN and HN) on Alex on both A40 and A100 GPUs, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500000 atoms per GPU.}
+\vspace{-2ex}
+\label{fig:md_weak_scaling_cpu}
+\end{figure}
+
 \subsection{Discrete Element Method}
 
 % DEM
