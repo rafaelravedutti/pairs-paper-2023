@@ -985,10 +985,14 @@ Note again that this is strictly dependent on the arithmetic intensity of the ke
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-\caption{Weak-scaling results for P4IRS (FN and HN) on Fritz, each node simulates 200 time-steps of a Copper FCC lattice system with $128^3$ unit cells, with approximately 116508 atoms per CPU core.}
+\caption{Weak-scaling results for P4IRS (FN and HN) on Fritz, each node simulates 200 time-steps of a Copper FCC lattice system with $128^3$ unit cells, with approximately 116.508 atoms per CPU core.}
 \vspace{-2ex}
 \label{fig:md_weak_scaling_fritz}
 \end{figure}
+
+\autoref{fig:md_weak_scaling_fritz} shows the results for P4IRS weak-scaling in the Fritz supercomputer.
+For each node, a system of $128^3$ unit cells is included, with roughly 8.388.608 atoms per node (or 116.508 atoms per CPU core).
+Results demonstrate that P4IRS achieve near perfect weak-scaling in all 64 nodes of the Fritz cluster (4608 CPU cores), which suggests it is fully capable of generating scalable applications to run on modern supercomputers.
 
 \begin{figure}[t]
 \centering
@@ -1020,10 +1024,16 @@ Note again that this is strictly dependent on the arithmetic intensity of the ke
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-\caption{Weak-scaling results for P4IRS (FN and HN) on Alex on both A40 and A100 GPUs, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500000 atoms per GPU.}
+\caption{Weak-scaling results for P4IRS (FN and HN) on Alex on both A40 and A100 GPUs, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500.000 atoms per GPU.}
 \vspace{-2ex}
 \label{fig:md_weak_scaling_alex}
 \end{figure}
+
+\autoref{fig:md_weak_scaling_alex} shows the results for P4IRS weak-scaling in the Alex supercomputer for both nodes with A40 and A100 GPUs.
+Each node simulates a system of $100^3$ unit cells, with roughly 500.000 atoms per GPU.
+Note there is a significant overhead for communication when using GPUs (compared to solving the problem in a single GPU), which can be attributed to the time do transfer data from the GPUs through the communication channels.
+The results for scaling up to 8 nodes (64 GPUs) is good but not perfect (93\% efficiency for \ac{HN} in A100, and 83-85\% efficiency across other cases), one reason for this is that the Alex cluster has significant impact with its interconnect interface among different nodes, which significantly increases the time for the communication.
+Running simulations with higher workload on GPUs for the force computation or using different GPU clusters with better interconnection interfaces should improve the weak-scaling results.
 
 \subsection{Discrete Element Method}
 
