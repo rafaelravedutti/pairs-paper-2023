@@ -74,6 +74,89 @@
     frame=lines
 }
 
+%Predefined commands
+\newcommand{\bq}{\begin{equation}}
+\newcommand{\eq}{\end{equation}}
+\newcommand{\bytes}{\mbox{bytes}}
+\newcommand{\byte}{\mbox{byte}}
+\newcommand{\second}{\mbox{s}}
+\newcommand{\seconds}{\mbox{s}}
+\newcommand{\flop}{\mbox{flop}}
+\newcommand{\flops}{\mbox{flops}}
+\newcommand{\NJFLOP}{\mbox{nJ/\flop}}
+\newcommand{\instr}{\mbox{instr}}
+\newcommand{\cycle}{\mbox{cy}}
+\newcommand{\iter}{\mbox{it}}
+\newcommand{\cycles}{\mbox{cy}}
+\newcommand{\FCY}{\mbox{\flop/\cycle}}
+\newcommand{\FIT}{\mbox{\flop/\iter}}
+\newcommand{\BIT}{\mbox{\byte/\iter}}
+\newcommand{\FR}{\mbox{\flops/\mbox{row}}}
+\newcommand{\BR}{\mbox{\byte/\mbox{row}}}
+\newcommand{\CYF}{\mbox{\cycles/\flop}}
+\newcommand{\CS}{\mbox{\cycle/\second}}
+\newcommand{\GCS}{\mbox{G\cycle/\second}}
+\newcommand{\word}{\mbox{Word}}
+\newcommand{\words}{\mbox{Words}}
+\newcommand{\order}[1]{\mbox{${\cal O}\left(\mbox{#1}\right)$}}
+\newcommand{\bit}{\mbox{bit}}
+\newcommand{\bits}{\mbox{bits}}
+\newcommand{\GBPS}{\mbox{G\bit/\second}}
+\newcommand{\MBPS}{\mbox{M\bit/\second}}
+\newcommand{\FS}{\mbox{\flop/\second}}
+\newcommand{\BS}{\mbox{\byte/\second}}
+\newcommand{\BC}{\mbox{\byte/\cycle}}
+\newcommand{\GBS}{\mbox{G\byte/\second}}
+\newcommand{\MBS}{\mbox{M\byte/\second}}
+\newcommand{\GWS}{\mbox{G\word/\second}}
+\newcommand{\GFS}{\mbox{G\flop/\second}}
+\newcommand{\MFS}{\mbox{M\flop/\second}}
+\newcommand{\lup}{\mbox{LUP}}
+\newcommand{\lups}{\mbox{LUPs}}
+\newcommand{\LUPCY}{\mbox{\lup/\cycle}}
+\newcommand{\LUPS}{\mbox{\lup/\second}}
+\newcommand{\MLUPS}{\mbox{M\lup/\second}}
+\newcommand{\GLUPS}{\mbox{G\lup/\second}}
+\newcommand{\GHZ}{\mbox{GHz}}
+\newcommand{\ns}{\mbox{ns}}
+\newcommand{\WF}{\mbox{\word/\flop}}
+\newcommand{\BF}{\mbox{\byte/\flop}}
+\newcommand{\FB}{\mbox{\flop/\byte}}
+\newcommand{\BL}{\mbox{\byte/\lup}}
+\newcommand{\GB}{\mbox{GB}}
+\newcommand{\KB}{\mbox{kB}}
+\newcommand{\MB}{\mbox{MB}}
+\newcommand{\GiB}{\mbox{GiB}}
+\newcommand{\MiB}{\mbox{MiB}}
+\newcommand{\KiB}{\mbox{KiB}}
+\newcommand{\W}{\mbox{W}}
+\newcommand{\muarch}{\mbox{$\mu$-arch}}
+\newcommand{\muop}{\mbox{$\mu$-op}}
+\newcommand{\muops}{\mbox{$\mu$-ops}}
+\newcommand{\eos}{\;.}
+\newcommand{\cma}{\;,}
+\newcommand{\rlm}{roof{}line model}
+\newcommand{\rl}{roof{}line}
+\newcommand{\Rlm}{Roof{}line model}
+\newcommand{\Rl}{Roof{}line}
+\newcommand{\olsep}{\|}
+\newcommand{\nolsep}{|}
+\newcommand{\ecmspace}{\,}
+\newcommand{\TOL}{$T_{\mathrm{c}\_\mathrm{OL}}$}
+\newcommand{\NNZR}{$N_\mathrm{nzr}$}
+\newcommand{\NR}{$N_\mathrm{r}$}
+\newcommand{\NNZ}{$N_\mathrm{nz}$}
+\newcommand{\ecm}[6]{\mbox{$\left\{{#1}\ecmspace\olsep\ecmspace {#2}\ecmspace\nolsep\ecmspace {#3}\ecmspace\nolsep\ecmspace {#4}\ecmspace\nolsep\ecmspace {#5}\right\}\ecmspace{#6}$}}
+\newcommand{\epsep}{\rceil}
+\newcommand{\ecmp}[4]{\mbox{$\left\{{#1}\ecmspace\epsep\ecmspace {#2}\ecmspace\epsep\ecmspace {#3}\right\}\ecmspace{#4}$}}
+\newcommand{\ecme}[4]{\mbox{$\left({#1}\ecmspace\epsep\ecmspace {#2}\ecmspace\epsep\ecmspace {#3}\right)\ecmspace{#4}$}}
+\newcommand{\sellcs}{SELL-\texorpdfstring{$C$-$\sigma$}{C-sigma}}
+\newcommand{\likwid}{\texttt{LIKWID}}
+\newcommand{\likwidperfctr}{\texttt{likwid-perfctr}}
+\newcommand{\likwidpin}{\texttt{likwid-pin}}
+\newcommand{\likwidbench}{\texttt{likwid-bench}}
+\newcommand{\lmbench}{\texttt{lmbench}}
+
 % Acronyms
 \newacro{AoS}{array of structures}
 \newacro{AoSoA}{array of structures of arrays}
@@ -654,7 +737,7 @@ Essentially, P4IRS communication is split into three routines:
 \begin{itemize}
     \item \emph{borders:} define particles within the halo region which must be send to neighbor ranks as "ghost" particles; only non-volatile properties that are accessed in a neighbor particle within a kernel are sent.
     \item \emph{synchronize:} uses the defined particle in the borders routine to exchange data; only non-volatile properties that are accessed in neighbor particles within a kernel and that change across time-steps are sent.
-    \item \emph{exchange:} send particles that overlap the current rank's domain, it becomes a local particle in the neighbor rank; all properties except volatiles are sent.
+    \item \emph{exchange:} send particles that overlap the current rank's domain, it becomes a local particle in the neighbor rank; all properties except volatiles are sent; contact history data is also exchanged.
 \end{itemize}
 
 These methods make use of a domain-partitioner class that can be implemented in P4IRS runtime to determine which particles must be sent.
@@ -675,6 +758,28 @@ Note that the reason for using buffers instead of evaluating the particle positi
 \subsection{Materials and Methods}
 
 In this paper we conducted experiments in FAU's clusters Fritz (CPU) and Alex (GPU), these systems have the following configurations:
+
+\begin{table*}[htb]
+  \centering
+  \begin{tabular}{c|c|c|c}
+%    \hline
+    Micro-architecture & Cascade Lake & Ice Lake server & Zen3 \\
+    \hline
+    Model & Xeon Gold 6248 & Xeon Platinum 8360Y & EPYC 7543 \\
+    Base frequency & 2.4\,\GHZ & 2.5\,\GHZ & 2.1\,\GHZ \\
+    Cores per chip & 20 & 36 & 32 \\
+    Latest SIMD extension& AVX512 & AVX512 & AVX2+FMA \\
+    L1D capacity & $20 \times 32$\,\KiB & $36 \times 48$\,\KiB & $32 \times 32$\,\KiB \\
+    L2 capacity & $20 \times 1024$\,\KiB & $36 \times 1.25$\,\MiB & $32 \times 512$\,\KiB \\
+    L3 capacity & 27.5\,\MiB & 54\,\MiB & 256\,\MiB \\
+    %L1/L2 bandwidth &
+    %L2/L3 bandwidth &
+    Memory configuration & 6 ch. DDR4-2933 & 8 ch. DDR4-3200 & 8 ch. DDR4-3200 \\
+%    \hline
+  \end{tabular}
+  \caption{Specifications for testbed CPUs.}
+  \label{tab:testbedcpus}
+\end{table*}
 
 \begin{itemize}
   \item \textbf{Fritz:} 992 compute nodes, each one with two Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
@@ -768,8 +873,28 @@ We use double floating-point precision and display results when enabling and dis
 	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $32^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases.}
 \vspace{-2ex}
 \centering
-\label{fig:cpu_single_node_results}
+\label{fig:md_single_core_runtimes}
 \end{figure}
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{c|c|c|c|c}
+%        \hline
+        Variant & pairs-fn & pairs-hn & mdbench-fn & mdbench-hn \\
+        \hline
+        Runtime [\seconds] & 23.26 & 12.36 & 20.89 & 12.25 \\
+        AVX512 Perf. [\GFS] & 2.866 & --- & 3.192 & --- \\
+        Scalar Perf. [GUOPS/s] & --- & 1.777 & --- & 1.794 \\
+        CPI & 3.597 & 0.8292 & 2.9961 & 0.7211 \\
+        Total instructions $(\times 10^9)$ & $15.442$ & $41.668$ & $16.666$ & $40.587$ \\
+        FP instructions $(\times 10^9)$ & $8.416$ & $21.983$ & $8.416$ & $21.985$ \\
+        Arithmetic ratio [\%] & 54.49 & 52.75 & 50.50 & 54.16 \\
+        Vectorization ratio [\%] & 99.0574 & 0.0 & 99.0609 & 0.0 \\
+%        \hline
+    \end{tabular}
+    \caption{Measurements from P4IRS and MD-Bench Lennard-Jones force kernels for both full and half neighbor-lists variants on a single Ice Lake CPU core.}
+    \label{tab:md_single_core_stats}
+\end{table*}
 
 \colorlet{force-gpu}{purple!80}
 \colorlet{neigh-gpu}{purple!50}
@@ -826,7 +951,7 @@ We use double floating-point precision and display results when enabling and dis
 	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Copper FCC lattice system with $50^{3}$ unit-cells (4 atoms per unit-cell) during 200 time-steps on A40 and A100 GPUs. Results are shown for both full neighbor-lists (FN) and half neighbor-lists (HN) cases, and atomic operations affect the performance for the HN case.}
 \vspace{-2ex}
 \centering
-\label{fig:md_single_gpu_results}
+\label{fig:md_single_gpu_runtimes}
 \end{figure}
 
 \begin{figure}[t]
@@ -859,7 +984,7 @@ We use double floating-point precision and display results when enabling and dis
 \vspace{-3ex}
 \caption{Weak-scaling results for P4IRS (FN and HN) on Fritz, each node simulates 200 time-steps of a Copper FCC lattice system with $128^3$ unit cells, with approximately 116508 atoms per CPU core.}
 \vspace{-2ex}
-\label{fig:md_weak_scaling_cpu}
+\label{fig:md_weak_scaling_fritz}
 \end{figure}
 
 \begin{figure}[t]
@@ -894,7 +1019,7 @@ We use double floating-point precision and display results when enabling and dis
 \vspace{-3ex}
 \caption{Weak-scaling results for P4IRS (FN and HN) on Alex on both A40 and A100 GPUs, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500000 atoms per GPU.}
 \vspace{-2ex}
-\label{fig:md_weak_scaling_cpu}
+\label{fig:md_weak_scaling_alex}
 \end{figure}
 
 \subsection{Discrete Element Method}
