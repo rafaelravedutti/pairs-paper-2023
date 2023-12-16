@@ -950,6 +950,13 @@ For more computational-intensive kernels, the arithmetic ratio should increase a
 \label{fig:md_single_gpu_runtimes}
 \end{figure}
 
+\autoref{fig:md_single_gpu_runtimes} displays the runtime measurements for P4IRS and MD-Bench simulations in the A40 and A100 GPUs from the Alex cluster.
+MD-Bench still do not have a GPU version with \ac{HN}, so we just display it using \ac{FN}.
+For A40, there is no significant difference for all runs, with MD-Bench being slightly faster.
+The performance difference is larger for A100, where MD-Bench is significantly faster.
+The usage of atomics indeed harms the performance since \ac{HN} computes half the interactions in the same amount of time in A40, and this impact is significant worse in A100 since it takes about twice the amount of time to compute half the interactions.
+Note again that this is strictly dependent on the arithmetic intensity of the kernel, which is relatively small for the used \ac{LJ} kernels, for other cases it may be worth to make use of \ac{HN}.
+
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[scale=0.80]
