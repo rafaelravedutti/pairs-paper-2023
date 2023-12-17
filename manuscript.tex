@@ -726,6 +726,9 @@ For GPUs, this can be beneficial since different threads will be used for differ
   \end{algorithmic}
 \end{algorithm}
 
+Note that there is no guarantee that the internal loop will be vectorized, since there may still be branches and instructions that make it not possible.
+Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code, which may not happen even when the code is amenable to vectorization.
+
 \subsection{Domain Partitioning and Communication}
 \label{sec:domain_partitioning}
 
