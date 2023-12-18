@@ -447,18 +447,25 @@ The update rule is carried out every time-step the contact persists, and therefo
 \subsection{Optimization Strategies}
 \label{sec:opts}
 
+\begin{figure*}[htb]
+    \centering
+    \subfigure[Linked Cells]{\label{fig:linked_cells}\includegraphics[width=0.49\textwidth]{linked_cells.pdf}}
+    \subfigure[Verlet Lists]{\label{fig:verlet_lists}\includegraphics[width=0.49\textwidth]{verlet_lists.pdf}}
+    \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of atoms is created by evaluating which particle distances are smaller than the cutoff radius plus a "skin" value, which represents a sphere in the 3D case.}
+\end{figure*}
+
 To obtain the force for a particle in a specific time-step, it is necessary to compute its partial contributions from each of the other particles present in the system.
 In a naive strategy, this results in a quadractic complexity and severely affects the application performance, which limits the system sizes and time-scales of such simulations.
 
 When force contributions become negligible at long-distance interactions, different algorithm strategies can be employed to perform computations only for particles within a specific cut-off region.
 There are two main data structures which are commonly used for efficiently computing particle interactions in state-of-the-art simulation packages: the Linked Cells and the Verlet Lists.
 
-Linked Cells strategy sorts atoms spatially according to their position in cells (also called bins), where cells have a fixed size, and mapping particles into cells can be done directly by computing in which cell a particle is contained within.
+Linked Cells strategy (see Figure~\ref{fig:linked_cells}) sorts atoms spatially according to their position in cells (also called bins), where cells have a fixed size, and mapping particles into cells can be done directly by computing in which cell a particle is contained within.
 After, forces can be computed for each particle by traversing its current and neighbor cells, and only adding contributions for particles within these cells.
 
 The Linked Cells results in computing only forces for particles within a region that is discretized by their current and neighbor cells/bins, which can still results in a significant amount of redundant computations.
 In order avoid even more redundant computations, the Verlet Lists strategy can be used jointly with Linked Cells.
-The Verlet Lists constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, and doing particle-particle distance comparison to evaluate wether a particle should be added into the list.
+The Verlet Lists (see Figure~\ref{fig:verlet_lists}) constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, and doing particle-particle distance comparison to evaluate wether a particle should be added into the list.
 At the end, the region for each particle search is defined by a sphere.
 Note that for the neighbor-lists construction to be worthwhile, it should be used more than once force calculation, hence neighbor-lists are not created at every simulation time-step, and a "skin" can be added to the cutoff radius to extend the neighbor-search and avoid missing computations from atoms that end up entering the cut-off region.
 
@@ -726,8 +733,8 @@ For GPUs, this can be beneficial since different threads will be used for differ
   \end{algorithmic}
 \end{algorithm}
 
-Note that there is no guarantee that the internal loop will be vectorized, since there may still be branches and instructions that make it not possible.
-Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code, which may not happen even when the code is amenable to vectorization.
+Note that there is no guarantee that the internal loop will be vectorized for CPU, since there may still be branches and instructions in the force kernel that make it not possible.
+Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code to use AVX/SSE instructions, which may not happen even when the code is amenable to vectorization.
 
 \subsection{Domain Partitioning and Communication}
 \label{sec:domain_partitioning}
@@ -780,6 +787,26 @@ Scaling results are also shown for demostrating P4IRS scaling capabilities.
 For this we use regular domain-partitioning since these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous testcase in all dimensions, and Settling Spheres can obtain good weak-scaling by regularly partitioning the domain in X and Y dimensions).
 We use double floating-point precision and display results when enabling and disabling Newton's 3rd Law optimization (half neighbor-lists).
 For \ac{MD} we show results for the Verlet Lists case since it is widely employed in such simulations, and for \ac{DEM} we stick to Linked Cells as this is the algorithm used in MESA-PD.
+
+\begin{figure*}[tb]
+    \centering
+    \subfigure[t = 0]{\label{fig:md_ts0}\includegraphics[width=0.32\textwidth]{md_0.png}}
+    \subfigure[t = 100]{\label{fig:md_ts100}\includegraphics[width=0.32\textwidth]{md_100.png}}
+    \subfigure[t = 200]{\label{fig:md_ts200}\includegraphics[width=0.32\textwidth]{md_200.png}}
+    \caption{The MD simulation example used in this paper, which is a Copper FCC lattice simulation with homogeneous distribution. Forces are computed with the van der Waals potential and PBC is used in all directions. In average, every atom contains roughly 76 neighbors through the whole simulation (200 time-steps).}
+    \label{fig:settling_spheres}
+\end{figure*}
+
+\begin{figure*}[tb]
+    \centering
+    \subfigure[t = 0]{\label{fig:dem_ts0}\includegraphics[width=0.48\textwidth]{dem_0.png}}
+    \subfigure[t = 2000]{\label{fig:dem_ts2000}\includegraphics[width=0.48\textwidth]{dem_2000.png}}
+    \vskip\baselineskip
+    \subfigure[t = 4000]{\label{fig:dem_ts4000}\includegraphics[width=0.48\textwidth]{dem_4000.png}}
+    \subfigure[t = 10000]{\label{fig:dem_ts10000}\includegraphics[width=0.48\textwidth]{dem_10000.png}}
+    \caption{The DEM simulation example used in this paper which can be called "Settling Spheres" or "Bed Generation". Spherical particles fall into the ground (represented by a half-space) to generate a bed at the end of the simulation. Forces are computed for gravity, buoyancy and the Linear Spring-Dashpot method to achieve the desired result and PBC is used in the X and Y dimensions.}
+    \label{fig:settling_spheres}
+\end{figure*}
 
 \subsection{Molecular Dynamics}
 
@@ -1047,6 +1074,11 @@ Running simulations with higher workload on GPUs for the force computation or us
 %
 %   - Weak-scaling on Alex (figure)
 %     - CPU (128 cores) vs GPU (8)
+
+\subsubsection*{Acknowledgments}
+
+The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU).
+This project has received funding from the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under project number 433735254.
 
 \section{Conclusion and Outlook}
 \label{sec:conclusion}
