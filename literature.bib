@@ -1,0 +1,453 @@
+@article{linkedcells,
+title = {New method for searching for neighbors in molecular dynamics computations},
+journal = {Journal of Computational Physics},
+volume = {13},
+number = {3},
+pages = {430-432},
+year = {1973},
+issn = {0021-9991},
+doi = {https://doi.org/10.1016/0021-9991(73)90046-6},
+url = {https://www.sciencedirect.com/science/article/pii/0021999173900466},
+author = {B Quentrec and C Brot}
+}
+
+@article{verletlists,
+  title = {Computer "Experiments" on Classical Fluids. I. Thermodynamical Properties of Lennard-Jones Molecules},
+  author = {Verlet, Loup},
+  journal = {Phys. Rev.},
+  volume = {159},
+  issue = {1},
+  pages = {98--103},
+  numpages = {0},
+  year = {1967},
+  month = {Jul},
+  publisher = {American Physical Society},
+  doi = {10.1103/PhysRev.159.98},
+  url = {https://link.aps.org/doi/10.1103/PhysRev.159.98}
+}
+
+@inproceedings{walberla1,
+author = {Godenschwager, Christian and Schornbaum, Florian and Bauer, Martin and K\"{o}stler, Harald and R\"{u}de, Ulrich},
+title = {A Framework for Hybrid Parallel Flow Simulations with a Trillion Cells in Complex Geometries},
+year = {2013},
+isbn = {9781450323789},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2503210.2503273},
+doi = {10.1145/2503210.2503273},
+abstract = {waLBerla is a massively parallel software framework for simulating complex flows with the lattice Boltzmann method (LBM). Performance and scalability results are presented for SuperMUC, the world's fastest x86-based supercomputer ranked number 6 on the Top500 list, and JUQUEEN, a Blue Gene/Q system ranked as number 5.We reach resolutions with more than one trillion cells and perform up to 1.93 trillion cell updates per second using 1.8 million threads. The design and implementation of waLBerla is driven by a careful analysis of the performance on current petascale supercomputers. Our fully distributed data structures and algorithms allow for efficient, massively parallel simulations on these machines. Elaborate node level optimizations and vectorization using SIMD instructions result in highly optimized compute kernels for the single- and two-relaxation-time LBM. Excellent weak and strong scaling is achieved for a complex vascular geometry of the human coronary tree.},
+booktitle = {Proceedings of the International Conference on High Performance Computing, Networking, Storage and Analysis},
+articleno = {35},
+numpages = {12},
+location = {Denver, Colorado},
+series = {SC '13}
+}
+
+@article{walberla2,
+author = {Schornbaum, Florian and R\"{u}de, Ulrich},
+title = {Massively Parallel Algorithms for the Lattice Boltzmann Method on NonUniform Grids},
+journal = {SIAM Journal on Scientific Computing},
+volume = {38},
+number = {2},
+pages = {C96-C126},
+year = {2016},
+doi = {10.1137/15M1035240},
+URL = { https://doi.org/10.1137/15M1035240 },
+eprint = { https://doi.org/10.1137/15M1035240 } ,
+    abstract = { The lattice Boltzmann method exhibits excellent scalability on current supercomputing systems and has thus increasingly become an alternative method for large-scale nonstationary flow simulations, reaching up to a trillion (\$10^{12}\$) grid nodes. Additionally, grid refinement can lead to substantial savings in memory and compute time. These savings, however, come at the cost of much more complex data structures and algorithms. In particular, the interface between subdomains with different grid sizes must receive special treatment. In this article, we present parallel algorithms, distributed data structures, and communication routines that are implemented in the software framework waLBerla in order to support large-scale, massively parallel lattice Boltzmann-based simulations on nonuniform grids. Additionally, we evaluate the performance of our approach on two current petascale supercomputers. On an IBM Blue Gene/Q system, the largest weak scaling benchmarks with refined grids are executed with almost 2 million threads, demonstrating not only near-perfect scalability but also an absolute performance of close to a trillion lattice Boltzmann cell updates per second. On an Intel-based system, the strong scaling of a simulation with refined grids and a total of more than 8.5 million cells is demonstrated to reach a performance of less than 1 millisecond per time step. This enables simulations with complex, nonuniform grids and 4 million time steps per hour compute time. }
+}
+
+@article{mesapd1,
+title = {A Local Parallel Communication Algorithm for Polydisperse Rigid Body Dynamics},
+journal = {Parallel Computing},
+volume = {80},
+pages = {36-48},
+year = {2018},
+issn = {0167-8191},
+doi = {https://doi.org/10.1016/j.parco.2018.10.002},
+url = {https://www.sciencedirect.com/science/article/pii/S0167819118300231},
+author = {Sebastian Eibl and Ulrich Rüde},
+keywords = {HPC, Extreme scale, Polydisperse particles, Particle dynamics, Synchronization},
+abstract = {The simulation of large ensembles of particles is usually parallelized by partitioning the domain spatially and using message passing to communicate between the processes handling neighboring subdomains. The particles are represented as individual geometric objects and are assigned to the subdomains. Handling collisions and migrating particles between subdomains, as required for proper parallel execution, requires a complex communication protocol. Typically, the parallelization is restricted to handling only particles that are smaller than a subdomain. In many applications, however, particle sizes may vary drastically with some of them being larger than a subdomain. In this article we propose a new communication and synchronization algorithm that can handle the parallelization without size restrictions on the particles. Despite the additional complexity and extended functionality, the new algorithm introduces only minimal overhead. We demonstrate the scalability of the previous and the new communication algorithms up to almost two million parallel processes and for handling ten billion (1010) geometrically resolved particles on a state-of-the-art petascale supercomputer. Different scenarios are presented to analyze the performance of the new algorithm and to demonstrate its capability to simulate polydisperse scenarios, where large individual particles can extend across several subdomains.}
+}
+
+@article{mesapd2,
+title = {A systematic comparison of runtime load balancing algorithms for massively parallel rigid particle dynamics},
+journal = {Computer Physics Communications},
+volume = {244},
+pages = {76-85},
+year = {2019},
+issn = {0010-4655},
+doi = {https://doi.org/10.1016/j.cpc.2019.06.020},
+url = {https://www.sciencedirect.com/science/article/pii/S0010465519302073},
+author = {Sebastian Eibl and Ulrich Rüde},
+keywords = {Runtime domain partitioning, Runtime load balancing, Rigid body dynamics, Discrete element method, Non-smooth granular dynamics},
+abstract = {As compute power increases with time, more involved and larger simulations become possible. However, it gets increasingly difficult to efficiently use the provided computational resources. Especially in particle-based simulations with a spatial domain partitioning large load imbalances can occur due to the simulation being dynamic. Then a static domain partitioning may not be suitable. This can deteriorate the overall runtime of the simulation significantly. Sophisticated load balancing strategies must be designed to alleviate this problem. In this paper we conduct a systematic evaluation of the performance of six different load balancing algorithms. Our tests cover a wide range of simulation sizes, and employ one of the largest supercomputers available. In particular we study the runtime and memory complexity of all components of the simulation carefully. When progressing to extreme scale simulations it is essential to identify bottlenecks and to predict the scaling behavior. Scaling experiments are shown for up to over one million processes. The performance of each algorithm is analyzed with respect to the quality of the load balancing and its runtime costs. Additionally an applied test case is used to judge the applicability of the best algorithms in real world applications. For all tests, the waLBerla multiphysics framework is employed.}
+}
+
+@article{mesapd3,
+  author  = {Sebastian Eibl and Ulrich R{\"{u}}de},
+  title   = {A Modular and Extensible Software Architecture for Particle Dynamics},
+  journal = {Proceedings of the 8\textsuperscript{th} International Conference on Discrete Element Methods (DEM8)},
+  year    = {2019},
+}
+
+@article{tinymd,
+title = {tinyMD: Mapping molecular dynamics simulations to heterogeneous hardware using partial evaluation},
+journal = {Journal of Computational Science},
+volume = {54},
+pages = {101425},
+year = {2021},
+issn = {1877-7503},
+doi = {https://doi.org/10.1016/j.jocs.2021.101425},
+url = {https://www.sciencedirect.com/science/article/pii/S1877750321001095},
+author = {Rafael Ravedutti L. Machado and Jonas Schmitt and Sebastian Eibl and Jan Eitzinger and Roland Leißa and Sebastian Hack and Arsène Pérard-Gayot and Richard Membarth and Harald Köstler},
+keywords = {Molecular dynamics, Partial evaluation, High performance computing, Load balancing},
+abstract = {This paper investigates the suitability of the AnyDSL partial evaluation framework to implement tinyMD: an efficient, scalable, and portable simulation of pairwise interactions among particles. We compare tinyMD with the miniMD proxy application that scales very well on parallel supercomputers. We discuss the differences between both implementations and contrast miniMD’s performance for single-node CPU and GPU targets, as well as its scalability on SuperMUC-NG and Piz Daint supercomputers. Additionally, we demonstrate tinyMD’s flexibility by coupling it with the waLBerla multi-physics framework. This allow us to execute tinyMD simulations using the load-balancing mechanism implemented in waLBerla.}
+}
+
+@article{lammps1,
+title = {Fast Parallel Algorithms for Short-Range Molecular Dynamics},
+journal = {Journal of Computational Physics},
+volume = {117},
+number = {1},
+pages = {1-19},
+year = {1995},
+issn = {0021-9991},
+doi = {https://doi.org/10.1006/jcph.1995.1039},
+url = {https://www.sciencedirect.com/science/article/pii/S002199918571039X},
+author = {Steve Plimpton},
+abstract = {Three parallel algorithms for classical molecular dynamics are presented. The first assigns each processor a fixed subset of atoms; the second assigns each a fixed subset of inter-atomic forces to compute; the third assigns each a fixed spatial region. The algorithms are suitable for molecular dynamics models which can be difficult to parallelize efficiently—those with short-range forces where the neighbors of each atom change rapidly. They can be implemented on any distributed-memory parallel machine which allows for message-passing of data between independently executing processors. The algorithms are tested on a standard Lennard-Jones benchmark problem for system sizes ranging from 500 to 100,000,000 atoms on several parallel supercomputers--the nCUBE 2, Intel iPSC/860 and Paragon, and Cray T3D. Comparing the results to the fastest reported vectorized Cray Y-MP and C90 algorithm shows that the current generation of parallel machines is competitive with conventional vector supercomputers even for small problems. For large problems, the spatial algorithm achieves parallel efficiencies of 90% and a 1840-node Intel Paragon performs up to 165 faster than a single Cray C9O processor. Trade-offs between the three algorithms and guidelines for adapting them to more complex molecular dynamics simulations are also discussed.}
+}
+
+@article{lammps2,
+author = {Brown, W. and Kohlmeyer, Axel and Plimpton, Steven and Tharrington, Arnold},
+year = {2012},
+month = {03},
+pages = {449-459},
+title = {Implementing molecular dynamics on hybrid high performance computers - Particle-particle particle-mesh},
+volume = {183},
+journal = {Computer Physics Communications},
+doi = {10.1016/j.cpc.2011.10.012}
+}
+
+@article{gromacs1,
+title = {A flexible algorithm for calculating pair interactions on SIMD architectures},
+journal = {Computer Physics Communications},
+volume = {184},
+number = {12},
+pages = {2641-2650},
+year = {2013},
+issn = {0010-4655},
+doi = {https://doi.org/10.1016/j.cpc.2013.06.003},
+url = {https://www.sciencedirect.com/science/article/pii/S0010465513001975},
+author = {Szilárd Páll and Berk Hess},
+keywords = {Pair interactions, SIMD, GPU, Molecular dynamics, Verlet list},
+abstract = {Calculating interactions or correlations between pairs of particles is typically the most time-consuming task in particle simulation or correlation analysis. Straightforward implementations using a double loop over particle pairs have traditionally worked well, especially since compilers usually do a good job of unrolling the inner loop. In order to reach high performance on modern CPU and accelerator architectures, single-instruction multiple-data (SIMD) parallelization has become essential. Avoiding memory bottlenecks is also increasingly important and requires reducing the ratio of memory to arithmetic operations. Moreover, when pairs only interact within a certain cut-off distance, good SIMD utilization can only be achieved by reordering input and output data, which quickly becomes a limiting factor. Here we present an algorithm for SIMD parallelization based on grouping a fixed number of particles, e.g. 2, 4, or 8, into spatial clusters. Calculating all interactions between particles in a pair of such clusters improves data reuse compared to the traditional scheme and results in a more efficient SIMD parallelization. Adjusting the cluster size allows the algorithm to map to SIMD units of various widths. This flexibility not only enables fast and efficient implementation on current CPUs and accelerator architectures like GPUs or Intel MIC, but it also makes the algorithm future-proof. We present the algorithm with an application to molecular dynamics simulations, where we can also make use of the effective buffering the method introduces.}
+}
+
+@InProceedings{gromacs2,
+author="P{\'a}ll, Szil{\'a}rd
+and Abraham, Mark James
+and Kutzner, Carsten
+and Hess, Berk
+and Lindahl, Erik",
+editor="Markidis, Stefano
+and Laure, Erwin",
+title="Tackling Exascale Software Challenges in Molecular Dynamics Simulations with GROMACS",
+booktitle="Solving Software Challenges for Exascale",
+year="2015",
+publisher="Springer International Publishing",
+address="Cham",
+pages="3--27",
+abstract="GROMACS is a widely used package for biomolecular simulation, and over the last two decades it has evolved from small-scale efficiency to advanced heterogeneous acceleration and multi-level parallelism targeting some of the largest supercomputers in the world. Here, we describe some of the ways we have been able to realize this through the use of parallelization on all levels, combined with a constant focus on absolute performance. Release 4.6 of GROMACS uses SIMD acceleration on a wide range of architectures, GPU offloading acceleration, and both OpenMP and MPI parallelism within and between nodes, respectively. The recent work on acceleration made it necessary to revisit the fundamental algorithms of molecular simulation, including the concept of neighborsearching, and we discuss the present and future challenges we see for exascale simulation - in particular a very fine-grained task parallelism. We also discuss the software management, code peer review and continuous integration testing required for a project of this complexity.",
+isbn="978-3-319-15976-8"
+}
+
+@article{kokkos,
+title = {Kokkos: Enabling manycore performance portability through polymorphic memory access patterns},
+journal = {Journal of Parallel and Distributed Computing},
+volume = {74},
+number = {12},
+pages = {3202-3216},
+year = {2014},
+note = {Domain-Specific Languages and High-Level Frameworks for High-Performance Computing},
+issn = {0743-7315},
+doi = {https://doi.org/10.1016/j.jpdc.2014.07.003},
+url = {https://www.sciencedirect.com/science/article/pii/S0743731514001257},
+author = {H. {Carter Edwards} and Christian R. Trott and Daniel Sunderland},
+keywords = {Parallel computing, Thread parallelism, Manycore, GPU, Performance portability, Multidimensional array, Mini-application},
+abstract = {The manycore revolution can be characterized by increasing thread counts, decreasing memory per thread, and diversity of continually evolving manycore architectures. High performance computing (HPC) applications and libraries must exploit increasingly finer levels of parallelism within their codes to sustain scalability on these devices. A major obstacle to performance portability is the diverse and conflicting set of constraints on memory access patterns across devices. Contemporary portable programming models address manycore parallelism (e.g., OpenMP, OpenACC, OpenCL) but fail to address memory access patterns. The Kokkos C++ library enables applications and domain libraries to achieve performance portability on diverse manycore architectures by unifying abstractions for both fine-grain data parallelism and memory access patterns. In this paper we describe Kokkos’ abstractions, summarize its application programmer interface (API), present performance results for unit-test kernels and mini-applications, and outline an incremental strategy for migrating legacy C++ codes to Kokkos. The Kokkos library is under active research and development to incorporate capabilities from new generations of manycore architectures, and to address a growing list of applications and domain libraries.}
+}
+
+@article{hoomdblue,
+title = {HOOMD-blue: A Python package for high-performance molecular dynamics and hard particle Monte Carlo simulations},
+journal = {Computational Materials Science},
+volume = {173},
+pages = {109363},
+year = {2020},
+issn = {0927-0256},
+doi = {https://doi.org/10.1016/j.commatsci.2019.109363},
+url = {https://www.sciencedirect.com/science/article/pii/S0927025619306627},
+author = {Joshua A. Anderson and Jens Glaser and Sharon C. Glotzer},
+keywords = {Python, Molecular dynamics, Monte Carlo, Molecular simulation, GPU, CUDA},
+abstract = {HOOMD-blue is a particle simulation engine designed for nano- and colloidal-scale molecular dynamics and hard particle Monte Carlo simulations. It has been actively developed since March 2007 and available open source since August 2008. HOOMD-blue is a Python package with a high performance C++/CUDA backend that we built from the ground up for GPU acceleration. The Python interface allows users to combine HOOMD-blue with other packages in the Python ecosystem to create simulation and analysis workflows. We employ software engineering practices to develop, test, maintain, and expand the code.}
+}
+
+@article{namd,
+author = {Phillips, James C. and Braun, Rosemary and Wang, Wei and Gumbart, James and Tajkhorshid, Emad and Villa, Elizabeth and Chipot, Christophe and Skeel, Robert D. and Kalé, Laxmikant and Schulten, Klaus},
+title = {Scalable molecular dynamics with NAMD},
+journal = {Journal of Computational Chemistry},
+volume = {26},
+number = {16},
+pages = {1781-1802},
+keywords = {biomolecular simulation, molecular dynamics, parallel computing},
+doi = {https://doi.org/10.1002/jcc.20289},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.20289},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/jcc.20289},
+abstract = {Abstract NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. NAMD scales to hundreds of processors on high-end parallel platforms, as well as tens of processors on low-cost commodity clusters, and also runs on individual desktop and laptop computers. NAMD works with AMBER and CHARMM potential functions, parameters, and file formats. This article, directed to novices as well as experts, first introduces concepts and methods used in the NAMD program, describing the classical molecular dynamics force field, equations of motion, and integration methods along with the efficient electrostatics evaluation algorithms employed and temperature and pressure controls used. Features for steering the simulation across barriers and for calculating both alchemical and conformational free energy differences are presented. The motivations for and a roadmap to the internal design of NAMD, implemented in C++ and based on Charm++ parallel objects, are outlined. The factors affecting the serial and parallel performance of a simulation are discussed. Finally, typical NAMD use is illustrated with representative applications to a small, a medium, and a large biomolecular system, highlighting particular features of NAMD, for example, the Tcl scripting language. The article also provides a list of the key features of NAMD and discusses the benefits of combining NAMD with the molecular graphics/sequence analysis software VMD and the grid computing/collaboratory software BioCoRE. NAMD is distributed free of charge with source code at www.ks.uiuc.edu. © 2005 Wiley Periodicals, Inc. J Comput Chem 26: 1781–1802, 2005},
+year = {2005}
+}
+
+@article{amber1,
+author = {Case, David A. and Aktulga, Hasan Metin and Belfon, Kellon and Cerutti, David S. and Cisneros, G. Andrés and Cruzeiro, Vinícius Wilian D. and Forouzesh, Negin and Giese, Timothy J. and Götz, Andreas W. and Gohlke, Holger and Izadi, Saeed and Kasavajhala, Koushik and Kaymak, Mehmet C. and King, Edward and Kurtzman, Tom and Lee, Tai-Sung and Li, Pengfei and Liu, Jian and Luchko, Tyler and Luo, Ray and Manathunga, Madushanka and Machado, Matias R. and Nguyen, Hai Minh and O’Hearn, Kurt A. and Onufriev, Alexey V. and Pan, Feng and Pantano, Sergio and Qi, Ruxi and Rahnamoun, Ali and Risheh, Ali and Schott-Verdugo, Stephan and Shajan, Akhil and Swails, Jason and Wang, Junmei and Wei, Haixin and Wu, Xiongwu and Wu, Yongxian and Zhang, Shi and Zhao, Shiji and Zhu, Qiang and Cheatham, Thomas E. III and Roe, Daniel R. and Roitberg, Adrian and Simmerling, Carlos and York, Darrin M. and Nagan, Maria C. and Merz, Kenneth M. Jr.},
+title = {AmberTools},
+journal = {Journal of Chemical Information and Modeling},
+volume = {63},
+number = {20},
+pages = {6183-6191},
+year = {2023},
+doi = {10.1021/acs.jcim.3c01153},
+note ={PMID: 37805934},
+URL = { https://doi.org/10.1021/acs.jcim.3c01153 },
+eprint = { https://doi.org/10.1021/acs.jcim.3c01153 }
+}
+
+@unknown{amber2,
+author = {Case, David and Aktulga, H. Metin and Belfon, Kellon and Ben-Shalom, Ido and Berryman, Joshua and Brozell, Scott and Cerutti, David and Cheatham, Thomas and Cisneros, Gerardo Andrés and Cruzeiro, Vinícius and Darden, Tom and Forouzesh, Negin and Giambasu, George and Giese, Timothy and Gilson, Michael and Gohlke, Holger and Götz, Andreas and Harris, Julie and Izadi, Saeed and Kollman, Peter},
+year = {2023},
+month = {04},
+pages = {},
+title = {Amber 2023},
+doi = {10.13140/RG.2.2.12836.24965}
+}
+
+@article{charmm,
+          number = {10},
+         journal = {Journal of Computational Chemistry},
+           title = {CHARMM: the biomolecular simulation program},
+          author = {B R Brooks and C L Brooks and A D Mackerell and L Nilsson and R J Petrella and B Roux and Y Won and G Archontis and C Bartels and S Boresch and A Caflisch and L Caves and Q Cui and A R Dinner and M Feig and S Fischer and J Gao and M Hodoscek and W Im and K Kuczera and T Lazaridis and J Ma and V Ovchinnikov and E Paci and R W Pastor and C B Post and J Z Pu and M Schaefer and B Tidor and R M Venable and H L Woodcock and X Wu and W Yang and D M York and M Karplus},
+       publisher = {Wiley-Blackwell},
+          volume = {30},
+            year = {2009},
+           pages = {1545--1614},
+             doi = {10.1002/jcc.21287},
+        language = {english},
+            issn = {0192-8651},
+        abstract = {CHARMM (Chemistry at HARvard Molecular Mechanics) is a highly versatile and widely used molecular simulation program. It has been developed over the last three decades with a primary focus on molecules of biological interest, including proteins, peptides, lipids, nucleic acids, carbohydrates, and small molecule ligands, as they occur in solution, crystals, and membrane environments. For the study of such systems, the program provides a large suite of computational tools that include numerous conformational and path sampling methods, free energy estimators, molecular minimization, dynamics, and analysis techniques, and model-building capabilities. The CHARMM program is applicable to problems involving a much broader class of many-particle systems. Calculations with CHARMM can be performed using a number of different energy functions and models, from mixed quantum mechanical-molecular mechanical force fields, to all-atom classical potential energy functions with explicit solvent and various boundary conditions, to implicit solvent and membrane models. The program has been ported to numerous platforms in both serial and parallel architectures. This article provides an overview of the program as it exists today with an emphasis on developments since the publication of the original CHARMM article in 1983.},
+             url = {https://doi.org/10.5167/uzh-19245}
+}
+
+@article{liggghts,
+author = {Kloss, Christoph and Goniva, Christoph and König, Alice and Amberger, Stefan and Pirker, Stefan},
+year = {2012},
+month = {06},
+pages = {140 - 152},
+title = {Models, algorithms and validation for opensource DEM and CFD-DEM},
+volume = {12},
+journal = {Progress in Computational Fluid Dynamics},
+doi = {10.1504/PCFD.2012.047457}
+}
+
+@article{mercurydpm,
+title = {Fast, flexible particle simulations — An introduction to MercuryDPM},
+journal = {Computer Physics Communications},
+volume = {249},
+pages = {107129},
+year = {2020},
+issn = {0010-4655},
+doi = {https://doi.org/10.1016/j.cpc.2019.107129},
+url = {https://www.sciencedirect.com/science/article/pii/S0010465519304357},
+author = {Thomas Weinhart and Luca Orefice and Mitchel Post and Marnix P. {van Schrojenstein Lantman} and Irana F.C. Denissen and Deepak R. Tunuguntla and J.M.F. Tsang and Hongyang Cheng and Mohamad Yousef Shaheen and Hao Shi and Paolo Rapino and Elena Grannonio and Nunzio Losacco and Joao Barbosa and Lu Jing and Juan E. {Alvarez Naranjo} and Sudeshna Roy and Wouter K. {den Otter} and Anthony R. Thornton},
+keywords = {Granular materials, DEM, DPM, MercuryDPM, Open-source},
+abstract = {We introduce the open-source package MercuryDPM, which we have been developing over the last few years. MercuryDPM is a code for discrete particle simulations. It simulates the motion of particles by applying forces and torques that stem either from external body forces, (gravity, magnetic fields, etc.) or particle interactions. The code has been developed extensively for granular applications, and in this case these are typically (elastic, plastic, viscous, frictional) contact forces or (adhesive) short-range forces. However, it could be adapted to include long-range (molecular, self-gravity) interactions as well. MercuryDPM is an object-oriented algorithm with an easy-to-use user interface and a flexible core, allowing developers to quickly add new features. It is parallelised using MPI and released under the BSD 3-clause licence. Its open-source developers’ community has developed many features, including moving and curved walls; state-of-the-art granular contact models; specialised classes for common geometries; non-spherical particles; general interfaces; restarting; visualisation; a large self-test suite; extensive documentation; and numerous tutorials and demos. In addition, MercuryDPM has three major components that were originally invented and developed by its team: an advanced contact detection method, which allows for the first time large simulations with wide size distributions; curved (non-triangulated) walls; and multicomponent, spatial and temporal coarse-graining, a novel way to extract continuum fields from discrete particle systems. We illustrate these tools and a selection of other MercuryDPM features via various applications, including size-driven segregation down inclined planes, rotating drums, and dosing silos.
+Program summary
+Program Title: MercuryDPM Program Files doi: http://dx.doi.org/10.17632/n7jmdrdc52.1 Licensing provisions: BSD 3-Clause Programming language: C++, Fortran Supplementary material: http://mercurydpm.org Nature of problem: Simulation of granular materials, i.e. conglomerations of discrete, macroscopic particles. The interaction between individual grains is characterised by a loss of energy, making the behaviour of granular materials distinct from atomistic materials, i.e. solids, liquids and gases. Solution method: MercuryDPM (Thornton et al., 2013, 2019; Weinhart et al., 2016, 2017, 2019) is an implementation of the Discrete Particle Method (DPM), also known as the Discrete Element Method (DEM) (Cundall and Strack, 1979). It simulates the motion of individual particles by applying forces and torques that stem either from external forces (gravity, magnetic fields, etc.) or from particle-pair and particle–wall interactions (typically elastic, plastic, dissipative, frictional, and adhesive contact forces). DPM simulations have been successfully used to understand the many unique granular phenomena – sudden phase transitions, jamming, force localisation, etc. – that cannot be explained without considering the granular microstructure. Unusual features: MercuryDPM was designed ab initio with the aim of allowing the simulation of realistic geometries and materials found in industrial and geotechnical applications. It thus contains several bespoke features invented by the MercuryDPM team: (i) a neighbourhood detection algorithm (Krijgsman et al., 2014) that can efficiently simulate highly polydisperse packings, which are common in industry; (ii) curved walls (Weinhart et al., 2016) making it possible to model real industrial geometries exactly, without triangulation errors; and (iii) MercuryCG (Weinhart et al., 2012, 2013, 2016; Tunuguntla et al., 2016), a state-of-the-art analysis tool that extracts local continuum fields, providing accurate analytical/rheological information often not available from experiments or pilot plants. It further contains a large range of contact models to simulate complex interactions such as elasto-plastic deformation (Luding, 2008), sintering (Fuchs et al., 2017), melting (Weinhart et al., 2019), breaking, wet and dry cohesion (Roy et al., 2016, 2017), and liquid migration (Roy et al., 2018), all of which have important industrial applications.}
+}
+
+@book{yade,
+  author       = {Vaclav Smilauer and
+                  Vasileios Angelidakis and
+                  Emanuele Catalano and
+                  Robert Caulk and
+                  Bruno Chareyre and
+                  William Chèvremont and
+                  Sergei Dorofeenko and
+                  Jerome Duriez and
+                  Nolan Dyck and
+                  Jan Elias and
+                  Burak Er and
+                  Alexander Eulitz and
+                  Anton Gladky and
+                  Ning Guo and
+                  Christian Jakob and
+                  Francois Kneib and
+                  Janek Kozicki and
+                  Donia Marzougui and
+                  Raphael Maurin and
+                  Chiara Modenese and
+                  Gerald Pekmezi and
+                  Luc Scholtès and
+                  Luc Sibille and
+                  Jan Stransky and
+                  Thomas Sweijen and
+                  Klaus Thoeni and
+                  Chao Yuan},
+  title        = {Yade documentation},
+  publisher    = {The Yade Project},
+  year         = 2021,
+  month        = nov,
+  doi          = {10.5281/zenodo.5705394},
+  url          = {https://doi.org/10.5281/zenodo.5705394}
+}
+
+@article{openmm,
+    doi = {10.1371/journal.pcbi.1005659},
+    author = {Eastman, Peter AND Swails, Jason AND Chodera, John D. AND McGibbon, Robert T. AND Zhao, Yutong AND Beauchamp, Kyle A. AND Wang, Lee-Ping AND Simmonett, Andrew C. AND Harrigan, Matthew P. AND Stern, Chaya D. AND Wiewiora, Rafal P. AND Brooks, Bernard R. AND Pande, Vijay S.},
+    journal = {PLOS Computational Biology},
+    publisher = {Public Library of Science},
+    title = {OpenMM 7: Rapid development of high performance algorithms for molecular dynamics},
+    year = {2017},
+    month = {07},
+    volume = {13},
+    url = {https://doi.org/10.1371/journal.pcbi.1005659},
+    pages = {1-17},
+    abstract = {OpenMM is a molecular dynamics simulation toolkit with a unique focus on extensibility. It allows users to easily add new features, including forces with novel functional forms, new integration algorithms, and new simulation protocols. Those features automatically work on all supported hardware types (including both CPUs and GPUs) and perform well on all of them. In many cases they require minimal coding, just a mathematical description of the desired function. They also require no modification to OpenMM itself and can be distributed independently of OpenMM. This makes it an ideal tool for researchers developing new simulation methods, and also allows those new methods to be immediately available to the larger community.},
+    number = {7},
+}
+
+@article{anydsl1,
+  author    = {Roland Lei{\ss}a and
+               Klaas Boesche and
+               Sebastian Hack and
+               Ars{\`{e}}ne P{\'{e}}rard{-}Gayot and
+               Richard Membarth and
+               Philipp Slusallek and
+               Andr{\'{e}} M{\"{u}}ller and
+               Bertil Schmidt},
+  title     = {{AnyDSL}: A Partial Evaluation Framework for Programming High-Performance Libraries},
+  journal   = {{PACMPL}},
+  volume    = {2},
+  number    = {{OOPSLA}},
+  pages     = {119:1--119:30},
+  year      = {2018},
+  doi       = {10.1145/3276489},
+  timestamp = {Sat, 19 Oct 2019 19:04:55 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/pacmpl/LeissaBHPMSMS18},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{anydsl2,
+  author    = {Roland Lei{\ss}a and
+               Marcel K{\"{o}}ster and
+               Sebastian Hack},
+  title     = {A graph-based higher-order intermediate representation},
+  booktitle = {Proceedings of the 13th Annual {IEEE/ACM} International Symposium
+               on Code Generation and Optimization, {CGO} 2015, San Francisco, CA,
+               USA, February 07 - 11, 2015},
+  pages     = {202--212},
+  year      = {2015},
+  doi       = {10.1109/CGO.2015.7054200},
+  timestamp = {Wed, 16 Oct 2019 14:14:57 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/cgo/LeissaKH15},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{mdsimd,
+author = {Pennycook, John and Hughes, Chris and Smelyanskiy, M. and Jarvis, Stephen},
+year = {2013},
+month = {05},
+pages = {1085-1097},
+title = {Exploring SIMD for Molecular Dynamics, Using Intel® Xeon® Processors and Intel® Xeon Phi Coprocessors},
+isbn = {978-1-4673-6066-1},
+journal = {Proceedings - IEEE 27th International Parallel and Distributed Processing Symposium, IPDPS 2013},
+doi = {10.1109/IPDPS.2013.44}
+}
+
+@InProceedings{mdbench1,
+author="Ravedutti Lucio Machado, Rafael
+and Eitzinger, Jan
+and K{\"o}stler, Harald
+and Wellein, Gerhard",
+editor="Wyrzykowski, Roman
+and Dongarra, Jack
+and Deelman, Ewa
+and Karczewski, Konrad",
+title="MD-Bench: A Generic Proxy-App Toolbox for State-of-the-Art Molecular Dynamics Algorithms",
+booktitle="Parallel Processing and Applied Mathematics",
+year="2023",
+publisher="Springer International Publishing",
+address="Cham",
+pages="321--332",
+abstract="Proxy-apps, or mini-apps, are simple self-contained benchmark codes with performance-relevant kernels extracted from real applications. Initially used to facilitate software-hardware co-design, they are a crucial ingredient for serious performance engineering, especially when dealing with large-scale production codes. MD-Bench is a new proxy-app in the area of classical short-range molecular dynamics. In contrast to existing proxy-apps in MD (e.g. miniMD and coMD) it does not resemble a single application code, but implements state-of-the art algorithms from multiple applications (currently LAMMPS and GROMACS). The MD-Bench source code is understandable, extensible and suited for teaching, benchmarking and researching MD algorithms. Primary design goals are transparency and simplicity, a developer is able to tinker with the source code down to the assembly level. This paper introduces MD-Bench, explains its design and structure, covers implemented optimization variants, and illustrates its usage on three examples.",
+isbn="978-3-031-30442-2"
+}
+
+@article{mdbench2,
+title = {MD-Bench: A performance-focused prototyping harness for state-of-the-art short-range molecular dynamics algorithms},
+journal = {Future Generation Computer Systems},
+volume = {149},
+pages = {25-38},
+year = {2023},
+issn = {0167-739X},
+doi = {https://doi.org/10.1016/j.future.2023.06.023},
+url = {https://www.sciencedirect.com/science/article/pii/S0167739X23002467},
+author = {Rafael {Ravedutti Lucio Machado} and Jan Eitzinger and Jan Laukemann and Georg Hager and Harald Köstler and Gerhard Wellein},
+keywords = {Molecular dynamics, Performance analysis, Performance engineering, High performance computing, SIMD},
+abstract = {Molecular dynamics (MD) simulations provide considerable benefits for the investigation and experimentation of systems at atomic level. Their usage is widespread into several research fields, but their system size and timescale are crucially limited by the available computing power. Performance engineering of MD kernels is therefore critical to understand their bottlenecks and investigate possible improvements. For that reason, we developed MD-Bench, a performance-focused prototyping harness for short-range MD kernels that implements state-of-the-art algorithms from multiple production applications such as LAMMPS and GROMACS. The MD-Bench source code is simple, understandable, and extensible, and therefore well suited for benchmarking, teaching, and researching MD algorithms. In this paper we introduce MD-Bench, describe its design, structure, and implemented algorithms. Finally, we show five use-cases of MD-Bench and describe how these are useful to gain a deeper understanding of the performance of MD kernels.}
+}
+
+@Inbook{dem1,
+author="Brendel, L.
+and Dippel, S.",
+editor="Herrmann, H. J.
+and Hovi, J.-P.
+and Luding, S.",
+title="Lasting Contacts in Molecular Dynamics Simulations",
+bookTitle="Physics of Dry Granular Media",
+year="1998",
+publisher="Springer Netherlands",
+address="Dordrecht",
+pages="313--318",
+abstract="In this text we discuss problems arising from a naive implementation of the so called Cundall-Strack tangential spring as a scheme for static friction in simulations of granular materials. We show how to use it safely and present extensions in the form of a static coefficient of friction and a damping of the spring.",
+isbn="978-94-017-2653-5",
+doi="10.1007/978-94-017-2653-5_22",
+url="https://doi.org/10.1007/978-94-017-2653-5_22"
+}
+
+@article{dem2,
+    author = {Khakhar, D. V. and McCarthy, J. J. and Ottino, J. M.},
+    title = "{Radial segregation of granular mixtures in rotating cylinders}",
+    journal = {Physics of Fluids},
+    volume = {9},
+    number = {12},
+    pages = {3600-3614},
+    year = {1997},
+    month = {12},
+    abstract = "{Simultaneous mixing and segregation of granular materials is of considerable practical importance; the interplay among both processes is, however, poorly understood from a fundamental viewpoint. The focus of this work is radial segregation—core formation—due to density in a rotating cylinder. The flow regime considered is the cascading or continuous flow regime where a thin layer of solids flows along a nearly flat free surface, while the remaining particles rotate as a fixed bed along with the cylinder. The essence of the formation of a central segregated core of the more dense particles lies in the flow, mixing, and segregation in the cascading layer. The work involves experiments and analysis. A constitutive model for the segregation flux in cascading layers is proposed and validated by particle dynamics and Monte Carlo simulations for steady flow down an inclined plane. The model contains a single parameter, the dimensionless segregation velocity (β), which is treated as a fitting parameter here. Experimental results for the equilibrium segregation of steel balls and glass beads are presented for different fractions and different extents of filling. There is a good match between theoretical predictions and all experimental results when the value of dimensionless segregation velocity is taken to be β=2. The extent of segregation is found to increase with increase in the dimensionless segregation velocity and dimensionless diffusivity but is independent of the level of filling. Lagrangian simulations based on the theory and experiments demonstrate the competition between segregation and mixing. In the case of slow mixing, the intensity of segregation monotonically decreases to an equilibrium value; for fast mixing, however, there exists an optimal mixing time at which the best mixing is obtained.}",
+    issn = {1070-6631},
+    doi = {10.1063/1.869498},
+    url = {https://doi.org/10.1063/1.869498},
+    eprint = {https://pubs.aip.org/aip/pof/article-pdf/9/12/3600/12610146/3600\_1\_online.pdf},
+}
+
+@INPROCEEDINGS{likwid,
+  author={Treibig, Jan and Hager, Georg and Wellein, Gerhard},
+  booktitle={2010 39th International Conference on Parallel Processing Workshops}, 
+  title={LIKWID: A Lightweight Performance-Oriented Tool Suite for x86 Multicore Environments}, 
+  year={2010},
+  volume={},
+  number={},
+  pages={207-216},
+  doi={10.1109/ICPPW.2010.38}
+}
