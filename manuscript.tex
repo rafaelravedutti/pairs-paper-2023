@@ -1064,7 +1064,7 @@ Results demonstrate that P4IRS achieve near perfect weak-scaling in all 64 nodes
 
 \autoref{fig:md_weak_scaling_alex} shows the results for P4IRS weak-scaling in the Alex supercomputer for both nodes with A40 and A100 GPUs.
 Each node simulates a system of $100^3$ unit cells, with roughly 500.000 atoms per GPU.
-Note there is a significant overhead for communication when using GPUs (compared to solving the problem in a single GPU), which can be attributed to the time spent transferrng data from the GPUs through the communication channels and then back to the other GPU.
+Note there is a significant overhead for communication when using GPUs (compared to solving the problem in a single GPU), which can be attributed to the time spent transferring data from the GPUs through the communication channels and then back to the other GPU.
 The results for scaling up to 8 nodes (64 GPUs) are good but not perfect (93\% efficiency for \ac{HN} in A100, and 83-85\% efficiency across other cases), one reason for this is that the Alex cluster has significant impact with its interconnect interface among different nodes, which significantly increases the time for the communication.
 Running simulations with higher workload on GPUs for the force computation or using different GPU clusters with better interconnection interfaces should improve the weak-scaling results.
 In any case, however, it is noticeable that P4IRS can generate code that scales up within GPU clusters.
