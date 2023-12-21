@@ -1,0 +1,154 @@
+iwia021h@a0328:~/repo/pairs$ ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+all: 310849
+clear_unused_contact_history: 2727.39
+communication: 5427.17
+reset_contact_history_usage_status: 2230.98
+neighbors: 12051.6
+other: 4.92044
+transfers: 193.631
+mpi: 583.347
+reset_volatile_properties: 596.054
+update_mass_and_inertia: 1.09342
+gravity: 210.133
+linear_spring_dashpot: 270632
+euler: 15923.2
+iwia021h@a0328:~/repo/pairs$ ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+all: 310986
+clear_unused_contact_history: 2717
+communication: 5462.2
+reset_contact_history_usage_status: 2230
+neighbors: 12947.1
+other: 4.96438
+transfers: 195.04
+mpi: 582.122
+reset_volatile_properties: 273.706
+update_mass_and_inertia: 1.21277
+gravity: 203.855
+linear_spring_dashpot: 270288
+euler: 15806.3
+
+iwia021h@a1722:~/repo/pairs$ ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+all: 303708
+clear_unused_contact_history: 2695.58
+communication: 5394.91
+reset_contact_history_usage_status: 2226.39
+neighbors: 12175.6
+other: 4.795
+transfers: 191.889
+mpi: 511.068
+reset_volatile_properties: 254.217
+update_mass_and_inertia: 1.13407
+gravity: 195.447
+linear_spring_dashpot: 263971
+euler: 15817.1
+
+iwia021h@a0328:~/repo/pairs$ likwid-perfctr -C 0 -g FLOPS_DP -m ./dem_cpu 
+--------------------------------------------------------------------------------
+CPU name:	AMD EPYC 7713 64-Core Processor                
+CPU type:	AMD K19 (Zen3) architecture
+CPU clock:	2.00 GHz
+--------------------------------------------------------------------------------
+all: 314070
+clear_unused_contact_history: 2746.29
+communication: 5486.84
+reset_contact_history_usage_status: 2225.75
+neighbors: 13105.6
+other: 5.31274
+transfers: 189.808
+mpi: 515.781
+reset_volatile_properties: 274.274
+update_mass_and_inertia: 1.13316
+gravity: 2000.82
+linear_spring_dashpot: 269620
+euler: 17634.1
+--------------------------------------------------------------------------------
+Region gravity, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.202914 |
+|     call count    |      10001 |
++-------------------+------------+
+
++---------------------------+---------+------------+
+|           Event           | Counter | HWThread 0 |
++---------------------------+---------+------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  | 2145669000 |
+|       MAX_CPU_CLOCK       |  FIXC2  | 2130262000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 1852206000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  |  525774000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  |  748974900 |
+|           MERGE           |   PMC3  |          0 |
++---------------------------+---------+------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.2029 |
+| Runtime unhalted [s] |     1.0749 |
+|      Clock [MHz]     |  2010.6363 |
+|          CPI         |     0.2839 |
+|     DP [MFLOP/s]     |  3691.0934 |
++----------------------+------------+
+
+Region linear_spring_dashpot, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] | 267.842000 |
+|     call count    |      10001 |
++-------------------+------------+
+
++---------------------------+---------+--------------+
+|           Event           | Counter |  HWThread 0  |
++---------------------------+---------+--------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  | 536473300000 |
+|       MAX_CPU_CLOCK       |  FIXC2  | 536556500000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 951377400000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  | 531922100000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  | 216819000000 |
+|           MERGE           |   PMC3  |            0 |
++---------------------------+---------+--------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |   267.8420 |
+| Runtime unhalted [s] |   268.7474 |
+|      Clock [MHz]     |  1995.8894 |
+|          CPI         |     0.5591 |
+|     DP [MFLOP/s]     |   809.5034 |
++----------------------+------------+
+
+Region euler, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |  15.918310 |
+|     call count    |      10001 |
++-------------------+------------+
+
++---------------------------+---------+-------------+
+|           Event           | Counter |  HWThread 0 |
++---------------------------+---------+-------------+
+|      ACTUAL_CPU_CLOCK     |  FIXC1  | 33547610000 |
+|       MAX_CPU_CLOCK       |  FIXC2  | 33562510000 |
+|    RETIRED_INSTRUCTIONS   |   PMC0  | 55484430000 |
+|    CPU_CLOCKS_UNHALTED    |   PMC1  | 31655350000 |
+| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  | 47193410000 |
+|           MERGE           |   PMC3  |           0 |
++---------------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |    15.9183 |
+| Runtime unhalted [s] |    16.8057 |
+|      Clock [MHz]     |  1995.3127 |
+|          CPI         |     0.5705 |
+|     DP [MFLOP/s]     |  2964.7249 |
++----------------------+------------+
+

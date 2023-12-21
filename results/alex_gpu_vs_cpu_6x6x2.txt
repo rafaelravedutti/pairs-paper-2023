@@ -1,0 +1,179 @@
+1000 time-steps (6x6x2) - 561600 particles
+
+iwia021h@a0603:~/repo/pairs$ ./dem_gpu 
+subdom = <0, 0.6, 0, 0.6, 0, 0.2>
+pbc = <1, -1, 1, -1, 1, -1>
+all: 3917.56
+clear_unused_contact_history: 31.6673
+communication: 535.121
+reset_contact_history_usage_status: 26.8297
+neighbors: 261.51
+other: 10.1044
+transfers: 699.052
+mpi: 67.3827
+reset_volatile_properties: 27.523
+update_mass_and_inertia: 47.5478
+gravity: 26.7751
+linear_spring_dashpot: 1268.82
+euler: 224.399
+
+
+
+iwia021h@a0603:~/repo/pairs$ mpirun -np 2 ./dem_gpu 
+subdom = <0, 0.6, 0, 0.3, 0, 0.2>
+pbc = <1, -1, 1, 0, 1, -1>
+subdom = <0, 0.6, 0.3, 0.6, 0, 0.2>
+pbc = <1, -1, 0, -1, 1, -1>
+all: 27522.2
+clear_unused_contact_history: 386.055
+communication: 9036.13
+reset_contact_history_usage_status: 335.965
+neighbors: 1118.88
+other: 95.2341
+transfers: 8635.36
+mpi: 2837.61
+reset_volatile_properties: 317.321
+update_mass_and_inertia: 23.6869
+gravity: 322.64
+linear_spring_dashpot: 1228.53
+euler: 799.923
+
+
+
+iwia021h@a0603:~/repo/pairs$ ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+subdom = <0, 0.6, 0, 0.6, 0, 0.2>
+pbc = <1, -1, 1, -1, 1, -1>
+all: 340701
+clear_unused_contact_history: 2267.81
+communication: 4240.88
+reset_contact_history_usage_status: 1015.53
+neighbors: 39023.6
+other: 0.841802
+transfers: 11.8262
+mpi: 72.0689
+reset_volatile_properties: 1226.11
+update_mass_and_inertia: 10.6041
+gravity: 679.716
+linear_spring_dashpot: 269321
+euler: 22821.6
+
+
+iwia021h@a0603:~/repo/pairs$ mpirun -np 64 ./dem_cpu
+all: 6022.86
+clear_unused_contact_history: 25.7795
+communication: 188.511
+reset_contact_history_usage_status: 17.2226
+neighbors: 358.991
+other: 0.406894
+transfers: 13.0568
+mpi: 1702.14
+reset_volatile_properties: 22.6184
+update_mass_and_inertia: 0.363823
+gravity: 11.037
+linear_spring_dashpot: 3248.94
+euler: 415.242
+
+
+iwia021h@a0603:~/repo/pairs$ mpirun -np 128 ./dem_cpu
+all: 11099.6
+clear_unused_contact_history: 17.0848
+communication: 164.13
+reset_contact_history_usage_status: 11.806
+neighbors: 285.734
+other: 0.414927
+transfers: 16.2088
+mpi: 8284.96
+reset_volatile_properties: 26.3628
+update_mass_and_inertia: 0.240959
+gravity: 6.75339
+linear_spring_dashpot: 2006.98
+euler: 255.807
+
+
+
+10000 time-steps
+
+A100:
+
+iwia021h@a0603:~/repo/pairs$ module load openmpi/4.1.6-intel2021.10.0-cuda likwid cuda
+Loading openmpi/4.1.6-intel2021.10.0-cuda
+  Loading requirement: intel/2023.2.1
+
+NOTE: If and ONLY IF you want to use likwid-perfctr you have to add '--constraint=hwperf' to your batch jobs.
+      likwid-features and likwid-setFrequencies are not available. The frequency/governor can be set using SLURM features.
+iwia021h@a0603:~/repo/pairs$ ./dem_gpu 
+subdom = <0, 0.6, 0, 0.6, 0, 0.2>
+pbc = <1, -1, 1, -1, 1, -1>
+all: 90956.7
+clear_unused_contact_history: 685.523
+communication: 4910
+reset_contact_history_usage_status: 1135.44
+neighbors: 2304.61
+other: 54.2727
+transfers: 5539.7
+mpi: 552.492
+reset_volatile_properties: 287.522
+update_mass_and_inertia: 47.5161
+gravity: 268.118
+linear_spring_dashpot: 64775.9
+euler: 2232.46
+
+
+A40:
+
+iwia021h@a0324:~/repo/pairs$ module load openmpi/4.1.6-intel2021.10.0-cuda likwid cuda
+Loading openmpi/4.1.6-intel2021.10.0-cuda
+  Loading requirement: intel/2023.2.1
+
+NOTE: If and ONLY IF you want to use likwid-perfctr you have to add '--constraint=hwperf' to your batch jobs.
+      likwid-features and likwid-setFrequencies are not available. The frequency/governor can be set using SLURM features.
+iwia021h@a0324:~/repo/pairs$ ./dem_gpu 
+subdom = <0, 0.6, 0, 0.6, 0, 0.2>
+pbc = <1, -1, 1, -1, 1, -1>
+all: 272624
+clear_unused_contact_history: 737.148
+communication: 4971.66
+reset_contact_history_usage_status: 837.524
+neighbors: 3983.98
+other: 59.9991
+transfers: 4903.95
+mpi: 535.727
+reset_volatile_properties: 459.823
+update_mass_and_inertia: 81.0694
+gravity: 615.498
+linear_spring_dashpot: 236805
+euler: 4568.86
+
+
+
+iwia021h@a0324:~/repo/pairs$ mpirun -np 64 ./dem_cpu
+all: 165409
+clear_unused_contact_history: 1541.71
+communication: 2942.03
+reset_contact_history_usage_status: 2019.46
+neighbors: 4961.25
+other: 4.81821
+transfers: 192.599
+mpi: 17827.8
+reset_volatile_properties: 272.778
+update_mass_and_inertia: 0.545107
+gravity: 109.391
+linear_spring_dashpot: 127717
+euler: 7533.02
+
+
+iwia021h@a0324:~/repo/pairs$ mpirun -np 64 ./dem_cpu
+all: 116176
+clear_unused_contact_history: 1128.57
+communication: 2066.32
+reset_contact_history_usage_status: 1291.44
+neighbors: 2993.53
+other: 3.5834
+transfers: 122.522
+mpi: 16362.6
+reset_volatile_properties: 287.52
+update_mass_and_inertia: 3.18848
+gravity: 119.596
+linear_spring_dashpot: 86732
+euler: 4879.48
