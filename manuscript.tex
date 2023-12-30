@@ -508,13 +508,13 @@ The next subsections explore the different P4IRS features in more detail.
 Functions can be provided through a method (line 1), and the parameters in the method refer to different particles in the system.
 In this way, many-body potentials can also be described using methods with more than two parameters.
 Some keywords are also provided by P4IRS for writing the kernels, in line 2 the \emph{squared\_distance} method is used for obtaining the squared distance for the atoms \emph{i} and \emph{j}, and in line 4 the \emph{delta} method is used for obtaining the delta vector.
-Also, in lines 3 and 4 it is possible to see accesses to feature properties called \emph{sigma6} and \emph{epsilon}, which are defined during the simulation setup as properties that depends on the atom types feature.
+Also, in lines 3 and 4 it is possible to see accesses to feature properties called \emph{sigma6} and \emph{epsilon}, which are defined during the simulation setup as properties which depend on the atom types feature.
 In line 4, the \emph{apply} method is used for applying the computed term into the \emph{force} property of the particles, the method allows the identification of particle properties reductions and is also used when generating the kernel variant using the half neighbor-lists.
 
 \begin{lstlisting}[language=Python,
 		   label={lst:pairslj},
 		   caption={Lennard-Jones force description in P4IRS.}]
-def lj(i, j):
+def lennard_jones(i, j):
     sr2 = 1.0 / squared_distance(i, j)
     sr6 = sr2 * sr2 * sr2 * sigma6[i, j]
     apply(force, delta(i, j) * (48.0 * sr6 * (sr6 - 0.5) * sr2 * epsilon[i, j]))
@@ -579,10 +579,10 @@ psim.read_particle_data(
 psim.reneighbor_every(20)
 psim.compute_half()
 psim.build_neighbor_lists(cutoff_radius + skin)
-psim.vtk_output(f"output/lj_{target}", every=20)
+psim.vtk_output(f"output/md_{target}", every=20)
 
 # Kernels to compute
-psim.compute(lj, cutoff_radius)
+psim.compute(lennard_jones, cutoff_radius)
 psim.compute(euler, symbols={'dt': dt})
 
 # Target hardware
@@ -1078,6 +1078,39 @@ In any case, however, it is noticeable that P4IRS can generate code that scales 
 %
 %   - Weak-scaling on Alex (figure)
 %     - CPU (128 cores) vs GPU (8)
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.80]
+    \tikzstyle{every node}=[font=\small]
+    \begin{axis}[
+            width=\textwidth, height=8cm,
+            xmode=log,log basis x={2},
+            %xmin=0.75,   xmax=3072,
+            xmin=1,   xmax=64,
+            ymin=0.5,   ymax=1.5,
+            log ticks with fixed point,
+            xlabel={\# nodes}, xlabel style={yshift= 1ex},
+            xticklabel={ % hack for precision issues with 1024 and 2048
+                \pgfkeys{/pgf/fpu=true}
+                \pgfmathparse{int(2^\tick)}
+                \pgfmathprintnumber[fixed]{\pgfmathresult}
+            },
+            ylabel={time to solution ([$\times 10^2$]s)}, ylabel style={yshift=-1ex},
+            grid=major,
+            legend pos=north east,
+            %legend style={at={(0.97,0.5)},anchor=east},
+        ]
+        \addplot table[x=nodes,y=pairsfn] {data/dem-scaling-fritz.csv};
+        %\addplot table[x=nodes,y=pairshn] {data/dem-scaling-fritz.csv};
+        \legend{P4IRS-FN}
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+\caption{Weak-scaling results for P4IRS (FN) on Fritz, each node simulates 10000 time-steps of the Settling-Spheres simulation, with approximately 7.800 particles per CPU core.}
+\vspace{-2ex}
+\label{fig:dem_weak_scaling_fritz}
+\end{figure}
 
 \subsubsection*{Acknowledgments}
 
