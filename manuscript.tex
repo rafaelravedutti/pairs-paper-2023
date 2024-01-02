@@ -1035,8 +1035,8 @@ Results demonstrate that P4IRS achieve near perfect weak-scaling in all 64 nodes
             width=\textwidth, height=8cm,
             xmode=log,log basis x={2},
             %xmin=0.75,   xmax=3072,
-            xmin=1,   xmax=8,
-            ymin=4,   ymax=20,
+            xmin=1,   xmax=128,
+            ymin=0,   ymax=5,
             log ticks with fixed point,
             xlabel={\# nodes}, xlabel style={yshift= 1ex},
             xticklabel={ % hack for precision issues with 1024 and 2048
@@ -1049,15 +1049,15 @@ Results demonstrate that P4IRS achieve near perfect weak-scaling in all 64 nodes
             legend pos=north east,
             %legend style={at={(0.97,0.5)},anchor=east},
         ]
-        \addplot table[x=nodes,y=pairsfna40] {data/md-scaling-alex.csv};
-        \addplot table[x=nodes,y=pairshna40] {data/md-scaling-alex.csv};
-        \addplot table[x=nodes,y=pairsfna100] {data/md-scaling-alex.csv};
-        \addplot table[x=nodes,y=pairshna100] {data/md-scaling-alex.csv};
+        \addplot table[x=nodes,y=pairsfn] {data/md-scaling-juwels.csv};
+        \addplot table[x=nodes,y=pairshn] {data/md-scaling-juwels.csv};
+        %\addplot table[x=nodes,y=pairsfna100] {data/md-scaling-alex.csv};
+        %\addplot table[x=nodes,y=pairshna100] {data/md-scaling-alex.csv};
         \legend{P4IRS-FN-A40, P4IRS-HN-A40, P4IRS-FN-A100, P4IRS-HN-A100}
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-\caption{Weak-scaling results for P4IRS (FN and HN) on Alex on both A40 and A100 GPUs, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500.000 atoms per GPU.}
+\caption{Weak-scaling results for P4IRS (FN and HN) in the JUWELS Booster GPU cluster, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500.000 atoms per GPU.}
 \vspace{-2ex}
 \label{fig:md_weak_scaling_alex}
 \end{figure}
