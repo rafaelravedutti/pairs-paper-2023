@@ -1079,6 +1079,89 @@ In any case, however, it is noticeable that P4IRS can generate code that scales 
 %   - Weak-scaling on Alex (figure)
 %     - CPU (128 cores) vs GPU (8)
 
+\colorlet{force-cpu}{teal!80}
+\colorlet{euler-cpu}{teal!60}
+\colorlet{neigh-cpu}{teal!40}
+\colorlet{other-cpu}{teal!20}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.95]
+    \pgfplotsset{
+        ybar stacked, ymin=0, ymax=400, xmin=0.5, xmax=2.5, xtick=data,
+        xtick={1,...,2},
+        xticklabels={Ice Lake, Milan},
+        xticklabel style={yshift=-10pt},
+        ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+        legend cell align={left},
+        /pgf/bar width=12pt,% bar width
+        scatter/position=absolute,
+        node near coords style={
+            font=\footnotesize,
+            at={(axis cs:\pgfkeysvalueof{/data point/x},\pgfkeysvalueof{/pgfplots/ymin})},
+            anchor=north,
+            yshift={-\pgfkeysvalueof{/pgfplots/major tick length} + 4pt},
+        },
+    }
+    \begin{axis}[bar shift=-24pt, nodes near coords style={xshift=-24pt},
+        legend pos = outer north east, legend style = {name = pairs}]
+        \addplot [fill=force-cpu, nodes near coords=A] table [x=arch, y=pairsfn_std] {data/dem-single-core-force.csv};
+        \addplot [fill=euler-cpu] table [x=arch, y=pairsfn_std] {data/dem-single-core-euler.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairsfn_std] {data/dem-single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairsfn_std] {data/dem-single-core-other.csv};
+        \legend{Force, Euler, Neigh, Other}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{A:} P4IRS}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{B:} P4IRS+NBB}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS+2R}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{D:} P4IRS+NBB+2R}
+        \addlegendimage{empty legend}
+        \addlegendentry{\hspace{-.325cm}\textbf{E:} MESA-PD+2R}
+    \end{axis}
+    \begin{axis}[bar shift=-12pt, nodes near coords style={xshift=-12pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=B] table [x=arch, y=pairsfn_neighbins] {data/dem-single-core-force.csv};
+        \addplot [fill=euler-cpu] table [x=arch, y=pairsfn_neighbins] {data/dem-single-core-euler.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairsfn_neighbins] {data/dem-single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairsfn_neighbins] {data/dem-single-core-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift=0pt, nodes near coords style={xshift=0pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=C] table [x=arch, y=pairsfn_std2] {data/dem-single-core-force.csv};
+        \addplot [fill=euler-cpu] table [x=arch, y=pairsfn_std2] {data/dem-single-core-euler.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairsfn_std2] {data/dem-single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairsfn_std2] {data/dem-single-core-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift=12pt, nodes near coords style={xshift=12pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=D] table [x=arch, y=pairsfn_neighbins2] {data/dem-single-core-force.csv};
+        \addplot [fill=euler-cpu] table [x=arch, y=pairsfn_neighbins2] {data/dem-single-core-euler.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=pairsfn_neighbins2] {data/dem-single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=pairsfn_neighbins2] {data/dem-single-core-other.csv};
+    \end{axis}
+    \begin{axis}[bar shift=24pt, nodes near coords style={xshift=24pt},
+        legend style = {at = {([yshift = -1mm]pairs.south west)},
+        anchor = north west}]
+        \addplot [fill=force-cpu, nodes near coords=E] table [x=arch, y=mesapd] {data/dem-single-core-force.csv};
+        \addplot [fill=euler-cpu] table [x=arch, y=mesapd] {data/dem-single-core-euler.csv};
+        \addplot [fill=neigh-cpu] table [x=arch, y=mesapd] {data/dem-single-core-neigh.csv};
+        \addplot [fill=other-cpu] table [x=arch, y=mesapd] {data/dem-single-core-other.csv};
+    \end{axis}
+\end{tikzpicture}
+\vspace{-3ex}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per bin (+NBB) and for single and two ranks (+2R).}
+\vspace{-2ex}
+\centering
+\label{fig:dem_single_core_runtimes}
+\end{figure}
+
+
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[scale=0.80]
