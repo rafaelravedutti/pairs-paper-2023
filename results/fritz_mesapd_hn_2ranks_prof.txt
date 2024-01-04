@@ -1,0 +1,46 @@
+iwia021h@f0331:/home/vault/iwia/iwia021h/walberla/build/apps/showcases/Antidunes$ mpiexec -np 2 ./BedGeneration $HPCVAULT/walberla/apps/showcases/Antidunes/BedGeneration.prm
+================================================================================
+|       BEGIN LOGGING - Thursday, 04.January 2024, 20:05:54                    |
+================================================================================
+[0][INFO    ]------(0.000 sec) BedGeneration
+[0]                            {
+[0]                               blocks < 3, 3, 1 >;
+[0]                               bottomLayerOffsetFactor 1.0;
+[0]                               collisionTime_SI 5e-4;
+[0]                               denseBottomLayer False;
+[0]                               densityFluid_SI 1000;
+[0]                               densityParticle_SI 2550;
+[0]                               diameter_SI 0.0029;
+[0]                               domainSize_SI < 0.8, 0.015, 0.2 >;
+[0]                               dt_SI 5e-5;
+[0]                               frictionCoefficient 0.5;
+[0]                               generationSpacing_SI 0.005;
+[0]                               gravity_SI 9.81;
+[0]                               initialVelocity_SI 1;
+[0]                               outFileName spheres_out.dat;
+[0]                               poissonsRatio 0.22;
+[0]                               restitutionCoefficient 0.1;
+[0]                               timeSteps 10000;
+[0]                               visSpacing 100;
+[0]                            }
+[0]                            
+[0][INFO    ]------(0.000 sec) Balancing 9 blocks for 2 processes...
+[0][INFO    ]------(0.063 sec) Timestep 0 / 10000, average velocity = 1.00362, max velocity = 1.01017, #particles = 18720, max height = 0.19745
+[0][INFO    ]------(9.756 sec) Timestep 1000 / 10000, average velocity = 0.905293, max velocity = 2.85214, #particles = 18720, max height = 0.139981
+[0][INFO    ]-----(34.375 sec) Timestep 2000 / 10000, average velocity = 0.422874, max velocity = 2.24679, #particles = 18720, max height = 0.0676055
+[0][INFO    ]-----(69.420 sec) Timestep 3000 / 10000, average velocity = 0.0234565, max velocity = 4.22118, #particles = 18720, max height = 0.15281
+[0][INFO    ]----(112.948 sec) Timestep 4000 / 10000, average velocity = 0.0116229, max velocity = 2.41544, #particles = 18720, max height = 0.179786
+[0][INFO    ]----(159.001 sec) Timestep 5000 / 10000, average velocity = 0.00864005, max velocity = 1.80328, #particles = 18720, max height = 0.196732
+[0][INFO    ]----(204.621 sec) Timestep 6000 / 10000, average velocity = 0.00716442, max velocity = 2.75716, #particles = 18720, max height = 0.19145
+[0][INFO    ]----(252.229 sec) Timestep 7000 / 10000, average velocity = 0.00820668, max velocity = 2.56084, #particles = 18720, max height = 0.196491
+[0][INFO    ]----(301.015 sec) Timestep 8000 / 10000, average velocity = 0.00771171, max velocity = 2.32802, #particles = 18720, max height = 0.194576
+[0][INFO    ]----(348.451 sec) Timestep 9000 / 10000, average velocity = 0.00766207, max velocity = 1.89519, #particles = 18720, max height = 0.183841
+TOTAL: 395.74, FORCE: 140.06, EULER: 16.2736, NEIGH: 6.43782, OTHER: 232.969
+SNN: 145.701, ASSOC: 1.60394, GRAVITY: 1.37425, NOTIFICATION: 39.7513
+[0][INFO    ]----(395.794 sec) Simulation ended.
+TOTAL: 395.736, FORCE: 173.433, EULER: 20.147, NEIGH: 6.69552, OTHER: 195.46
+SNN: 135.685, ASSOC: 2.0799, GRAVITY: 1.73135, NOTIFICATION: 5.45511
+================================================================================
+|         END LOGGING - Thursday, 04.January 2024, 20:12:30                    |
+================================================================================
+

@@ -1088,11 +1088,11 @@ In any case, however, it is noticeable that P4IRS can generate code that scales 
 \centering
 \begin{tikzpicture}[scale=0.95]
     \pgfplotsset{
-        ybar stacked, ymin=0, ymax=400, xmin=0.5, xmax=2.5, xtick=data,
+        ybar stacked, ymin=0, ymax=5, xmin=0.5, xmax=2.5, xtick=data,
         xtick={1,...,2},
         xticklabels={Ice Lake, Milan},
         xticklabel style={yshift=-10pt},
-        ylabel={time to solution (s)}, ylabel style={yshift=-1ex},
+        ylabel={time to solution ([$\times 10^2$]s)}, ylabel style={yshift=-1ex},
         legend cell align={left},
         /pgf/bar width=12pt,% bar width
         scatter/position=absolute,

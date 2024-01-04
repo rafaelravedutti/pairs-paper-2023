@@ -1,0 +1,16 @@
+iwia021h@a0429:~/repo/pairs$ mpirun -np 2 ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+Running without Marker API. Activate Marker API with -m on commandline.
+all: 83674.6
+clear_unused_contact_history: 716.368
+communication: 1837.82
+reset_contact_history_usage_status: 658.293
+neighbors: 3362.07
+other: 2.49535
+transfers: 85.5923
+mpi: 472.086
+reset_volatile_properties: 93.1647
+update_mass_and_inertia: 0.457702
+gravity: 68.1097
+linear_spring_dashpot: 68717.5
+euler: 4274.74

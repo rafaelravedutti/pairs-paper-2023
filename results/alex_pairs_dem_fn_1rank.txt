@@ -1,0 +1,15 @@
+iwia021h@a0429:~/repo/pairs$ ./dem_cpu 
+Running without Marker API. Activate Marker API with -m on commandline.
+all: 165331
+clear_unused_contact_history: 1469.27
+communication: 2706.48
+reset_contact_history_usage_status: 817.816
+neighbors: 5406.29
+other: 4.13699
+transfers: 73.0261
+mpi: 325.668
+reset_volatile_properties: 180.525
+update_mass_and_inertia: 0.831126
+gravity: 114.419
+linear_spring_dashpot: 139247
+euler: 9984.86
