@@ -1,0 +1,23 @@
+iwia021h@a0126:~/repo/pairs$ ./dem_gpu 
+DEM Simple-Cubic Grid
+Domain size: <0.6, 0.6, 0.2>
+Spacing: 0.005
+Diameter: 0.0029 (min = 0.00261, max = 0.00319)
+Initial velocity: 1
+Particle density: 2550
+Number of types: 1
+Number of particles: 561600
+all: 234505
+clear_unused_contact_history: 603.868
+communication: 4612.73
+reset_contact_history_usage_status: 641.869
+neighbors: 3924.73
+other: 53.7715
+build_cell_neighbor_lists: 10360.8
+transfers: 4094.81
+mpi: 194.583
+reset_volatile_properties: 444.628
+update_mass_and_inertia: 9.7637
+gravity: 598.298
+linear_spring_dashpot: 191393
+euler: 4560.83
