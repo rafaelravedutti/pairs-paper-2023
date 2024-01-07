@@ -786,15 +786,22 @@ Note that the reason for using buffers instead of evaluating the particle positi
 
 \subsection{Materials and Methods}
 
-In this paper we conducted experiments in FAU's clusters Fritz (CPU) and Alex (GPU), these systems have the following configurations:
+In this paper we conducted experiments to evaluate the base performance of P4IRS generated codes in the following processors and accelerators:
 
 \begin{itemize}
-  \item \textbf{Fritz:} Each compute node has two Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
-  \item \textbf{Alex:} Each compute node has two AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3Cache per chip, 512 GB of DDR4-RAM, eight GPUs are available per node which can be either Nvidia A40 (with 48 GB DDR6 @ 696 GB/s; 37.42 TFlop/s in FP32) or A100 (each 80 GB HBM2 @ 2,039 GB/s; HGX board with NVLink; 9.7 TFlop/s in FP64 or 19.5 TFlop/s in FP32)
+  \item \textbf{Ice Lake:} Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
+  \item \textbf{Milan:} AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3Cache per chip
+  \item \textbf{A40:} Nvidia A40 GPU with 48 GB DDR6 @ 696 GB/s; 37.42 TFlop/s in FP32.
+  \item \textbf{A100:} Nvidia A100 GPU with 40 GB HBM2 @ 1,555 GB/s; HGX board with NVLink; 9.7 TFlop/s in FP64 or 19.5 TFlop/s in FP32.
 \end{itemize}
 
-We perform single-core CPU experiments in both clusters, and refer to both CPUs listed above as Ice Lake and Milan, respectively.
-For single GPU experiments, we use both A40 and A100 Nvidia GPUs.
+And we also perform experiments to evaluate P4IRS weak-scalability in the following clusters:
+
+\begin{itemize}
+  \item \textbf{Fritz:} Each compute node has two Ice Lake processors; 256 GB of DDR4 RAM; Blocking HDR100 Infiniband with up to 100 GBit/s bandwidth per link and direction.
+  \item \textbf{JUWELS Booster:} Each compute node has two AMD EPYC "Rome" 7402 CPU, with 48 cores (simultaneous multithreading) at 2.8 GHz; 512 GB of DDR4 memory at 3200 MHz; Four Nvidia A100 GPU with 40 GB HBM2e memory; Four InfiniBand HDR (Connect-X6) interconnect channels.
+\end{itemize}
+
 The icc (ICC) 2021.10.0 20230609 compiler was used for generating the CPU code, with the \emph{-Ofast -xCORE-AVX512 -qopt-zmm-usage=high} flags for Ice Lake (AVX512) and \emph{-Ofast -march=core-avx2} flags for Milan (AVX2).
 For CUDA, we use the NVCC compiler v12.1.r12.1/compiler.32688072, with same flags as the ones used for the Milan system.
 We make use of the Likwid toolkit V5.3 \cite{likwid} to measure HPM counters in the target CPU (Ice Lake) for the single core experiments, where P4IRS is able to properly generate the instrumentation markers and MD-Bench kernels are already instrumented.
