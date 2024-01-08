@@ -925,7 +925,7 @@ When using \ac{HN}, the force calculation time is roughly the same for both vers
 Note that the code from P4IRS tends to be build neighbor-lists faster for these experiments but the force computation is slower for \ac{FN}, and the runtime differences vary in the range of 10\% for the measured runtime, which is not too significant and can vary when using different compilers and flags.
 
 In Milan, P4IRS is faster than MD-Bench for the \ac{FN} case, and the advantage also comes from the neighbor-lists creation.
-For \ac{HN}, the results are pretty similar, but it is possible to see that P4IRS still builds the neighbor-lists slightly faster, where MD-Bench has a moderately better performance for the force computation.
+For \ac{HN}, results are similar, but it is possible to see that P4IRS still builds the neighbor-lists slightly faster, where MD-Bench has a moderately better performance for the force computation.
 Overall, we can assume that P4IRS is able to achieve good base performance when running in a single CPU core, while providing a more flexible and high-level description of the problem which is not the case for the hand-tuned and hard-coded C implementation from MD-Bench.
 
 \begin{table*}[htb]
@@ -955,7 +955,7 @@ For more computational-intensive kernels, the arithmetic ratio should increase a
 
 The performance with \ac{HN} is significantly worse but it is compensated by the fact it computes roughly half the interactions.
 Another important thing to consider is the introduction of the Intel patch to mitigate the Downfall vulnerability (also known as Gather Data Sampling), which significantly affects the performance of the gather instructions in the Intel CPUs and therefore affect the \ac{FN} cases performance with AVX512 vectorization.
-In particular, the separation of concerns introduced by P4IRS together with code generation techniques can assist on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and organize (through permutatation, shuffles and swizzles) data into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps atoms data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
+In particular, the separation of concerns introduced by P4IRS together with code generation techniques can assist on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and then organize (through permutation, shuffles and swizzles) it into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps atoms data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
 
 \colorlet{force-gpu}{purple!80}
 \colorlet{neigh-gpu}{purple!50}
@@ -1063,6 +1063,7 @@ Since the \emph{multinode} partition in Fritz has the maximum of 64 nodes (which
 It is possible to see that we achieve perfect weak-scaling in all the settings we use, and the \ac{HN} version is significantly faster than the \ac{FN} version.
 Notice that atomic operations are not required because we only make use of parallelism through spatial decomposition and message communication with MPI, thus we use distributed-memory parallelism strategy even within the same node and there is no possibility of race conditions.
 Based on our results, it is clear that P4IRS is able to generate scalable code on modern CPU clusters, but problems that are not too homogeneous may need proper mechanisms for balancing the workload among different MPI ranks.
+This is possible by using different domain-partitioning methods in P4IRS such as the waLBerla domain partitiong with block-forests, but for this example we can achieve perfect scaling even with regular domain-partitioning.
 
 \begin{figure}[t]
 \centering
@@ -1096,15 +1097,17 @@ Based on our results, it is clear that P4IRS is able to generate scalable code o
 \vspace{-3ex}
 \caption{Weak-scaling results for P4IRS (FN and HN) in the JUWELS Booster GPU cluster, each node simulates 200 time-steps of a Copper FCC lattice system with $100^3$ unit cells, with approximately 500.000 atoms per GPU.}
 \vspace{-2ex}
-\label{fig:md_weak_scaling_alex}
+\label{fig:md_weak_scaling_juwels}
 \end{figure}
 
-\autoref{fig:md_weak_scaling_alex} shows the results for P4IRS weak-scaling in the Alex supercomputer for both nodes with A40 and A100 GPUs.
+\autoref{fig:md_weak_scaling_juwels} shows the weak-scaling runtimes for P4IRS in the JUWELS Booster cluster.
 Each node simulates a system of $100^3$ unit cells, with roughly 500.000 atoms per GPU.
-Note there is a significant overhead for communication when using GPUs (compared to solving the problem in a single GPU), which can be attributed to the time spent transferring data from the GPUs through the communication channels and then back to the other GPU.
-The results for scaling up to 8 nodes (64 GPUs) are good but not perfect (93\% efficiency for \ac{HN} in A100, and 83-85\% efficiency across other cases), one reason for this is that the Alex cluster has significant impact with its interconnect interface among different nodes, which significantly increases the time for the communication.
-Running simulations with higher workload on GPUs for the force computation or using different GPU clusters with better interconnection interfaces should improve the weak-scaling results.
-In any case, however, it is noticeable that P4IRS can generate code that scales up within GPU clusters.
+We scale up to 128 nodes, which is equivalent of 512 A100 GPUs.
+Note that for the first node, the performance is slightly worse than the next ones, which can be explained as we only have 4 GPUs in one node, and domain-partitioning is only done in two dimensions.
+This can led to worse performance because the surface area for communication is likely higher for the dimension where the partitioning is not done, which culminates in more atoms to be communicated and therefore more time spent packing and transfering data.
+Apart from this, the scaling is also perfect for all the settings, and it is possible to observe that the \ac{FN} version is slighly faster than \ac{HN}.
+As we already discussed, the usage of \ac{HN} is not necessarily beneficial in GPUs due to atomics, and this can be worse especially for kernels which do not exhibit high arithmetic intensity.
+The results demonstrate that P4IRS is in fact capable of generating scalable code for modern GPU clusters.
 
 \subsection{Discrete Element Method}
 
