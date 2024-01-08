@@ -1111,6 +1111,9 @@ The results demonstrate that P4IRS is in fact capable of generating scalable cod
 
 \subsection{Discrete Element Method}
 
+For the \ac{DEM} case, we make use of the Linear Spring-Dashpot model to calculate the particle force contributions.
+We also use the Linked Cells algorithm, as it is usually not common to use Verlet Lists for \ac{DEM} in general for contact detection, and also because we build the Linked Cells at every time-step of the simulation, which means that building the Verlet Lists do not provide any advantage.
+
 % DEM
 %   - Comparison with MESA-PD (figure + table)
 %     - Linked Cells (ignore Verlet Lists)
@@ -1201,6 +1204,23 @@ The results demonstrate that P4IRS is in fact capable of generating scalable cod
 \label{fig:dem_single_core_runtimes}
 \end{figure}
 
+\autoref{fig:dem_single_core_runtimes} displays the runtimes for the \ac{DEM} kernels in single-core (P4IRS) and two cores/ranks (P4IRS/MESA-PD), also with cases building the neighbor-lists per cell (NPC) in P4IRS to evaluate its impact on CPU performance.
+It is noticeable that P4IRS outperforms MESA-PD even with a single rank in the overall runtime, and what draws the attention is the amount of time MESA-PD spents executing other procedures instead of the force calculation and building the neighbor-lists
+This can be attributed to the overhead that MESA-PD has to manage its domain-partitioning with waLBerla (which cannot be switched) and calling its communication routines for next-neighbor communication.
+A more in-depth analysis is required to actually understand why it takes a significant fraction of the time for MESA-PD to communicate data, but this is out of scope of this paper.
+
+A more interesting insight from the results is the performance improvement for the force calculation when using P4IRS, with only a single rank it is only about 16-17\% worse the the force calculation for MESA-PD, while with 2 ranks it outperforms MESA-PD by about 76-82\% using \ac{FN} in both Ice Lake and Milan architectures.
+The reason is that P4IRS code is able to perform several specializations in the generated code and thus reduce the amount of arithmetic instructions to be executed.
+For instance, the code from MESA-PD needs parameters such as stiffness and damping to be set at every iteration because they depend on the masses and radii of the particles, which not only incurs in extra instructions to load and store such data in a lookup array, but also restricts specializations in the kernel since some parameters are not known at compile-time.
+In P4IRS, such parameters are calculated directly in the kernel, and we can make use of Just-In-Time (JIT) compilation to emit tailored versions of our kernels for the specific problem we want to solve, which leads to significant speedup.
+Some specialization can also be exposed by separating the interaction code between shapes as discussed in \autoref{sec:shape_partitioning}.
+For more complex kernels, there may be even more opportunities for specializations, which can result in even better performance improvements.
+
+Another point to evaluate is the impact of building the neighbor-lists per cell (NPC) in the CPU.
+Althrough there are considerable improvements in the force calculation in both CPUs (about 76\% faster in Ice Lake, and about 46-49\% in Milan), the significant amount of time building the neighbor-lists does not compensate the improvements.
+At the end, it is also possible to use P4IRS for experimentation of such different strategies, which can help finding the most efficient version to solve a problem for a specific hardware.
+It is also clear that P4IRS can generate more efficient DEM kernels for CPU in comparison to our previous solution, which reveals the advantages of using code generation for particle simulations.
+
 \colorlet{force-gpu}{purple!80}
 \colorlet{euler-gpu}{purple!60}
 \colorlet{neigh-gpu}{purple!40}
@@ -1272,8 +1292,10 @@ The results demonstrate that P4IRS is in fact capable of generating scalable cod
 	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per bin (+NBB) and for single and two ranks (+2R).}
 \vspace{-2ex}
 \centering
-\label{fig:dem_single_core_runtimes}
+\label{fig:dem_single_gpu_runtimes}
 \end{figure}
+
+
 
 \begin{figure}[t]
 \centering
