@@ -456,7 +456,7 @@ The update rule is carried out every time-step the contact persists, which from 
     \centering
     \subfigure[Linked Cells]{\label{fig:linked_cells}\includegraphics[width=0.40\textwidth]{linked_cells.pdf}}
     \subfigure[Verlet Lists]{\label{fig:verlet_lists}\includegraphics[width=0.40\textwidth]{verlet_lists.pdf}}
-    \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of atoms is created by evaluating which particle distances are smaller than the cutoff radius plus a "skin" value, which represents a sphere in the 3D case.}
+    \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of particles is created by evaluating which particle distances are smaller than the cutoff radius plus a "skin" value, which represents a sphere in the 3D case.}
 \end{figure*}
 
 To obtain the force for a particle in a specific time-step, it is necessary to compute its partial contributions from each of the other particles present in the system.
@@ -472,11 +472,11 @@ The Linked Cells results in computing only forces for particles within a region 
 In order to avoid even more redundant computations, the Verlet Lists strategy can be used jointly with Linked Cells.
 The Verlet Lists (see Figure~\ref{fig:verlet_lists}) constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, evaluating the distances among particles within close bins and then using the distance to determine whether such particles should be added into the list.
 In the Verlet Lists case, the region for searching for neighbor particles is defined by a sphere, where the center of the sphere is the position of the particle and the radius is the cutoff radius plus a "skin".
-The "skin" is used to avoid building the neighbor-lists at every time-step, it extends the neighbor-search and avoid missing computations from atoms that end up entering the cut-off region in subsequent time-steps in which the neighbor-lists are not reconstructed.
+The "skin" is used to avoid building the neighbor-lists at every time-step, it extends the neighbor-search and avoid missing computations from particles that end up entering the cut-off region in subsequent time-steps in which the neighbor-lists are not reconstructed.
 
 Despite avoiding computations from long-distance particles, another common optimization is to take advantage of Newton's Third Law and computing forces in only one direction.
-This means that only half of particle-pairs are traversed during force computation, and forces are decreased for the neighbor atom during their computation.
-Ideally, this should lead to a factor of two speedup, but this strategy has a few drawbacks: (a) parallelism is harmed since decreasing force of neighbor atoms requires atomic operations to avoid race conditions and (b) when the code is vectorized with AVX/SSE intrinsics, gather and scatter instructions are needed to build up the SIMD registers with forces of the neighbor atoms, which results in scattered memory accesses and extra instructions.
+This means that only half of particle-pairs are traversed during force computation, and forces are decreased for the neighbor particles during their computation.
+Ideally, this should lead to a factor of two speedup, but this strategy has a few drawbacks: (a) parallelism is harmed since decreasing force of neighbor particles requires atomic operations to avoid race conditions and (b) when the code is vectorized with AVX/SSE intrinsics, gather and scatter instructions are needed to build up the SIMD registers with forces of the neighbor particles, which results in scattered memory accesses and extra instructions.
 At the end, this strategy is likely to be beneficial for more arithmetic-intensive kernels, and the trade-off between parallelism and less arithmetic operations must be assessed.
 
 \section{P4IRS}
@@ -631,7 +631,7 @@ Note that when such properties are not stored for the particle pair, then their 
 
 \begin{lstlisting}[language=Python,
 		   label={lst:contactprops2},
-		   caption={Setup example for contact properties.}]
+		   caption={Usage example for contact properties.}]
 def linear_spring_dashpot(i, j):
     # ...
     tan_spring_disp = tangential_spring_displacement[i, j]
@@ -962,7 +962,7 @@ For more computational-intensive kernels, the arithmetic ratio should increase a
 
 The performance with \ac{HN} is significantly worse but it is compensated by the fact it computes roughly half the interactions.
 Another important thing to consider is the introduction of the Intel patch to mitigate the Downfall vulnerability (also known as Gather Data Sampling), which significantly affects the performance of the gather instructions in the Intel CPUs and therefore affect the \ac{FN} cases performance with AVX512 vectorization.
-In particular, the separation of concerns introduced by P4IRS together with code generation techniques can be a first step on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and then organize (through permutation, shuffles and swizzles) it into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps atoms data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
+In particular, the separation of concerns introduced by P4IRS together with code generation techniques can be a first step on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and then organize (through permutation, shuffles and swizzles) it into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps particles data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
 
 \colorlet{force-gpu}{purple!80}
 \colorlet{neigh-gpu}{purple!50}
@@ -1296,7 +1296,7 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-	\caption{Execution time for P4IRS simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on A40 and A100 GPUs. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per cell (NPC) and for multi-kernel (MK) in both cases.}
+	\caption{Execution time for P4IRS simulations in seconds (lower is better) of a Setting-Spheres benchmark with 561.600 particles during 10000 time-steps on A40 and A100 GPUs. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per cell (NPC) and for multi-kernel (MK) in both cases.}
 \vspace{-2ex}
 \centering
 \label{fig:dem_single_gpu_runtimes}
