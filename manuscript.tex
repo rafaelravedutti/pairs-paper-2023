@@ -1068,7 +1068,7 @@ Despite the observed performance divergence in A100, it is possible to see that 
 For each node, a system of $128^3$ unit cells is included, with roughly 8.388.608 atoms per node (or 116.508 atoms per CPU core).
 Since the \emph{multinode} partition in Fritz has the maximum of 64 nodes (which results in 4608 CPU cores, no hyper-threading), this is the maximum amount we scale up our problem to.
 It is possible to see that we achieve perfect weak-scaling in all the settings we use, and the \ac{HN} version is significantly faster than the \ac{FN} version.
-Notice that atomic operations are not required because we only make use of parallelism through spatial decomposition and message communication with MPI, thus we use distributed-memory parallelism strategy even within the same node and there is no possibility of race conditions.
+Notice that atomic operations are not required because we only make use of parallelism through spatial decomposition and message communication with MPI, thus we use distributed-memory parallelism strategy even within the same node and there is no risk of race conditions.
 Based on our results, it is clear that P4IRS is able to generate scalable code on modern CPU clusters, but problems that are not too homogeneous may need proper mechanisms for balancing the workload among different MPI ranks.
 This is possible by using different domain-partitioning methods in P4IRS such as the waLBerla domain partitiong with block-forests, but for this example we can achieve perfect scaling even with regular domain-partitioning.
 
