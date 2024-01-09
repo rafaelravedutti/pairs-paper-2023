@@ -805,7 +805,7 @@ And we also perform experiments to evaluate P4IRS weak-scalability in the follow
 The icc (ICC) 2021.10.0 20230609 compiler was used for CPU experiments (except in the JUWELS cluster), with the \emph{-Ofast -xCORE-AVX512 -qopt-zmm-usage=high} flags for Fritz / Ice Lake (AVX512) and \emph{-Ofast -march=core-avx2} flags for Milan (AVX2).
 For CUDA, we use the NVCC compiler V12.1.r12.1 for the single GPU experiments, and the same flags used for Milan (AVX2) since it is the host processor in the systems with the A40/A100 GPUs.
 In the JUWELS Booster, we used the Intel(R) oneAPI DPC++/C++ Compiler 2023.2.0 (2023.2.0.20230721) together with NVCC V12.2.91, and the same flags as used for Milan since both CPUs have AVX2 with FMA as the largest SIMD vector extension available.
-We make use of the Likwid toolkit V5.3 \cite{likwid} to measure HPM counters in the target CPU (Ice Lake) for the single core experiments, where P4IRS is able to properly generate the instrumentation markers and MD-Bench kernels are already instrumented.
+We make use of the Likwid toolkit V5.3 \cite{likwid} to pin tasks to specific CPU cores and measure HPM counters in the target CPU (Ice Lake) for the single core experiments, where P4IRS is able to properly generate the instrumentation markers and MD-Bench kernels are already instrumented.
 
 Experiments for \ac{MD} use the standard Copper FCC lattice (see \autoref{fig:copper_fcc_lattice}) testcase from miniMD/MD-Bench, and we use our results from MD-Bench as a performance reference since it is a well optimized code for \ac{MD}.
 The \ac{DEM} test case is a "Settling Spheres" benchmark (see \autoref{fig:settling_spheres}), on which several spheres fall into a "ground" (half-space), thus generating a "bed" of spherical particles.
@@ -850,6 +850,10 @@ For \ac{MD} we show results for the Verlet Lists case since it is widely employe
 %   Alex (figure)
 %     - Full and half-neighbor lists
 %     - A40 and A100
+
+For \ac{MD} case, we use the Verlet Lists algorithm as it is the standard one for such simulations.
+The simulations runs through 200 time-steps, and the neighbor-lists are rebuilt at every 20 time-steps of the simulation (and at the start).
+We use the simple Lennard-Jones potential (as shown in \autoref{lst:pairslj}) to calculate the force contributions among atoms.
 
 \colorlet{force-cpu}{teal!80}
 \colorlet{neigh-cpu}{teal!50}
@@ -955,7 +959,7 @@ For more computational-intensive kernels, the arithmetic ratio should increase a
 
 The performance with \ac{HN} is significantly worse but it is compensated by the fact it computes roughly half the interactions.
 Another important thing to consider is the introduction of the Intel patch to mitigate the Downfall vulnerability (also known as Gather Data Sampling), which significantly affects the performance of the gather instructions in the Intel CPUs and therefore affect the \ac{FN} cases performance with AVX512 vectorization.
-In particular, the separation of concerns introduced by P4IRS together with code generation techniques can assist on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and then organize (through permutation, shuffles and swizzles) it into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps atoms data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
+In particular, the separation of concerns introduced by P4IRS together with code generation techniques can be a first step on dealing with such issues by avoiding gather instructions, which can be done by producing explicit SIMD intrinsics to gather the data with separate instructions to load and then organize (through permutation, shuffles and swizzles) it into the vector registers, or using different algorithms such as the Cluster Pair from GROMACS, which keeps atoms data in an array-of-struct-of-arrays (AoSoA) fashion, thus requiring only simple load instructions to build-up the vector registers.
 
 \colorlet{force-gpu}{purple!80}
 \colorlet{neigh-gpu}{purple!50}
@@ -1156,13 +1160,13 @@ We also use the Linked Cells algorithm, as it is usually not common to use Verle
         \addlegendimage{empty legend}
         \addlegendentry{\hspace{-.325cm}\textbf{A:} P4IRS}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{B:} P4IRS+NBB}
+	\addlegendentry{\hspace{-.325cm}\textbf{B:} P4IRS (NPC)}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS+2R}
+	\addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS (2R)}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{D:} P4IRS+NBB+2R}
+	\addlegendentry{\hspace{-.325cm}\textbf{D:} P4IRS (NPC, 2R)}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{E:} MESA-PD+2R}
+	\addlegendentry{\hspace{-.325cm}\textbf{E:} MESA-PD (2R)}
     \end{axis}
     \begin{axis}[bar shift=-12pt, nodes near coords style={xshift=-12pt},
         legend style = {at = {([yshift = -1mm]pairs.south west)},
@@ -1198,7 +1202,7 @@ We also use the Linked Cells algorithm, as it is usually not common to use Verle
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per bin (+NBB) and for single and two ranks (+2R).}
+	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per cell (NPC) and for single and two ranks (2R).}
 \vspace{-2ex}
 \centering
 \label{fig:dem_single_core_runtimes}
@@ -1214,7 +1218,7 @@ The reason is that P4IRS code is able to perform several specializations in the 
 For instance, the code from MESA-PD needs parameters such as stiffness and damping to be set at every iteration because they depend on the masses and radii of the particles, which not only incurs in extra instructions to load and store such data in a lookup array, but also restricts specializations in the kernel since some parameters are not known at compile-time.
 In P4IRS, such parameters are calculated directly in the kernel, and we can make use of Just-In-Time (JIT) compilation to emit tailored versions of our kernels for the specific problem we want to solve, which leads to significant speedup.
 Some specialization can also be exposed by separating the interaction code between shapes as discussed in \autoref{sec:shape_partitioning}.
-For more complex kernels, there may be even more opportunities for specializations, which can result in even better performance improvements.
+For more complex kernels, there may be even more opportunities for specializations, which can result in even higher improvements in performance when comparing to kernels with no specializations.
 
 Another point to evaluate is the impact of building the neighbor-lists per cell (NPC) in the CPU.
 Althrough there are considerable improvements in the force calculation in both CPUs (about 76\% faster in Ice Lake, and about 46-49\% in Milan), the significant amount of time building the neighbor-lists does not compensate the improvements.
@@ -1255,11 +1259,11 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
         \addlegendimage{empty legend}
         \addlegendentry{\hspace{-.325cm}\textbf{A:} P4IRS}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{B:} P4IRS+NBB}
+	\addlegendentry{\hspace{-.325cm}\textbf{B:} P4IRS (NPC)}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS+MK}
+	\addlegendentry{\hspace{-.325cm}\textbf{C:} P4IRS (MK)}
         \addlegendimage{empty legend}
-        \addlegendentry{\hspace{-.325cm}\textbf{D:} P4IRS+NBB+MK}
+	\addlegendentry{\hspace{-.325cm}\textbf{D:} P4IRS (NPC, MK)}
         %\addlegendimage{empty legend}
         %\addlegendentry{\hspace{-.325cm}\textbf{E:} MESA-PD+2R}
     \end{axis}
@@ -1289,13 +1293,25 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
     \end{axis}
 \end{tikzpicture}
 \vspace{-3ex}
-	\caption{Execution time for P4IRS and MD-Bench simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on Ice Lake and Milan CPUs. Tests were performed in a single core (no parallelism) with fixed frequency. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per bin (+NBB) and for single and two ranks (+2R).}
+	\caption{Execution time for P4IRS simulations in seconds (lower is better) of a Setting-Spheres benchmark with 18720 particles during 10000 time-steps on A40 and A100 GPUs. Results are shown for standard Linked Cells, Linked Cells with neighbor-lists created per cell (NPC) and for multi-kernel (MK) in both cases.}
 \vspace{-2ex}
 \centering
 \label{fig:dem_single_gpu_runtimes}
 \end{figure}
 
+\autoref{fig:dem_single_gpu_runtimes} displays the runtimes for the DEM testcase in both A40 and A100 GPUs, also evaluating the neighbor-lists per cell (see \autoref{sec:neighbor_lists_per_cell}) and multi-kernel (see \autoref{sec:shape_partitioning}) strategies.
+Most of the simulation time is spent on calculating the forces and executing other routines, which is likely transferring data from and to the GPUs.
+Note that since particles contain significant more properties (and some of them with dynamic types such as vectors and matrices), the communication and/or PBC buffers are significantly larger especially when particles need to be exchanged.
+It is also important to disclose that due to PBC particles are still exchanged and produce ghost versions of themselves (with proper PBC shifts) even when running in a single MPI rank, therefore the same routines for packing and unpacking data for communication are used.
 
+It is noticeable that in this case, building the neighbor-lists per cell actually increases the overall performance, as the improved runtime for the force calculation compensates the time for building the neighbor-lists.
+The force calculation with the neighbor-lists per cell is about 24\% faster the standard Linked Cells version in A40, and about 45\% faster in A100, hence the SIMD execution is improved as expected.
+In the overall runtime, the NPC version is about 20\% faster for A40 and 12\% faster for A100 since the increase in time for building the neighbor-lists is relatively larger for the A100 GPU.
+
+For the Multi-Kernel approach, there are no significant improvements observed for the A40 GPU, with a time difference less than 1\% in the force calculation kernels.
+The time spent in other sections is significantly higher leading to worse performance when using the Multi-Kernel, but this can be happening due to impact caused by asynchronously launching more kernels into the GPU.
+For the A100, the same behavior applies for the standard Linked Cells, but when combining both NPC and MK approaches, it is possible to see an improvement of 13\% in the force calculation performance in comparison to only using NPC, leading to about 6\% performance improvement overall.
+This example also illustrates the usage of P4IRS for experimentation, as these different kernel versions can be generated with P4IRS without the effort of implementing each one of them for the specific interaction model used.
 
 \begin{figure}[t]
 \centering
@@ -1330,6 +1346,13 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
 \label{fig:dem_weak_scaling_fritz}
 \end{figure}
 
+Finally, \autoref{fig:dem_weak_scaling_fritz} shows the weak-scaling for the DEM case on Fritz.
+It is noticeable that the scaling degrades over successive executions, with about 91\% efficiency with 32 nodes (2304 CPU cores) and 87\% efficiency with 64 nodes (4608 CPU cores).
+The reason is likely due to work imbalances caused by the Settling-Spheres example when extending the simulation domain and amount of particles.
+Note that the example itself can present more heterogeneity when scaling up, as the spheres generated contain random radii and this can impact the amount of interactions computed, as well as the overall distribution of the particles into the sub-domains over the course of the simulation.
+In practice, the presented weak-scaling results are still acceptable, but they demonstrate that such particle simulations may not necessarily scale well for more realistic and complex simulations.
+The purpose of this work, however, is to demonstrate that we can achieve state-of-the-art performance and (currently in certain conditions) good scalability with P4IRS while providing simple and flexible means of modeling particle simulations, which is achieved via code generation techniques.
+
 \subsubsection*{Acknowledgments}
 
 The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU).
@@ -1337,6 +1360,22 @@ This project has received funding from the Deutsche Forschungsgemeinschaft (DFG,
 
 \section{Conclusion and Outlook}
 \label{sec:conclusion}
+
+This paper introduced P4IRS, an intermediate representation and compiler for particle simulations which is able to use a single problem description in Python and generate efficient C++ and CUDA parallel codes with OpenMP and MPI for shared- and distributed-memory parallelism.
+We present and describe P4IRS features focusing on \ac{MD} and \ac{DEM}, illustrating how to setup simulations by providing the potential and/or contact model specification, the particle properties and even contact properties required for more complex DEM models such as the Linear Spring-Dashpot.
+Apart from features to model particle simulations, we also display optimization strategies enabled with P4IRS, which are possible to be achieved through code generation.
+P4IRS is currently able to generate the Linked Cells and Verlet Lists variants for each kernel specified, and these can also make use of specific optimization strategies such as the neighbor-lists per cell and multi-kernel approach to enhance SIMD parallelism on CPUs and GPUs.
+
+Results for \ac{MD} kernels generated by P4IRS demonstrate that we can achieve state-of-the-art performance in comparison to our performance-focused prototyping harness MD-Bench, which contains hand-tuned implementations of \ac{MD} kernels in C and CUDA.
+Also, results in modern clusters Fritz and JUWELS Booster are displayed to show P4IRS scaling capabilities, which are important for particle simulations in general.
+For more complex and realistic cases, we also show that P4IRS is able to generate code to solve \ac{DEM} simulation with the Linear Spring-Dashpot contact model.
+The performance results demonstrate that P4IRS significantly outperforms our previous framework (called MESA-PD), which can be attributed to aggresive specializations of the force calculation kernels for the contact model.
+Besides, we also demonstrate how P4IRS can be used for experimentation, since contact models or potentials can be generated with different optimization strategies without the effort of implementing new kernels, highlighting the advantages of using code generation techniques.
+
+In the future, we intend to use P4IRS particle simulations coupled with fluid simulations, which can be solved through the waLBerla framework.
+For this, we still need to generate proper interfaces for the coupling and generate modular code for the particle simulations that can be seamlessly integrated into other applications.
+Nevertheless, we also want to include more performance optimizations into P4IRS such as the Cluster Pair algorithm from GROMACS to enhance SIMD performance, as well as being able to generate SIMD intrinsics explicitly into P4IRS generated kernels to either enforce SIMD vectorization and also to be able to choose between different strategies (such as not using gather instructions explicitly).
+At the end, the separation of concerns introduced by P4IRS together with its intermediate representation embedded in Python provides several opportunities to explore and experiment with performance in different types of particle simulations.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
