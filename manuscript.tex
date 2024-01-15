@@ -336,7 +336,7 @@ To mitigate such limitations, a few code generation approaches were developed fo
 % TODO: OpenMM, MDL, ppmd, OpenFPM, PPME
 % TODO: MESA-PD, tinyMD
 
-Solutions based on code generation are also available for specific fields of particle simulations, and these tend to provide a higher level of extensibility while keeping pace with of performance in modern accelerators.
+Solutions based on code generation are also available for specific fields of particle simulations, and these aim at providing a higher level of flexibility and extensibility while strive for efficient performance in modern accelerators.
 
 OpenMM \cite{openmm} is a \ac{MD} package that makes use of Python as a front-end for simulation protocols and file I/O, it contains a C++ API for forces and integrators as well as optimized kernel implementations for CUDA, C++ and OpenCL.
 Integrators and forces can be implemented by using mathematical descriptions in OpenMM, but its use cases are restricted to \ac{MD} simulations and several features required for a DEM simulation or other types of particles simulation (such as contact history and different shapes) are not available.
@@ -345,7 +345,7 @@ MESA-PD \cite{mesapd3} is a general particle dynamics framework that is built-in
 Its design principle of separation of code and data allows to introduce arbitrary interaction models with ease, which makes it also useful for \ac{MD}.
 By using its code generation approach using Jinja templates it can be adapted very effectively to any simulation scenario.
 As successor of the pe rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
-One of the limitations of MESA-PD is that it does not support simulations in the GPU, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
+One of the limitations of MESA-PD is that it does not support GPU code generation, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
 
 In previous work we developed tinyMD, a proxy-app (also based on miniMD) created to evaluate the portability of MD and DEM applications with the AnyDSL \cite{anydsl1,anydsl2} framework.
 TinyMD uses higher-order functions to abstract device iteration loops, data layouts and communication strategies, providing a domain-specific library to implement pair-wise interaction kernels that execute efficiently on multi-CPU and multi-GPU targets.
@@ -362,7 +362,7 @@ Our performance-focused prototyping harness MD-Bench \cite{mdbench1,mdbench2} is
 It currently supports the Verlet Lists and Cluster Pair algorithms from LAMMPS and GROMACS, respectively.
 One of our goals is to use the knowledge obtained with MD-Bench and integrate it into P4IRS to achieve state-of-the-art performance and flexibility altogether in particle simulations.
 
-DEM simulations, however, do not contain many in-depth performance studies, and most of them focus on evaluating distributed-memory parallelism in weak-scaling settings.
+Based on our searches, there are not many in-depth performance studies focusing on SIMD and in-core execution for kernels used in DEM simulations, and most existing studies focus on evaluating their distributed-memory parallelism in weak-scaling settings.
 With P4IRS, we intend to bridge the gap between performance strategies across different simulation domains, and use the most efficient algorithm whenever it is possible, without requiring significant efforts such as re-implementing kernels and re-designing applications with tailored data structures for improving performance.
 
 To evaluate performance in a single CPU core or GPU in this paper, we use MD-Bench and miniMD as the baseline performance, as they are well-known implementations that reach state-of-the-art performance for MD simulations.
