@@ -345,7 +345,7 @@ Integrators and forces can be implemented by using mathematical descriptions in 
 MESA-PD \cite{mesapd3} is a general particle dynamics framework that is built-in the waLBerla framework for the simulation of particles and fluids.
 Its design principle of separation of code and data allows to introduce arbitrary interaction models with ease, which makes it also useful for \ac{MD}.
 By using its code generation approach using Jinja templates it can be adapted very effectively to any simulation scenario.
-As successor of the pe rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
+As successor of the ``physics engine'' (pe) rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
 One of the limitations of MESA-PD is that it does not support GPU code generation, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
 
 In previous work we developed tinyMD, a proxy-app (also based on miniMD) created to evaluate the portability of MD and DEM applications with the AnyDSL \cite{anydsl1,anydsl2} framework.
@@ -356,7 +356,7 @@ One of tinyMD's limitation is that its flexibility and optimization settings are
 \subsection{Performance Evaluation}
 \label{sec:perfeval}
 
-Several performance investigation researches for MD systems exist, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
+Several performance researches for MD systems exist, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
 In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}.
 Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
 Our performance-focused prototyping harness MD-Bench \cite{mdbench1,mdbench2} is a toolbox developed for performance-engineering \ac{MD} non-bonded short-range force calculation algorithms, with focus on in-core execution on CPUs and GPUs.
@@ -396,7 +396,7 @@ Fundamentally, atom trajectories in classical \ac{MD} systems are computed by in
     \hat F_i = m \dot{\hat v}_i \label{eq:newton_force}
 \end{equation}
 \begin{equation}
-    \hat v_i = m \dot{\hat x}_i \label{eq:newton_velocity}
+    \hat v_i = \dot{\hat x}_i \label{eq:newton_velocity}
 \end{equation}
 The forces $F_i$ are described by the negative gradient of the potential of interest.
 The mutual force between atom $i$ and $j$ as governed by the \ac{LJ} potential
@@ -498,7 +498,7 @@ At the end, this strategy is likely to be beneficial for more arithmetic-intensi
   \label{fig:features}
 \end{figure*}
 
-P4IRS is a stand-alone compiler and domain-specific language for particle simulations which aims at generating optimized code for different target hardwares.
+P4IRS\footnote{\url{https://i10git.cs.fau.de/software/pairs}} is a stand-alone compiler and domain-specific language for particle simulations which aims at generating optimized code for different target hardwares.
 It is released as a Python package and allows users to define kernels, integrators and other particle routines in a high-level and straightforward fashion.
 
 \autoref{fig:features} displays an overview of P4IRS.
@@ -762,7 +762,7 @@ In GPUs, however, this should lead to better execution since threads are not hal
 \subsection{Domain Partitioning and Communication}
 \label{sec:domain_partitioning}
 
-In order to attain distributed-memory parallelism and software flexibility without injuring performance, P4IRS provides a customizable and robust communication module that facilitates integrating new domain partitioning schemes into its generated simulations.
+In order to attain distributed-memory parallelism and software flexibility while attaining good performance, P4IRS provides a customizable and robust communication module that facilitates integrating new domain partitioning schemes into its generated simulations.
 This is done by combining its runtime functions and code generation techniques, and allows the usage of the waLBerla domain-partitioning scheme based on a block-forest data structure.
 
 Essentially, P4IRS communication is split into three routines:
