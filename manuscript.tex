@@ -357,8 +357,11 @@ One of tinyMD's limitation is that its flexibility and optimization settings are
 \label{sec:perfeval}
 
 Several performance researches for MD systems exist, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
-In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}.
-Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
+In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}. Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
+
+The Exascale Computing Project (ECP) Co-design Center for Particle Applications (CoPA) \cite{ecpcopa} focus on co-designing particle applications to prepare them for exascale computing.
+They provide several proxy-apps for particle simulations such as CabanaMD and ExaMiniMD, which are designed a modular fashion to account for different optimization strategies and data layouts, and also are built on top of Kokkos to be able to execute on many-core CPU and GPU targets.
+
 Our performance-focused prototyping harness MD-Bench \cite{mdbench1,mdbench2} is a toolbox developed for performance-engineering \ac{MD} non-bonded short-range force calculation algorithms, with focus on in-core execution on CPUs and GPUs.
 It currently supports the Verlet Lists and Cluster Pair algorithms from LAMMPS and GROMACS, respectively.
 One of our goals is to use the knowledge obtained with MD-Bench and integrate it into P4IRS to achieve state-of-the-art performance and flexibility altogether in particle simulations.
