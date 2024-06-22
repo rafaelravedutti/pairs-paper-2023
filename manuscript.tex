@@ -360,7 +360,7 @@ Several performance researches for MD systems exist, most of them using MD packa
 In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}. Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
 
 The Exascale Computing Project (ECP) Co-design Center for Particle Applications (CoPA) \cite{ecpcopa} focus on co-designing particle applications to prepare them for exascale computing.
-They provide several proxy-apps for particle simulations such as CabanaMD and ExaMiniMD, which are designed a modular fashion to account for different optimization strategies and data layouts, and also are built on top of Kokkos to be able to execute on many-core CPU and GPU targets.
+They provide several proxy-apps for particle simulations such as CabanaMD and ExaMiniMD, which are designed a modular fashion to account for different optimization strategies and particle data layouts, and also are built on top of Kokkos to be able to execute on many-core CPU and GPU targets.
 
 Our performance-focused prototyping harness MD-Bench \cite{mdbench1,mdbench2} is a toolbox developed for performance-engineering \ac{MD} non-bonded short-range force calculation algorithms, with focus on in-core execution on CPUs and GPUs.
 It currently supports the Verlet Lists and Cluster Pair algorithms from LAMMPS and GROMACS, respectively.
