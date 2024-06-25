@@ -651,10 +651,6 @@ To provide fast and efficient accesses of contact properties when using neighbor
 This prevents a lookup operation within the kernel for finding the contact index, and also keeps data access contiguous for the contact history data structure.
 When Linked Cells are used without a Verlet Lists, such optimizations are not possible, which should significantly impact the performance for the kernel.
 
-%\begin{lstlisting}[language=Python,
-%		   label={lst:pairslj},
-%		   caption={Lennard-Jones force description in P4IRS.}]
-%\end{lstlisting}
 
 \subsection{Backend and Code Generation}
 \label{sec:backend}
@@ -664,11 +660,47 @@ P4IRS uses its own \ac{IR} to facilitate this process, where internal routines t
 Afterwards, compiler analyses and transformations are performed to properly add parallelism and optimizations into the code.
 In its current state, P4IRS generates C++ and CUDA code with MPI for distributed-memory parallelism, but new backend languages, intermediate representations and technologies can be included without difficulties by extending its code generator.
 
+\begin{lstlisting}[language=Python,
+                   label={lst:build_neigh},
+                   caption={Neighbor-lists intermediate representation construction in P4IRS.}]
+class BuildNeighborLists(Lowerable):
+    # ...
+    @pairs_device_block
+    def lower(self):
+        # ...
+        sim.module_name("build_neighbor_lists")
+        sim.check_resize(sim.neighbor_capacity, neighbor_lists.numneighs)
+
+        for i in ParticleFor(sim):
+            for shape in range(sim.max_shapes()):
+                Assign(sim, neighbor_lists.numneighs[i][shape], 0)
+
+        for interaction_data in ParticleInteraction(sim, 2, cutoff_radius, use_cell_lists=True):
+            i = interaction_data.i()
+            j = interaction_data.j()
+            shape = interaction_data.shape()
+
+            neighs_start = sum([neighbor_lists.numneighs[i][s] for s in range(shape)], 0)
+            numneighs = neighbor_lists.numneighs[i][shape]
+            Assign(sim, neighbor_lists.neighborlists[i][neighs_start + numneighs], j)
+            Assign(sim, neighbor_lists.numneighs[i][shape], numneighs + 1)
+\end{lstlisting}
+
+\autoref{lst:build_neigh} displays an example for constructing the intermediate representation that generates the code that builds the neighbor-lists for each particle in the system.
+The \emph{BuildNeighborLists} class is a separate, high-level element from the AST in P4IRS.
+During the compilation process, P4IRS performs analyses and transformations to lower this element by using its \emph{lower} method, and decorators such as the \emph{@pairs\_device\_block} are used to determine the target hardware where the code must be executed.
+
+The different routines in P4IRS can be separated by ``modules'', and every module determines a point where data must be synchronized for the target it will execute on.
+For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties that are referred within the IR subtree.
+To avoid complex control-flow analyses to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
+Only when the bit is not set in the device, the copy method for the respective array or property is called.
+Also, when properties or arrays are changed within the subtree, specific code is generated to clean up the respective bits.
+
 \subsection{Runtime Module}
 
 Apart from the kernel implementations and functions to prepare the kernel launches and move data between host and accelerator processors, particle simulations also may need to call external libraries and deal with filesystem I/O.
 A few case examples where this is needed are, for instance, to write and read particle data into/from a visualization format like VTK, and reading the initial state of the particle system to setup the simulation.
-Since most of these procedures do not require extensive optimizations as they are not compute-intensive and usually their bottleneck is concentrated in an external I/O device (such as disks), building up the intermediate representation for them and extending the code generator to support such external calls brings significant effort with no substantial benefit.
+Since most of these procedures do not require extensive optimizations as they are not compute-intensive and usually their bottleneck is concentrated in an external I/O device (such as disks), building up the intermediate representation for them and extending the code generator to support such external calls would demand significant effort with no substantial benefit.
 
 To handle this, P4IRS provides a runtime module which contains such functionalities directly implemented in C++, and these make use of and synchronize (when necessary) the data structures defined in the generated simulation.
 To access the simulation data, an instance (referred to as \emph{PairsRuntime} object) contains all the meta-data for the simulation, and can be used in these implemented routines.
