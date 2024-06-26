@@ -360,7 +360,7 @@ Several performance researches for MD systems exist, most of them using MD packa
 In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}. Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
 
 The Exascale Computing Project (ECP) Co-design Center for Particle Applications (CoPA) \cite{ecpcopa} focus on co-designing particle applications to prepare them for exascale computing.
-They provide several proxy-apps for particle simulations such as CabanaMD and ExaMiniMD, which are designed a modular fashion to account for different optimization strategies and particle data layouts, and also are built on top of Kokkos to be able to execute on many-core CPU and GPU targets.
+They provide several proxy-apps for particle simulations such as CabanaMD and ExaMiniMD, which are designed in a modular fashion to account for different optimization strategies and particle data layouts, and also are built on top of Kokkos to be able to execute on many-core CPU and GPU targets.
 
 Our performance-focused prototyping harness MD-Bench \cite{mdbench1,mdbench2} is a toolbox developed for performance-engineering \ac{MD} non-bonded short-range force calculation algorithms, with focus on in-core execution on CPUs and GPUs.
 It currently supports the Verlet Lists and Cluster Pair algorithms from LAMMPS and GROMACS, respectively.
@@ -695,6 +695,20 @@ For example, the code generated from the constructed IR in the \emph{lower} meth
 To avoid complex control-flow analyses to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
 Only when the bit is not set in the device, the copy method for the respective array or property is called.
 Also, when properties or arrays are changed within the subtree, specific code is generated to clean up the respective bits.
+
+The \emph{check\_resize} method is used to specify which array sizes can grow during the module execution, and which variable or array is used for its current capacity.
+In this case, the \emph{neighbor\_capacity} can be increased based on the \emph{numneighs} array, so when one particle contains more atom the current capacity, a proper code is generated to reallocate the arrays that contain the referred capacity as one of its dimension sizes.
+The compiler handles the reallocation cases when the target is an accelerator such as a GPU, which need the kernel to be re-executed after arrays are reallocated, and it also avoids memory access violation in the current execution by wrapping then around branches that check whether the accessed indexes are smaller than the current capacity.
+
+Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are used as higher-level elements of the AST that will be lowered at some point, based on their strategies and parameters.
+In this case, the \emph{ParticleInteraction} is lowered by using the linked-cells data structure to build the neighbor-lists as is done for traditional implementations.
+The interaction object also contains methods to access the current particle (i), the neighbor particle (j) and the shape for the neighbor particle (shape).
+The latter is particulary important for the shape-partitioning and multi-kernel code generation discussed in \autoref{sec:shape_partitioning}.
+
+Other primitive elements such as assignments (Assign) and array accesses, as well as common expressions can be observed in \autoref{lst:build_neigh}.
+These are simple AST nodes that do not need to be lowered during the compiler analyses and transformations, but can be in some cases optimized away.
+Note that Python artifacts can help constructing the IR such as the iteration loop at line 10, as well as the summation at line 18.
+These are not directly built into the P4IRS AST, but rather executed during the lowering process to construct the list of assignments for all shapes and the summation of all array-access elements constructed in-place, respectively.
 
 \subsection{Runtime Module}
 
