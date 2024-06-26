@@ -282,16 +282,16 @@ code generation \sep particle simulations \sep molecular dynamics \sep discrete 
 The computation of particle-pair interactions is widely used in physics simulations, especially in the fields of Molecular Dynamics and Discrete Element Method.
 To efficiently compute the inter-particle contributions, different strategies can be used to increase efficiency and make use of the parallelism offered by the target hardware.
 Most simulation packages, however, have their own hard-coded implementations, which are strictly tightened to their data structures and programming artifacts.
-Also, several kernel implementations for the same potential or force field are present in a single package to target different hardwares such as GPUs and to exploit different optimization strategies, which leads to higher maintainability and substantially increases the portability effort.
+Also, several kernel implementations for the same potential or force field are present in a single package to account for different hardwares and optimizations strategies, leading to higher maintainability costs and higher portability effort.
 
 To tackle these limitations, we developed P4IRS --- Parallel and Performance-Portable Particles Intermediate Representation and Simulator, an intermediate representation and compiler tool where particle interactions can be simply expressed as Python methods, and efficient and parallel code for the interaction description can be generated for multi-CPU and multi-GPU targets.
 P4IRS provide its own intermediate representation, which allows it to perform compiler analysis and transformations, to then generate code for the proper backend such as C++ and CUDA with OpenMP/MPI.
 
 P4IRS can generate several kernel flavours of the same potential such as Linked Cells \cite{linkedcells} and Verlet Lists \cite{verletlists}, where data layouts for properties and specific arrays (such as the neighbor-lists) can be switched to the case with best performance.
-A runtime interface in C++ is also available and can be used to integrate P4IRS with other simulation tools, which is particularly important for us to be able to integrate P4IRS simulations with our multi-physics framework waLBerLa \cite{walberla1,walberla2}.
+A runtime interface in C++ is also available and can be used to integrate P4IRS with other simulation tools, which is particularly important for integrating P4IRS simulations with our multi-physics framework waLBerLa \cite{walberla1,walberla2}.
 %as an example we show how P4IRS can use the load-balancing communication algorithm from waLBerLa to compute simulations with a more heterogeneous distribution of particles.
 
-Most of P4IRS internal routines such as building Linked Cells and Verlet Lists are implemented in Python by constructing the intermediate representation for them with the assistance of operator overloading.
+Most of P4IRS internal routines such as building Linked Cells and Verlet Lists are implemented in Python by constructing the intermediate representation for them with the assistance of operator overloading (see \autoref{sec:backend}).
 In this way, we leverage P4IRS analysis and transformations to achieve performance-portability for these routines as well, without requiring multiple tailored implementations.
 
 The goals of this paper are summarized as follows:
@@ -312,9 +312,9 @@ This paper is structured as follows: In \autoref{sec:related_work} we list relat
 \label{sec:packages}
 
 Diverse simulation fields can be described by updating particle trajectories based on their interactions with other particles.
-In this paper, we mainly focus on \ac{MD} and \ac{DEM}, where in MD particles represent point masses (i.e. atoms) in the simulation, and in \ac{DEM} particles represent rigid bodies with specific shapes (i.e. spheres, half-spaces, ellipses).
+In this paper, we mainly focus on \ac{MD} and \ac{DEM}, where particles represent either point masses (i.e. atoms) and rigid bodies with specific shapes (i.e. spheres, half-spaces, ellipses), respectively.
 Most packages available use similar techniques to compute trajectories, but each of them have their own specific algorithms, parallelism strategies and hand-tuned implementations for specific hardware.
-With P4IRS, we focus on using a single description of the problem, and then leverage its implemented routines and code transformations to provide the high-end implementation for the specific target, which currently can be C++ with OpenMP and CUDA, also supporting MPI for multiple computing nodes.
+With P4IRS, we focus on using a single description of the problem, and then leverage its implemented routines and code transformations to produce the backend implementation for the specific target, which currently can be C++ with OpenMP and CUDA, also supporting MPI for distributed-memory parallel clusters.
 
 In MD, there exist many packages with distinct strategies and simulation fields.
 LAMMPS \cite{lammps1,lammps2} is a molecular package for the material-modeling field which uses the standard Verlet Lists algorithm to optimize the non-bonded short-range force calculations.
@@ -356,7 +356,7 @@ One of tinyMD's limitation is that its flexibility and optimization settings are
 \subsection{Performance Evaluation}
 \label{sec:perfeval}
 
-Several performance researches for MD systems exist, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
+Many performance-focused researches exist for MD systems, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
 In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}. Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
 
 The Exascale Computing Project (ECP) Co-design Center for Particle Applications (CoPA) \cite{ecpcopa} focus on co-designing particle applications to prepare them for exascale computing.
