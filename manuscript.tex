@@ -690,7 +690,7 @@ class BuildNeighborLists(Lowerable):
 The \emph{BuildNeighborLists} class is a separate, high-level element from the AST in P4IRS.
 During the compilation process, P4IRS performs analyses and transformations to lower this element by using its \emph{lower} method, and decorators such as the \emph{@pairs\_device\_block} are used to determine the target hardware where the code must be executed.
 
-The different routines in P4IRS can be separated by ``modules'', and every module determines a point where data must be synchronized for the target it will execute on.
+Different routines in P4IRS can be separated by ``modules'', and every module determines a point where data must be synchronized for the target it will execute on.
 For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties that are referred within the IR subtree.
 To avoid complex control-flow analyses to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
 Only when the bit is not set in the device, the copy method for the respective array or property is called.
@@ -709,6 +709,13 @@ Other primitive elements such as assignments (Assign) and array accesses, as wel
 These are simple AST nodes that do not need to be lowered during the compiler analyses and transformations, but can be in some cases optimized away.
 Note that Python artifacts can help constructing the IR such as the iteration loop at line 10, as well as the summation at line 18.
 These are not directly built into the P4IRS AST, but rather executed during the lowering process to construct the list of assignments for all shapes and the summation of all array-access elements constructed in-place, respectively.
+
+After the IR is constructed for a specific routine, P4IRS then focus on determining which loops will be scheduled to the GPU.
+As a general case, every outer-most loop in a block that uses the \emph{@pairs\_device\_block} is a candidate to be replaced by a kernel launch to be run in parallel.
+In \autoref{lst:build_neigh}, both loops at lines 9 and 13 are candidates and their body instructions are then wrapped around a separate GPU kernel.
+The loops are then replaced by a kernel launch statement for the new generated kernel.
+Note that some candidates may not be offloaded to the GPU, the reason is that P4IRS can use internal heuristics to determine whether a loop should or should not be executed in the GPU.
+Domain-knowledge can also be used in the GPU offloading analyses since elements like \emph{ParticleFor} and \emph{ParticleInteraction} can be used during the compiler passes before they are lowered.
 
 \subsection{Runtime Module}
 
