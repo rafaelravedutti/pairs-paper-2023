@@ -396,12 +396,13 @@ Here, we use \ac{PBC} in all directions, hence when one atom crosses the domain,
 %These simulations are defined by establishing the number of atoms in a system, the initial state of the system (such as the atoms' positions or velocities), and the boundary conditions for the system.
 Fundamentally, atom trajectories in classical \ac{MD} systems are computed by integrating Newton-Euler equations for every atom $i$:
 \begin{equation}
-    \hat F_i = m \dot{\hat v}_i \label{eq:newton_force}
+    \hat F_i = m_i \dot{\hat v}_i \label{eq:newton_force}
 \end{equation}
 \begin{equation}
     \hat v_i = \dot{\hat x}_i \label{eq:newton_velocity}
 \end{equation}
-The forces $F_i$ are described by the negative gradient of the potential of interest.
+Where $m_i$, $\hat v_i$ and $\hat x_i$ are the mass, the velocity vector and the position vector of the atom $i$, respectively.
+The force $F_i$ then must be calculated to integrate the positions of the atoms, and these are described by the negative gradient of the potential of interest.
 The mutual force between atom $i$ and $j$ as governed by the \ac{LJ} potential
 is given as:
 \begin{equation}
@@ -423,16 +424,37 @@ Equations of motions are extended with the following terms for the torque and an
     \hat{\tau}{_i} = I \dot{\hat \omega}_i + {\hat \omega}_i \times I {\hat \omega}_i \label{eq:newton_torque}
 \end{equation}
 \begin{equation}
-    \hat{\omega}{_i} = \dot{\hat{\varphi}}_i \label{eq:newton_angular_velocity}
+    \hat{\omega}{_i} = \dot{\varphi}_i \label{eq:newton_angular_velocity}
 \end{equation}
 
-Also, a collision detection step is also needed to check when two particles overlap.
-When particles overlap, a collision is detected and information regarding the collision such as the contact point and penetration depth are calculated.
-Note that there may be penetration when a collision happens because there is no guarantee that it is detect right when it starts, as the simulation is discretized by the time-step size.
+With the torque vector $\hat{\tau}{_i}$, angular velocity vector $\hat{\omega}{_i}$, rotation $\varphi$ (typically stored as a quaternion, rotation matrix or rotation vector) and moment of inertia about the center of mass $I = I(\varphi_i)$.
+A collision detection step is required to check when two particles overlap, and parameters about the collision such as the contact point and penetration depth are calculated and used in the force calculation.
+Note that the reason a penetration occurs during a collision is that the collision is not detected right when it starts because the simulation is discretized by the time-step size.
 For simplification purposes, we only calculate collision detections analytically in this work since there are no particles with complex shapes involved.
 
 In this work, we use the penalty-based Linear Spring-Dashpot model to calculate forces among particles for the DEM cases.
-The collision force is split into two components, the force in the normal direction and in the tangential direction.
+The collision force is split into two components, one representing the force in the normal direction and one representing the force in the tangential direction.
+
+The relative contact velocity $\hat{u}_{ij}$ is of importance for most contact models.
+Considering $\hat{c}_{ij}$ the contact point and $\hat{n}_{ij}$ the normal direction vector between the particles $i$ and $j$, the relative contact velocity and their normal and tangential components can be expressed as:
+
+
+\begin{equation}
+    \hat{u}_{ij} = \hat{v}_{i} - \hat{v}_{j} + \hat{\omega}_{i} \times (\hat{c}_{ij} - \hat{x}_{i}) - \hat{\omega}_{j} \times (\hat{c}_{ij} - \hat{x}_{j})
+    \label{eq:relative_contact_velocity}
+\end{equation}
+
+\begin{equation}
+    \hat{u}_{ij}^{n} = \hat{u}_{ij} \cdot \hat{n}_{ij} * \hat{n}_{ij}
+    \label{eq:relative_contact_velocity_n}
+\end{equation}
+
+\begin{equation}
+    \hat{u}_{ij}^{t} = \hat{u}_{ij} - \hat{u}_{ij}^{n}
+    \label{eq:relative_contact_velocity_t}
+\end{equation}
+
+Then, the force components in the normal direction $\hat{F}_{SD}^{n}$ and in the tangential direction $\hat{F}_{SD}^{t}$ can be defined as:
 
 \begin{equation}
     \hat{F}_{SD}^{n}(\hat{x_i}, \hat{x_j}) = k^{n}\delta_{ij}\hat{n}_{ij} - \xi^{n}\hat{u}_{ij}^{n}
@@ -449,7 +471,7 @@ The collision force is split into two components, the force in the normal direct
     \label{eq:update_rule}
 \end{equation}
 
-Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping and $\mu$ the friction.
+Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, and $\delta_{ij}$ the penetration depth.
 The update rule \autoref{eq:update_rule} and modifications in \autoref{eq:linear_spring_dashpot_tangential} were properly included to fix frictional contact accordingly \cite{dem1,dem2}.
 The update rule is carried out every time-step the contact persists, which from the algorithmic point of view means that a contact history data structure is needed to properly compute these interactions.
 
@@ -463,8 +485,8 @@ The update rule is carried out every time-step the contact persists, which from 
     \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of particles is created by evaluating which particle distances are smaller than the cutoff radius plus a "skin" value, which represents a sphere in the 3D case.}
 \end{figure*}
 
-To obtain the force for a particle in a specific time-step, it is necessary to compute its partial contributions from each of the other particles present in the system.
-In a naive strategy, this results in a quadratic complexity and severely affects the application performance, which limits the system sizes and time-scales of such simulations.
+To calculate the resulting force for a particle in a specific time-step, it is necessary to compute all partial force contributions from each of the other particles present in the system.
+In a naive strategy, this results in a quadratic complexity and severely affects the application performance, which limits the system size and the time-scale of the simulation.
 
 When force contributions become negligible at long-distance interactions or when a contact between particles is needed, different algorithm strategies can be employed to perform computations only for particles within a specific cut-off region.
 There are two main data structures which are commonly used for efficiently computing particle interactions in state-of-the-art simulation packages: the Linked Cells and the Verlet Lists.
