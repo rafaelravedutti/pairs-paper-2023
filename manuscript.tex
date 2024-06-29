@@ -473,7 +473,8 @@ Then, the force components in the normal direction $\hat{F}_{SD}^{n}$ and in the
 
 Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, and $\delta_{ij}$ the penetration depth.
 The update rule \autoref{eq:update_rule} and modifications in \autoref{eq:linear_spring_dashpot_tangential} were properly included to fix frictional contact accordingly \cite{dem1,dem2}.
-The update rule is carried out every time-step the contact persists, which from the algorithmic point of view means that a contact history data structure is needed to properly compute these interactions.
+The tangential spring displacement $\hat{\delta}^{t}_{ij}$ is initialized as a zero vector in the first contact between the particles $i$ and $j$, and the update rule is carried out every time-step the contact persists.
+From the algorithmic point of view, this means that a contact history data structure is required to keep track of the last updated value.
 
 \subsection{Optimization Strategies}
 \label{sec:opts}
