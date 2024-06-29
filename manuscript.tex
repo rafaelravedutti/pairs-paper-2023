@@ -382,7 +382,7 @@ Interaction contributions can come either from inter-atomic van-der-Walls forces
 In order to simulate such systems, however, we need well-defined and closed system of particles with known boundary conditions.
 In the scope of this paper, particle contributions are computed for particles that lie within a range or ``cutoff radius''. 
 Strategies to compute approximations from particles beyond this range (also known as long-range contributions) also exist, but are not disclosed.
-To provide distinct examples of simulations and display a certain level of flexibility from P4IRS, we focus on MD and DEM simulations in this work.
+To provide distinct examples of simulations and demonstrate a certain level of flexibility from P4IRS, we focus on MD and DEM simulations in this work.
 
 \subsection{Molecular Dynamics}
 \label{sec:md}
@@ -437,7 +437,7 @@ In this work, we use the penalty-based Linear Spring-Dashpot model to calculate 
 The collision force is split into two components, one representing the force in the normal direction and one representing the force in the tangential direction.
 
 The relative contact velocity $\hat{u}_{ij}$ is of importance for most contact models.
-Considering $\hat{c}_{ij}$ the contact point and $\hat{n}_{ij}$ the normal direction vector between the particles $i$ and $j$, the relative contact velocity and their normal and tangential components can be expressed as:
+Considering $\hat{c}_{ij}$ the contact point and $\hat{n}_{ij}$ the normal direction vector between the particles $i$ and $j$, the relative contact velocity and its normal and tangential components $\hat{u}_{ij}^{n}$ and $\hat{u}_{ij}^{t}$ can be expressed as:
 
 
 \begin{equation}
@@ -472,8 +472,8 @@ Then, the force components in the normal direction $\hat{F}_{SD}^{n}$ and in the
     \label{eq:update_rule}
 \end{equation}
 
-Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, $\delta_{ij}$ the penetration depth and $dt$ the time-step size.
-The update rule \autoref{eq:update_rule} and modifications in \autoref{eq:linear_spring_dashpot_tangential} were properly included to fix frictional contact accordingly \cite{dem1,dem2}.
+Where $k^{n}$ is the normal spring stiffness, $k^{t}$ the tangential spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, $\delta_{ij}$ the penetration depth and $dt$ the time-step size.
+The update rule in \autoref{eq:update_rule} and modifications in \autoref{eq:linear_spring_dashpot_tangential} were properly included to fix frictional contact accordingly \cite{dem1,dem2}.
 The tangential spring displacement $\hat{\delta}^{t}_{ij}$ is initialized as a zero vector in the first contact between the particles $i$ and $j$, and the update rule is carried out every time-step the contact persists.
 From the algorithmic point of view, this means that a contact history data structure is required to keep track of the last computed value for every pair of particles that are in contact.
 
