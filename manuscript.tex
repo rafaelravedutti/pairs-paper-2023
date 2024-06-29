@@ -715,17 +715,19 @@ To avoid complex control-flow analyses to determine which properties and arrays 
 Only when the bit is not set in the device, the copy method for the respective array or property is called.
 Also, when properties or arrays are changed within the subtree, specific code is generated to clean up the respective bits.
 
-The \emph{check\_resize} method is used to specify which array sizes can grow during the module execution, and which variable or array is used for its current capacity.
-In this case, the \emph{neighbor\_capacity} can be increased based on the \emph{numneighs} array, so when one particle contains more atom the current capacity, a proper code is generated to reallocate the arrays that contain the referred capacity as one of its dimension sizes.
-The compiler handles the reallocation cases when the target is an accelerator such as a GPU, which need the kernel to be re-executed after arrays are reallocated, and it also avoids memory access violation in the current execution by wrapping then around branches that check whether the accessed indexes are smaller than the current capacity.
+The \emph{check\_resize} method is used to specify which array sizes can grow during the module execution, and which variable or array is used as their current capacity.
+In this case, the \emph{neighbor\_capacity} can be increased based on the \emph{numneighs} array, so when one particle contains more neighbors than \emph{neighbor\_capacity}, a proper code is generated to reallocate the arrays that contain the referred capacity as one of its dimension sizes.
+The compiler handles the reallocation cases when the target is an accelerator such as a GPU, which needs the kernel to be re-executed after arrays are reallocated since it is not possible to reallocate them directly in the accelerator.
+P4IRS also takes care of avoiding memory access violation in the current kernel execution by wrapping the accesses around branches which assure the accessed indexes are smaller than the current capacity of the arrays.
 
-Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are used as higher-level elements of the AST that will be lowered at some point, based on their strategies and parameters.
-In this case, the \emph{ParticleInteraction} is lowered by using the linked-cells data structure to build the neighbor-lists as is done for traditional implementations.
+Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are used as higher-level elements of the AST.
+These will be lowered at some point based on their strategies and given parameters.
+In this case, the \emph{ParticleInteraction} is lowered by using the linked-cells data structure to build the neighbor-lists as is done in traditional implementations.
 The interaction object also contains methods to access the current particle (i), the neighbor particle (j) and the shape for the neighbor particle (shape).
 The latter is particulary important for the shape-partitioning and multi-kernel code generation discussed in \autoref{sec:shape_partitioning}.
 
-Other primitive elements such as assignments (Assign) and array accesses, as well as common expressions can be observed in \autoref{lst:build_neigh}.
-These are simple AST nodes that do not need to be lowered during the compiler analyses and transformations, but can be in some cases optimized away.
+Other primitive elements such as assignments (Assign) and array accesses, as well as subexpressions can be observed in \autoref{lst:build_neigh}.
+These are simple AST nodes which are not lowered during the compiler analyses and transformations, but can be in some cases optimized away.
 Note that Python artifacts can help constructing the IR such as the iteration loop at line 10, as well as the summation at line 18.
 These are not directly built into the P4IRS AST, but rather executed during the lowering process to construct the list of assignments for all shapes and the summation of all array-access elements constructed in-place, respectively.
 
@@ -740,9 +742,9 @@ Domain-knowledge can also be used in the GPU offloading analyses since elements 
 
 Apart from the kernel implementations and functions to prepare the kernel launches and move data between host and accelerator processors, particle simulations also may need to call external libraries and deal with filesystem I/O.
 A few case examples where this is needed are, for instance, to write particle data to a file in a visualization format like VTK, and reading the initial state of the particle system to setup the simulation.
-Since most of these procedures do not require extensive optimizations as they are not compute-intensive and usually their bottleneck is concentrated in an external I/O device (such as disks), building up the intermediate representation for them and extending the code generator to support such external calls would demand significant effort with no substantial benefit.
+Since most of these procedures do not require extensive optimizations as they are not compute-intensive and their bottleneck is an external I/O device (such as a disk), building up the intermediate representation for them and extending the code generator to support such external calls is simply not worthwhile.
 
-To handle this, P4IRS provides a runtime module which contains such functionalities directly implemented in C++, and these make use of and synchronize (when necessary) the data structures defined in the generated simulation.
+To handle this, P4IRS provides a runtime module which contains such functionalities directly implemented in C++, and these make use of and synchronize (when necessary) the data structures from the generated simulation.
 To access the simulation data, an instance (referred to as \emph{PairsRuntime} object) contains all the meta-data for the simulation, and can be used in these implemented routines.
 
 \begin{lstlisting}[language=C++,
@@ -781,6 +783,7 @@ Therefore, the usage of such instance must be avoided for performance-intensive 
 When computing forces for DEM simulations that contain different shapes, different calculation formulas are needed for some of the contact elements such as the penetration depth, contact point and distance.
 From a computational point of view, this introduces branching in the inner-most loop where each path leads to different arithmetic instructions be executed and therefore inhibits SIMD vectorization.
 Algorithm \autoref{alg:branching} displays an example of such issue for a kernel with spheres and half-spaces.
+Note that when traversing the neighbors, their shapes are checked to determine which code path is taken during the interaction, hence the code is not SIMD-friendly.
 
 \begin{algorithm}[H]
   \caption{Example kernel with branching for different shapes.}
@@ -825,10 +828,10 @@ For GPUs, this can be beneficial since different threads will be used for differ
 Note that there is no guarantee that the internal loop will be vectorized for CPU, since there may still be branches and instructions in the force kernel that make it not possible.
 Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code to use AVX/SSE instructions, which may not happen even when the code is amenable to vectorization.
 
-Apart from splitting the inner-most loop, P4IRS makes it also possible to split the outer-most loop and generate two distinct kernels, each one computing different types of interactions (in this case, Sphere-Sphere and Sphere-Halfspace variants), which here we name as Multi-Kernel partition.
-This requires data from the left-side particles to be loaded again, which can be alleviated due to the contiguous memory access pattern for these particles.
-Besides exposing more SIMD opportunities, this can also lead to better memory accesses in the right-side particles when there are not many particles of the same shape (such as the half-space obstacles).
-The reason is that the data for these obstacles are accessed separately from the other particles and should be closer in the memory hierarchy since there should be no cache pollution from evaluating and computing interactions with other spheres in the same kernel.
+Apart from splitting the inner-most loop, P4IRS makes it possible to split the outer-most loop and generate two distinct kernels, each one computing different types of interactions (in this case, Sphere-Sphere and Sphere-Halfspace variants), we name this strategy here as ``Multi-Kernel partition''.
+This requires data from the left-side particles to be loaded again, which is not necessarily a significant problem since they are contiguous in memory.
+Besides exposing more SIMD opportunities, this can also lead to better memory accesses from the right-side particle properties when there are not many particles of a specific shape in the simulation (such as the half-space obstacles).
+The reason is the properties for these obstacles are accessed separately from other particle properties and should be closer in the memory hierarchy in subsequent accesses since there should be no cache pollution from evaluating and computing interactions with other sphere neighbors in the same kernel.
 
 \subsection{Neighbor-lists per Cell}
 \label{sec:neighbor_lists_per_cell}
