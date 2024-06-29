@@ -1466,6 +1466,7 @@ Besides, we also demonstrate how P4IRS can be used for experimentation, since co
 In the future, we intend to use P4IRS particle simulations coupled with fluid simulations, which can be solved through the waLBerla framework.
 For this, we still need to generate proper interfaces for the coupling and generate modular code for the particle simulations that can be seamlessly integrated into other applications.
 Nevertheless, we also want to include more performance optimizations into P4IRS such as the Cluster Pair algorithm from GROMACS to enhance SIMD performance, as well as being able to generate SIMD intrinsics explicitly into P4IRS generated kernels to either enforce SIMD vectorization and also to be able to choose between different strategies (i.e. gather data manually instead of using gather instructions).
+Another future plan is to support long-range interactions in P4IRS simulations, which could be achieved either by implementing methods in P4IRS to account for the long-range computation steps or coupling the generated code for short-range calculations with other existing long-range implementations.
 At the end, the separation of concerns introduced by P4IRS together with its intermediate representation embedded in Python provide several opportunities to explore and experiment with performance on many types of particle simulations that can belong to distinct research fields.
 
 %% The Appendices part is started with the command \appendix;
