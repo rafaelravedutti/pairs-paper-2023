@@ -484,7 +484,7 @@ From the algorithmic point of view, this means that a contact history data struc
     \centering
     \subfigure[Linked Cells]{\label{fig:linked_cells}\includegraphics[width=0.40\textwidth]{linked_cells.pdf}}
     \subfigure[Verlet Lists]{\label{fig:verlet_lists}\includegraphics[width=0.40\textwidth]{verlet_lists.pdf}}
-    \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of particles is created by evaluating which particle distances are smaller than the cutoff radius plus a "skin" value, which represents a sphere in the 3D case.}
+    \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of particles is created by evaluating which particle distances are smaller than the cutoff radius plus a ``skin'' value, which represents a sphere in the 3D case.}
 \end{figure*}
 
 To calculate the resulting force for a particle in a specific time-step, it is necessary to compute all partial force contributions from each of the other particles present in the system.
@@ -499,8 +499,8 @@ After, forces can be computed for each particle by traversing its current and ne
 The Linked Cells results in computing only forces for particles within a region that is discretized by their current and neighbor cells/bins, which can still results in a significant amount of redundant computations.
 In order to avoid even more redundant computations, the Verlet Lists strategy can be used jointly with Linked Cells.
 The Verlet Lists (see Figure~\ref{fig:verlet_lists}) constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, evaluating the distances among particles within close bins and then using the distance to determine whether such particles should be added into the list.
-In the Verlet Lists case, the region for searching for neighbor particles is defined by a sphere, where the center of the sphere is the position of the particle and the radius is the cutoff radius plus a "skin".
-The "skin" is used to avoid building the neighbor-lists at every time-step, it extends the neighbor-search and avoid missing computations from particles that end up entering the cut-off region in subsequent time-steps in which the neighbor-lists are not reconstructed.
+In the Verlet Lists case, the region for searching for neighbor particles is defined by a sphere, where the center of the sphere is the position of the particle and the radius is the cutoff radius plus a ``skin''.
+The ``skin'' is used to avoid building the neighbor-lists at every time-step, it extends the neighbor-search and avoid missing computations from particles that end up entering the cut-off region in subsequent time-steps in which the neighbor-lists are not reconstructed.
 
 Despite avoiding computations from long-distance particles, another common optimization is to take advantage of Newton's Third Law and compute forces in only one direction.
 This means that only half of particle-pairs are traversed when computing the forces, and partial forces are decreased for the neighbor particles during their computation.
@@ -854,7 +854,7 @@ This is done by combining its runtime functions and code generation techniques, 
 Essentially, P4IRS communication is split into three routines:
 
 \begin{itemize}
-    \item \emph{borders:} define particles within the halo region which must be send to neighbor ranks as "ghost" particles; only non-volatile properties that are accessed in a neighbor particle within a kernel are sent.
+    \item \emph{borders:} define particles within the halo region which must be send to neighbor ranks as ``ghost'' particles; only non-volatile properties that are accessed in a neighbor particle within a kernel are sent.
     \item \emph{synchronize:} uses the defined particle in the borders routine to exchange data; only non-volatile properties that are accessed in neighbor particles within a kernel and that change across time-steps are sent.
     \item \emph{exchange:} send particles that overlap the current rank's domain, it becomes a local particle in the neighbor rank; all properties except volatiles are sent; contact history data is also exchanged.
 \end{itemize}
@@ -889,7 +889,7 @@ And we also perform experiments to evaluate P4IRS weak-scalability in the follow
 
 \begin{itemize}
   \item \textbf{Fritz:} Each compute node has two Ice Lake processors; 256 GB of DDR4 RAM; Blocking HDR100 Infiniband with up to 100 GBit/s bandwidth per link and direction.
-  \item \textbf{JUWELS Booster:} Each compute node has two AMD EPYC "Rome" 7402 CPU, with 48 cores (simultaneous multi-threading) at 2.8 GHz; 512 GB of DDR4 memory at 3200 MHz; Four Nvidia A100 GPU with 40 GB HBM2e memory; Four InfiniBand HDR (Connect-X6) interconnect channels.
+  \item \textbf{JUWELS Booster:} Each compute node has two AMD EPYC ``Rome'' 7402 CPU, with 48 cores (simultaneous multi-threading) at 2.8 GHz; 512 GB of DDR4 memory at 3200 MHz; Four Nvidia A100 GPU with 40 GB HBM2e memory; Four InfiniBand HDR (Connect-X6) interconnect channels.
 \end{itemize}
 
 The icc (ICC) 2021.10.0 20230609 compiler was used for CPU experiments (except in the JUWELS cluster), with the \emph{-Ofast -xCORE-AVX512 -qopt-zmm-usage=high} flags for Fritz / Ice Lake (AVX512) and \emph{-Ofast -march=core-avx2} flags for Milan (AVX2).
@@ -898,7 +898,7 @@ In the JUWELS Booster, we used the Intel(R) oneAPI DPC++/C++ Compiler 2023.2.0 (
 We make use of the Likwid toolkit V5.3 \cite{likwid} to pin tasks to specific CPU cores and measure HPM counters in the target CPU (Ice Lake) for the single core experiments, where P4IRS is able to properly generate the instrumentation markers and MD-Bench kernels are already instrumented.
 
 Experiments for \ac{MD} use the standard Copper FCC lattice (see \autoref{fig:copper_fcc_lattice}) test-case from miniMD/MD-Bench, and we use our results from MD-Bench as a performance reference since it is a well optimized code for \ac{MD}.
-The \ac{DEM} test case is a "Settling Spheres" benchmark (see \autoref{fig:settling_spheres}), on which several spheres fall into a "ground" (half-space), thus generating a "bed" of spherical particles.
+The \ac{DEM} test case is a ``Settling Spheres'' benchmark (see \autoref{fig:settling_spheres}), on which several spheres fall into a ``ground'' (half-space), thus generating a ``bed'' of spherical particles.
 Due to its multiple shapes and dynamics that consists of many interactions among spheres and half-spaces, it should provide a good reference for DEM simulations.
 We compare our single-core results from P4IRS with MESA-PD using 2 MPI ranks since it is not possible to run this setup in MESA-PD using a single rank.
 GPU results are not available for MESA-PD as it is not capable of generating GPU code, but we show GPU performance results for P4IRS comparing different code generation strategies.
@@ -924,7 +924,7 @@ For \ac{MD} we show results for the Verlet Lists case since it is widely employe
     \vskip\baselineskip
     \subfigure[t = 4000]{\label{fig:dem_ts4000}\includegraphics[width=0.48\textwidth]{dem_4000.png}}
     \subfigure[t = 10000]{\label{fig:dem_ts10000}\includegraphics[width=0.48\textwidth]{dem_10000.png}}
-    \caption{The DEM simulation example used in this paper which can be called "Settling Spheres" or "Bed Generation". Spherical particles fall into the ground (represented by a half-space) to generate a bed at the end of the simulation. Forces are computed for gravity, buoyancy and the Linear Spring-Dashpot method to achieve the desired result and PBC is used in the X and Y dimensions.}
+    \caption{The DEM simulation example used in this paper which can be called ``Settling Spheres'' or ``Bed Generation''. Spherical particles fall into the ground (represented by a half-space) to generate a bed at the end of the simulation. Forces are computed for gravity, buoyancy and the Linear Spring-Dashpot method to achieve the desired result and PBC is used in the X and Y dimensions.}
     \label{fig:settling_spheres}
 \end{figure*}
 
