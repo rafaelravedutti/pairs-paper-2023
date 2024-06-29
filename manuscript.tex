@@ -356,7 +356,7 @@ One of tinyMD's limitation is that its flexibility and optimization settings are
 \subsection{Performance Evaluation}
 \label{sec:perfeval}
 
-Many performance-focused researches exist for MD systems, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
+Many performance-oriented researches exist for MD systems, most of them using MD packages as a black-box and adjusting different simulation parameters to analyse their implications in the overall performance.
 In some cases, however, in-depth performance studies were made to gain a broader understanding on efficient ways to achieve SIMD vectorization with SSE/AVX instructions \cite{mdsimd}. Most in-depth studies are performed using mini-apps or proxy-apps, with miniMD being worth to mention as it provides a simple copper face-cubic-centered lattice simulation using the kernels extracted from LAMMPS.
 
 The Exascale Computing Project (ECP) Co-design Center for Particle Applications (CoPA) \cite{ecpcopa} focus on co-designing particle applications to prepare them for exascale computing.
@@ -416,8 +416,8 @@ Where $\hat{x}_{ij}$ is the distance vector between atoms $i$ and $j$, $x_{ij}$ 
 \label{sec:dem}
 
 Besides computing trajectories for zero-dimensional point masses as done in MD, we can model particles as objects with specific shapes and spatial extension using the Discrete Element Method (DEM).
-This requires the simulation tool to support more degrees of freedom for particles, since spatial properties (such as rotation) need to be taken into consideration.
-In this work, we consider particles with homogeneous density, and then use the center of mass for each particle as its position, which due to its density properties coincides with its geometrical center.
+This requires support of more degrees of freedom for particles, since spatial properties (such as rotation) need to be taken into consideration.
+In this work, we consider particles with homogeneous density, and then use the center of mass for each particle as its position, which coincides with its geometrical center due to its density properties.
 Equations of motions are extended with the following terms for the torque and angular velocity:
 
 \begin{equation}
@@ -471,10 +471,10 @@ Then, the force components in the normal direction $\hat{F}_{SD}^{n}$ and in the
     \label{eq:update_rule}
 \end{equation}
 
-Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, and $\delta_{ij}$ the penetration depth.
+Where $k^{n}$ is the spring stiffness, $\xi^{n}$ the normal velocity damping, $\mu$ the friction, $\delta_{ij}$ the penetration depth and $dt$ the time-step size.
 The update rule \autoref{eq:update_rule} and modifications in \autoref{eq:linear_spring_dashpot_tangential} were properly included to fix frictional contact accordingly \cite{dem1,dem2}.
 The tangential spring displacement $\hat{\delta}^{t}_{ij}$ is initialized as a zero vector in the first contact between the particles $i$ and $j$, and the update rule is carried out every time-step the contact persists.
-From the algorithmic point of view, this means that a contact history data structure is required to keep track of the last updated value.
+From the algorithmic point of view, this means that a contact history data structure is required to keep track of the last computed value for every pair of particles that are in contact.
 
 \subsection{Optimization Strategies}
 \label{sec:opts}
