@@ -627,7 +627,11 @@ else:
 psim.generate()
 \end{lstlisting}
 
-After the properties and simulation settings, the optimization settings (i.e. whether Verlet Lists are used, the reneighbor frequency and if half-neighbor-lists should be used) are specified (see lines 33-35), followed by the directive (line 36) to write data to VTK files at every 20 time-steps.
+After the properties and simulation declarations, the optimization settings (or schedule) are specified (see lines 33-35).
+These can be, for instance, whether the Verlet Lists strategy is used, the particle reneighboring frequency, and whether half neighbor-lists must be used.
+Note that, ideally, optimization strategies should not change the semantics of the generated program nor the simulation results, but since particle simulations are sensitive to the order of computation performed and the floating-point precision, it is possible that simulations with different optimization strategies lead to different results.
+This is not an issue for particle simulations as long as it is still possible to validate the simulations through macroscopic properties such as the temperature or pressure (for \ac{MD} simulations) or analyzing the physical dynamics of the system (for \ac{DEM} simulations).
+The \emph{vtk\_output} directive (line 36) is used to write data to VTK files at every 20 time-steps.
 Finally, the kernels to be computed must be specified using the \emph{compute} method (lines 39-40).
 The cutoff radius must be specified for kernels with more than one parameter/particle and other parameters used in such kernels (such as the \emph{dt} in the Euler kernel) must also be provided as a Python dictionary.
 The final steps define the target and call the \emph{generate} method to then trigger the code generator.
@@ -650,7 +654,7 @@ psim.add_contact_property('impact_velocity_magnitude', pairs.real(), 0.0)
 
 These properties can be used directly in kernels in the same way as feature properties.
 \autoref{lst:contactprops2} shows an example of their usage in the Linear Spring-Dashpot kernel.
-Note that when such properties are not stored for the particle pair, then their default values are used.
+Note that when such properties are not stored for the particle pair, their default values are used.
 
 \begin{lstlisting}[language=Python,
 		   label={lst:contactprops2},
