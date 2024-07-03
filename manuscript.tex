@@ -745,7 +745,7 @@ Domain-knowledge can also be used in the GPU offloading analyses since elements 
 \subsection{Runtime Module}
 
 Apart from the kernel implementations and functions to prepare the kernel launches and move data between host and accelerator processors, particle simulations also may need to call external libraries and deal with filesystem I/O.
-A few case examples where this is needed are, for instance, to write particle data to a file in a visualization format like VTK, and reading the initial state of the particle system to setup the simulation.
+A few case examples where this is required are, for instance, to write particle data to a file in a visualization format like VTK, and reading the initial state of the particle system to setup the simulation.
 Since most of these procedures do not require extensive optimizations as they are not compute-intensive and their bottleneck is an external I/O device (such as a disk), building up the intermediate representation for them and extending the code generator to support such external calls is simply not worthwhile.
 
 To handle this, P4IRS provides a runtime module which contains such functionalities directly implemented in C++, and these make use of and synchronize (when necessary) the data structures from the generated simulation.
