@@ -470,8 +470,8 @@ P4IRS methods also allow the specification of parameters such as the \emph{dt} s
 		   label={lst:euler},
 		   caption={Euler integrator description in P4IRS.}]
 def euler(i):
-    linear_velocity[i] += dt * force[i] / mass[i]
-    position[i] += dt * linear_velocity[i]
+    velocity[i] += dt * force[i] / mass[i]
+    position[i] += dt * velocity[i]
 \end{lstlisting}
 
 \autoref{lst:pairs_md_setup} shows the simulation setup for the \ac{MD} case. In the first part (lines 6-10), a \emph{simulation} instance is created, and its identifier, the list of particle shapes used, the number of time-steps and the floating-point precision are specified.
@@ -490,15 +490,15 @@ import pairs
 
 # Simulation setup
 psim = pairs.simulation(
-	"md", 			# Simulation identifier
-	[pairs.point_mass()], 	# List of shapes
-	timesteps=200,		# Number of time-steps
-	double_prec=True)	# Use double-precision
+  "md", # Simulation identifier
+  [pairs.point_mass()], # List of shapes
+  timesteps=200, # Number of time-steps
+  double_prec=True) # Use double-precision
 
 # Particle properties
 psim.add_position('position')
 psim.add_property('mass', pairs.real(), 1.0)
-psim.add_property('linear_velocity', pairs.vector())
+psim.add_property('velocity', pairs.vector())
 psim.add_property('force', pairs.vector(), volatile=True)
 
 # Features and their properties
@@ -511,15 +511,15 @@ psim.set_domain([xmin, ymin, zmin, xmax, ymax, zmax])
 
 # Initial state
 psim.read_particle_data(
-	"data/copper_fcc_lattice.input",
-	['type', 'mass', 'position', 'linear_velocity', 'flags'],
-	pairs.point_mass())
+  "data/copper_fcc_lattice.input",
+  ['type', 'mass', 'position', 'velocity'],
+  pairs.point_mass())
 
 # Optimization settings
 psim.reneighbor_every(20)
 psim.compute_half()
 psim.build_neighbor_lists(cutoff_radius + skin)
-psim.vtk_output(f"output/md_{target}", every=20)
+psim.vtk_output("output/md", every=20)
 
 # Kernels to compute
 psim.compute(lennard_jones, cutoff_radius)
@@ -527,9 +527,9 @@ psim.compute(euler, symbols={'dt': dt})
 
 # Target hardware
 if target == 'gpu':
-    psim.target(pairs.target_gpu())
+  psim.target(pairs.target_gpu())
 else:
-    psim.target(pairs.target_cpu())
+  psim.target(pairs.target_cpu())
 
 psim.generate()
 \end{lstlisting}
@@ -553,10 +553,13 @@ These can be simply added through the \emph{add\_contact\_property} method as ca
 
 \begin{lstlisting}[language=Python,
 		   label={lst:contactprops1},
-		   caption={Setup example for contact properties.}]
-psim.add_contact_property('is_sticking', pairs.int32(), 0)
-psim.add_contact_property('tangential_spring_displacement', pairs.vector(), [0.0, 0.0, 0.0])
-psim.add_contact_property('impact_velocity_magnitude', pairs.real(), 0.0)
+		   caption={Contact properties setup example.}]
+psim.add_contact_property(
+  'is_sticking', pairs.int32(), 0)
+psim.add_contact_property(
+  't_spring_disp', pairs.vector(), [0.0, 0.0, 0.0])
+psim.add_contact_property(
+  'impact_velocity', pairs.real(), 0.0)
 \end{lstlisting}
 
 These properties can be used directly in kernels in the same way as feature properties.
@@ -565,15 +568,15 @@ Note that when such properties are not stored for the particle pair, their defau
 
 \begin{lstlisting}[language=Python,
 		   label={lst:contactprops2},
-		   caption={Usage example for contact properties.}]
+		   caption={Contact properties usage example.}]
 def linear_spring_dashpot(i, j):
     # ...
-    tan_spring_disp = tangential_spring_displacement[i, j]
-    impact_vel_magnitude = impact_velocity_magnitude[i, j]
-    impact_magnitude = select(impact_vel_magnitude > 0.0, impact_vel_magnitude, length(rel_vel))
+    t_disp = t_spring_disp[i, j]
+    impact_vel = impact_velocity[i, j]
+    impact_magnitude = select(impact_vel > 0.0, impact_vel, length(rel_vel))
     # ...
-    tangential_spring_displacement[i, j] = new_tan_spring_disp
-    impact_velocity_magnitude[i, j] = impact_magnitude
+    t_spring_disp[i, j] = new_t_disp
+    impact_velocity[i, j] = impact_magnitude
     is_sticking[i, j] = n_sticking
 \end{lstlisting}
 
@@ -594,26 +597,26 @@ In its current state, P4IRS generates C++ and CUDA code with MPI for distributed
                    label={lst:build_neigh},
                    caption={Neighbor-lists intermediate representation construction in P4IRS.}]
 class BuildNeighborLists(Lowerable):
+  # ...
+  @pairs_device_block
+  def lower(self):
     # ...
-    @pairs_device_block
-    def lower(self):
-        # ...
-        sim.module_name("build_neighbor_lists")
-        sim.check_resize(sim.neighbor_capacity, neighbor_lists.numneighs)
+    sim.module_name("build_neighbor_lists")
+    sim.check_resize(sim.neighbor_capacity, neighbor_lists.numneighs)
 
-        for i in ParticleFor(sim):
-            for shape in range(sim.max_shapes()):
-                Assign(sim, neighbor_lists.numneighs[i][shape], 0)
+    for i in ParticleFor(sim):
+      for shape in range(sim.max_shapes()):
+        Assign(sim, neighbor_lists.numneighs[i][shape], 0)
 
-        for interaction_data in ParticleInteraction(sim, 2, cutoff_radius, use_cell_lists=True):
-            i = interaction_data.i()
-            j = interaction_data.j()
-            shape = interaction_data.shape()
+    for interaction_data in ParticleInteraction(sim, 2, cutoff_radius, use_cell_lists=True):
+      i = interaction_data.i()
+      j = interaction_data.j()
+      shape = interaction_data.shape()
 
-            neighs_start = sum([neighbor_lists.numneighs[i][s] for s in range(shape)], 0)
-            numneighs = neighbor_lists.numneighs[i][shape]
-            Assign(sim, neighbor_lists.neighborlists[i][neighs_start + numneighs], j)
-            Assign(sim, neighbor_lists.numneighs[i][shape], numneighs + 1)
+      neighs_start = sum([neighbor_lists.numneighs[i][s] for s in range(shape)], 0)
+      numneighs = neighbor_lists.numneighs[i][shape]
+      Assign(sim, neighbor_lists.neighborlists[i][neighs_start + numneighs], j)
+      Assign(sim, neighbor_lists.numneighs[i][shape], numneighs + 1)
 \end{lstlisting}
 
 \autoref{lst:build_neigh} displays an example for constructing the intermediate representation that generates the code that builds the neighbor-lists for each particle in the system.
@@ -661,25 +664,30 @@ To access the simulation data, an instance (referred to as \emph{PairsRuntime} o
 \begin{lstlisting}[language=C++,
 		   label={lst:pairsruntime},
 	   	   caption={P4IRS runtime routine example for writing VTK data into a file.}]
-void vtk_write_data(PairsRuntime *ps, const char *filename, int start, int end, int timestep) {
-    std::string output_filename(filename);
-    auto position = ps->getAsVectorProperty(ps->getPropertyByName("position"));
-    // ...
-    filename_oss << filename << "_";
-    if(ps->getDomainPartitioner()->getWorldSize() > 1) {
-        filename_oss << ps->getDomainPartitioner()->getRank() << "_";
-    }
-    // ...
-    filename_oss << timestep << ".vtk";
-    std::ofstream out_file(filename_oss.str());
-    // ...
-    ps->copyPropertyToHost(position);
-    for(int i = start; i < end; i++) {
-        out_file << position(i, 0) << " ";
-        out_file << position(i, 1) << " ";
-        out_file << position(i, 2) << "\n";
-    }
-    // ...
+void vtk_write_data(
+  PairsRuntime *ps, const char *filename,
+  int start, int end, int timestep) {
+
+  std::string output_filename(filename);
+  auto position = ps->getAsVectorProperty(
+    ps->getPropertyByName("position"));
+  auto dom_part = ps->getDomainPartitioner();
+  // ...
+  filename_oss << filename << "_";
+  if(dom_part->getWorldSize() > 1) {
+    filename_oss << dom_part->getRank() << "_";
+  }
+  // ...
+  filename_oss << timestep << ".vtk";
+  std::ofstream out_file(filename_oss.str());
+  // ...
+  ps->copyPropertyToHost(position);
+  for(int i = start; i < end; i++) {
+    out_file << position(i, 0) << " ";
+    out_file << position(i, 1) << " ";
+    out_file << position(i, 2) << "\n";
+  }
+  // ...
 }
 \end{lstlisting}
 
