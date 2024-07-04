@@ -198,7 +198,7 @@ P4IRS can generate several kernel flavours of the same potential such as Linked 
 A runtime interface in C++ is also available and can be used to integrate P4IRS with other simulation tools, which is particularly important for integrating P4IRS simulations with our multi-physics framework waLBerLa \cite{walberla1,walberla2}.
 %as an example we show how P4IRS can use the load-balancing communication algorithm from waLBerLa to compute simulations with a more heterogeneous distribution of particles.
 
-Most of P4IRS internal routines such as building Linked Cells and Verlet Lists are implemented in Python by constructing the intermediate representation for them with the assistance of operator overloading (see \autoref{sec:backend}).
+Most of P4IRS internal routines such as building Linked Cells and Verlet Lists are implemented in Python by constructing the intermediate representation for them with the assistance of operator overloading (see \nameref{sec:backend} section).
 In this way, we leverage P4IRS analysis and transformations to achieve performance-portability for these routines as well, without requiring multiple tailored implementations.
 
 The goals of this paper are summarized as follows:
@@ -210,7 +210,11 @@ The goals of this paper are summarized as follows:
     \item We display weak-scaling results in the Fritz and JUWELS Booster clusters to demonstrate the weak-scaling capabilities of P4IRS in MD and DEM simulations on modern supercomputers.
 \end{itemize}
 
-This paper is structured as follows: In \autoref{sec:related_work} we list related work for MD and DEM simulation packages, code generation tools for particle simulations and performance evaluation of such simulations. In \autoref{sec:background} we explain the basic theory for particle simulations focusing on MD and DEM methods, also covering optimization strategies and choices. In \autoref{sec:pairs} we present P4IRS with its current features and application design. In \autoref{sec:evaluation} we evaluate the performance and scalability from P4IRS applications using \ac{MD} and \ac{DEM} experiments. Finally, \autoref{sec:conclusion} presents our conclusion and outlook for P4IRS, also covering our future work.
+This paper is structured as follows: In the \nameref{sec:related_work} section we list related work for MD and DEM simulation packages, code generation tools for particle simulations and performance evaluation of such simulations.
+In the \nameref{sec:background} section we explain the basic theory for particle simulations focusing on MD and DEM methods, also covering optimization strategies and choices.
+In the \nameref{sec:pairs} section we present P4IRS with its current features and application design.
+In the \nameref{sec:evaluation} section we evaluate the performance and scalability from P4IRS applications using \ac{MD} and \ac{DEM} experiments.
+Finally, the \nameref{sec:conclusion} section presents our conclusion and outlook for P4IRS, also covering our future work.
 
 \section{Related Work}
 \label{sec:related_work}
@@ -638,7 +642,7 @@ Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are
 These will be lowered at some point based on their strategies and given parameters.
 In this case, the \emph{ParticleInteraction} is lowered by using the linked-cells data structure to build the neighbor-lists as is done in traditional implementations.
 The interaction object also contains methods to access the current particle (i), the neighbor particle (j) and the shape for the neighbor particle (shape).
-The latter is particulary important for the shape-partitioning and multi-kernel code generation discussed in \autoref{sec:shape_partitioning}.
+The latter is particulary important for the shape-partitioning and multi-kernel code generation discussed in the \nameref{sec:shape_partitioning} section.
 
 Other primitive elements such as assignments (Assign) and array accesses, as well as subexpressions can be observed in \autoref{lst:build_neigh}.
 These are simple AST nodes which are not lowered during the compiler analyses and transformations, but can be in some cases optimized away.
@@ -1226,7 +1230,7 @@ A more interesting insight from the results is the performance improvement for t
 The reason is that P4IRS code is able to perform several specializations in the generated code and thus reduce the amount of arithmetic instructions to be executed.
 For instance, the code from MESA-PD needs parameters such as stiffness and damping to be set at every iteration because they depend on the masses and radii of the particles, which not only incurs in extra instructions to load and store such data in a lookup array, but also restricts specializations in the kernel since some parameters are not known at compile-time.
 In P4IRS, such parameters are calculated directly in the kernel, and we can make use of Just-In-Time (JIT) compilation to emit tailored versions of our kernels for the specific problem we want to solve, which leads to significant speedup.
-Some specialization can also be exposed by separating the interaction code between shapes as discussed in \autoref{sec:shape_partitioning}.
+Some specialization can also be exposed by separating the interaction code between shapes as discussed in the \nameref{sec:shape_partitioning} section.
 For more complex kernels, there may be even more opportunities for specializations, which can result in even higher improvements in performance when comparing to kernels with no specializations.
 
 Another point to evaluate is the impact of building the neighbor-lists per cell (NPC) in the CPU.
@@ -1308,7 +1312,7 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
 \label{fig:dem_single_gpu_runtimes}
 \end{figure}
 
-\autoref{fig:dem_single_gpu_runtimes} displays the runtimes for the DEM test-case in both A40 and A100 GPUs, also evaluating the neighbor-lists per cell (see \autoref{sec:neighbor_lists_per_cell}) and multi-kernel (see \autoref{sec:shape_partitioning}) strategies.
+\autoref{fig:dem_single_gpu_runtimes} displays the runtimes for the DEM test-case in both A40 and A100 GPUs, also evaluating the neighbor-lists per cell (see the \nameref{sec:neighbor_lists_per_cell} section) and multi-kernel (see the \nameref{sec:shape_partitioning} section) strategies.
 Most of the simulation time is spent on calculating the forces and executing other routines, which is likely transferring data into/from the GPUs.
 Note that since particles contain significant more properties (and some of them with dynamic types such as vectors and matrices), the communication and/or PBC buffers are significantly larger especially when particles need to be exchanged.
 It is also important to disclose that due to PBC particles are still exchanged and produce ghost versions of themselves (with proper PBC shifts) even when running in a single MPI rank, therefore the same routines for packing and unpacking data for communication are used.
