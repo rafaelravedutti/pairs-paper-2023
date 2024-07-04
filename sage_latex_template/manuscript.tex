@@ -38,12 +38,21 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 %\journal{Computer Physics Communications}
 
+% Custom colors
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
 \lstset{
     showstringspaces=false,
     extendedchars=true,
+    morekeywords={self},
+    emph={ParticleFor,ParticleInteraction,Lowerable,Assign},
     basicstyle=\footnotesize\ttfamily,
-    commentstyle=\slshape,
-    stringstyle=\ttfamily,
+    commentstyle=\slshape\color{deepgreen},
+    stringstyle=\ttfamily\color{deepred},
+    keywordstyle=\ttfamily\color{deepblue},
+    emphstyle=\ttfamily\color{violet},
     breaklines=true,
     breakatwhitespace=true,
     columns=flexible,
@@ -600,28 +609,28 @@ In its current state, P4IRS generates C++ and CUDA code with MPI for distributed
 
 \begin{lstlisting}[language=Python,
                    label={lst:build_neigh},
-                   caption={Neighbor-lists intermediate representation construction in P4IRS.}]
+                   caption={Neighbor-lists intermediate representation construction in P4IRS. Elements that are explicitly built for the AST (both high and low level) are shown in purple, and implicit elements such as expressions are constructed via operator-overloading and bound to a statement at some point in the construction.}]
 class BuildNeighborLists(Lowerable):
   # ...
   @pairs_device_block
   def lower(self):
     # ...
     sim.module_name("build_neighbor_lists")
-    sim.check_resize(sim.neighbor_capacity, neighbor_lists.numneighs)
+    sim.check_resize(sim.neighbor_capacity, numneighs)
 
     for i in ParticleFor(sim):
       for shape in range(sim.max_shapes()):
-        Assign(sim, neighbor_lists.numneighs[i][shape], 0)
+        Assign(sim, numneighs[i][shape], 0)
 
     for interaction_data in ParticleInteraction(sim, 2, cutoff_radius, use_cell_lists=True):
       i = interaction_data.i()
       j = interaction_data.j()
       shape = interaction_data.shape()
 
-      neighs_start = sum([neighbor_lists.numneighs[i][s] for s in range(shape)], 0)
-      numneighs = neighbor_lists.numneighs[i][shape]
-      Assign(sim, neighbor_lists.neighborlists[i][neighs_start + numneighs], j)
-      Assign(sim, neighbor_lists.numneighs[i][shape], numneighs + 1)
+      nb_start = sum([numneighs[i][s] for s in range(shape)], 0)
+      n = numneighs[i][shape]
+      Assign(sim, neighbors[i][nb_start + n], j)
+      Assign(sim, numneighs[i][shape], n + 1)
 \end{lstlisting}
 
 \autoref{lst:build_neigh} displays an example for constructing the intermediate representation that generates the code that builds the neighbor-lists for each particle in the system.
