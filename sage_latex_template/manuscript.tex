@@ -541,7 +541,8 @@ psim.generate()
 After the properties and simulation declarations, the optimization settings (or schedule) are specified (see lines 33-35).
 These can be, for instance, whether the Verlet Lists strategy is used, the particle reneighboring frequency, and whether half neighbor-lists must be used.
 Note that, ideally, optimization strategies should not change the semantics of the generated program nor the simulation results, but since particle simulations are sensitive to the order of computation performed and the floating-point precision, it is possible that simulations with different optimization strategies lead to different results.
-This is not an issue for particle simulations as long as it is still possible to validate the simulations through macroscopic properties such as the temperature or pressure (for \ac{MD} simulations) or analyzing the physical dynamics of the system (for \ac{DEM} simulations).
+This is not an issue for particle simulations as long as it is still possible to validate the simulations through macroscopic properties such as the temperature or pressure (for \ac{MD} simulations) or through analyses of the physical dynamics in the system (for \ac{DEM} simulations).
+
 The \emph{vtk\_output} directive (line 36) is used to write data to VTK files at every 20 time-steps.
 Finally, the kernels to be computed must be specified using the \emph{compute} method (lines 39-40).
 The cutoff radius must be specified for kernels with more than one parameter/particle and other parameters used in such kernels (such as the \emph{dt} in the Euler kernel) must also be provided as a Python dictionary.
@@ -803,7 +804,7 @@ In this paper we conducted experiments to evaluate the base performance of P4IRS
 
 \begin{itemize}
   \item \textbf{Ice Lake:} Intel Xeon Platinum 8360Y “Ice Lake” processors (36 cores per chip) running at a base frequency of 2.4 GHz and 54 MB Shared L3 cache per chip, 256 GB of DDR4 RAM.
-  \item \textbf{Milan:} AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3Cache per chip
+  \item \textbf{Milan:} AMD EPYC 7713 “Milan” processors (64 cores per chip) running at 2.0 GHz with 256 MB Shared L3 cache per chip
   \item \textbf{A40:} Nvidia A40 GPU with 48 GB DDR6 @ 696 GB/s; 37.42 TFlop/s in FP32.
   \item \textbf{A100:} Nvidia A100 GPU with 40 GB HBM2 @ 1,555 GB/s; HGX board with NVLink; 9.7 TFlop/s in FP64 or 19.5 TFlop/s in FP32.
 \end{itemize}
@@ -829,7 +830,7 @@ GPU results are not available for MESA-PD as it is not capable of generating GPU
 We also show weak-scaling results to demonstrate P4IRS scaling capabilities.
 For this we use regular domain-partitioning since these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous test-case in all dimensions, and Settling Spheres can obtain acceptable weak-scaling by regularly partitioning the domain in X and Y dimensions).
 We use double floating-point precision and display results when enabling and disabling Newton's 3rd Law optimization (half neighbor-lists).
-For \ac{MD} we show results for the Verlet Lists case since it is widely employed in such simulations, and for \ac{DEM} we stick to Linked Cells as this is the algorithm used in MESA-PD.
+For \ac{MD} simulations, we show results with the Verlet Lists optimization strategy since it is widely employed the field, while for \ac{DEM} we display results with the Linked Cells data-structure because particles are rigid bodies and actually need to be in contact for contributions to be computed, hence there are no significant advantages of using Verlet Lists.
 
 \begin{figure*}[tb]
     \centering
