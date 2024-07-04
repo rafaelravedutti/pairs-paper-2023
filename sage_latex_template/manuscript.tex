@@ -839,7 +839,8 @@ GPU results are not available for MESA-PD as it is not capable of generating GPU
 We also show weak-scaling results to demonstrate P4IRS scaling capabilities.
 For this we use regular domain-partitioning since these experiments do not require sophisticated load-balancing algorithms (Copper lattice is an homogeneous test-case in all dimensions, and Settling Spheres can obtain acceptable weak-scaling by regularly partitioning the domain in X and Y dimensions).
 We use double floating-point precision and display results when enabling and disabling Newton's 3rd Law optimization (half neighbor-lists).
-For \ac{MD} simulations, we show results with the Verlet Lists optimization strategy since it is widely employed the field, while for \ac{DEM} we display results with the Linked Cells data-structure because particles are rigid bodies and actually need to be in contact for contributions to be computed, hence there are no significant advantages of using Verlet Lists.
+For \ac{MD} simulations, we show results with the Verlet Lists optimization strategy since it is widely employed in the field, while for \ac{DEM} we display results with the Linked Cells data-structure because particles represent rigid bodies that need to be in contact for their contributions to be computed.
+Since the amount of contacts is typically way less than atomic interactions, there are no significant advantages of using the Verlet Lists data structure.
 
 \begin{figure*}[tb]
     \centering
