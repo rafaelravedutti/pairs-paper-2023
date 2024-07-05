@@ -232,7 +232,7 @@ Finally, the \nameref{sec:conclusion} section presents our conclusion and outloo
 \label{sec:packages}
 
 Diverse simulation fields can be described by updating particle trajectories based on their interactions with other particles.
-In this paper, we mainly focus on \ac{MD} and \ac{DEM}, where particles represent either point masses (i.e. atoms) and rigid bodies with specific shapes (i.e. spheres, half-spaces, ellipses), respectively.
+In this paper, we mainly focus on \ac{MD} and \ac{DEM}, where particles represent either point masses (i.e. atoms) or rigid bodies with specific shapes (i.e. spheres, half-spaces, ellipses), respectively.
 Most packages available use similar techniques to compute trajectories, but each of them have their own specific algorithms, parallelism strategies and hand-tuned implementations for specific hardware.
 With P4IRS, we focus on using a single description of the problem, and then leverage its implemented routines and code transformations to produce the backend implementation for the specific target, which currently can be C++ with OpenMP and CUDA, also supporting MPI for distributed-memory parallel clusters.
 
@@ -246,8 +246,8 @@ Also, the GPU algorithm in GROMACS differs from the CPU, since it relies on a st
 Other MD packages such as HOOMD-blue (\cite{hoomdblue}), NAMD (\cite{namd}), AMBER (\cite{amber1}) and CHARMM (\cite{charmm}) also contain dedicated and hand-tuned implementations in general purpose languages for each supported backend.
 Each version is tested, maintained, debugged and optimized independently.
 
-Packages that support DEM simulations are in general more flexible (since simulation with more particle properties such as rotations and shapes are needed), however they usually do not have the same optimization techniques as the MD simulation packages.
-The reason is most likely that it is not so feasible to support flexibility with sophisticated optimization algorithms as the complexity of the code grows considerably.
+Packages that support DEM simulations are in general more flexible since simulation with more particle properties such as rotations and shapes are needed.
+However, these do not have usually the same optimization techniques as the MD simulation packages, and the reason is most likely that it is not so feasible to support flexibility with sophisticated optimization algorithms as the complexity of the code grows considerably.
 Examples of such packages are the LIGGGHTS DEM (\cite{liggghts}) (based on LAMMPS), MercuryDPM (\cite{mercurydpm}) and YADE (\cite{yade}).
 To mitigate such limitations, a few code generation approaches were developed for both MD and DEM.
 
@@ -264,7 +264,7 @@ Integrators and forces can be implemented by using mathematical descriptions in 
 
 MESA-PD (\cite{mesapd3}) is a general particle dynamics framework that is built-in the waLBerla framework for the simulation of particles and fluids.
 Its design principle of separation of code and data allows to introduce arbitrary interaction models with ease, which makes it also useful for \ac{MD}.
-By using its code generation approach using Jinja templates it can be adapted very effectively to any simulation scenario.
+By using its code generation approach through Jinja templates, it can be adapted very effectively to any simulation scenario.
 As successor of the ``physics engine'' (pe) rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
 One of the limitations of MESA-PD is that it does not support GPU code generation, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
 
@@ -419,7 +419,7 @@ After, forces can be computed for each particle by traversing its current and ne
 The Linked Cells results in computing only forces for particles within a region that is discretized by their current and neighbor cells/bins, which can still results in a significant amount of redundant computations.
 In order to avoid even more redundant computations, the Verlet Lists strategy can be used jointly with Linked Cells.
 The Verlet Lists (see Figure~\ref{fig:verlet_lists}) constructs a list of neighbor particles for every particle, and this list can be created by using the Linked Cells structure, evaluating the distances among particles within close bins and then using the distance to determine whether such particles should be added into the list.
-In the Verlet Lists case, the region for searching for neighbor particles is defined by a sphere, where the center of the sphere is the position of the particle and the radius is the cutoff radius plus a ``skin''.
+In the Verlet Lists case, the region for searching the neighbor particles is defined by a sphere, where the center of the sphere is the position of the particle and the radius is the cutoff radius plus a ``skin''.
 The ``skin'' is used to avoid building the neighbor-lists at every time-step, it extends the neighbor-search and avoid missing computations from particles that end up entering the cut-off region in subsequent time-steps in which the neighbor-lists are not reconstructed.
 
 Despite avoiding computations from long-distance particles, another common optimization is to take advantage of Newton's Third Law and compute forces in only one direction.
@@ -459,7 +459,7 @@ The next subsections explore the different P4IRS features in more detail.
 
 \autoref{lst:pairslj} shows a simple description in P4IRS to compute forces with the \ac{LJ} potential.
 Functions can be provided through a method (line 1), and the parameters in the method refer to different particles in the system.
-In this way, many-body potentials can also be described using methods with more than two parameters.
+In this way, many-body potentials can also be described through methods with more than two parameters.
 Some keywords are also provided by P4IRS for writing the kernels, in line 2 the \emph{squared\_distance} method is used for obtaining the squared distance for the atoms \emph{i} and \emph{j}, and in line 4 the \emph{delta} method is used for obtaining the delta vector.
 Also, in lines 3 and 4 it is possible to see accesses to feature properties called \emph{sigma6} and \emph{epsilon}, which are defined during the simulation setup as properties which depend on the atom types feature.
 In line 4, the \emph{apply} method is used for applying the computed term into the \emph{force} property of the particles, the method allows the identification of particle properties reductions and is also used when generating the kernel variant using the half neighbor-lists.
@@ -596,8 +596,7 @@ def linear_spring_dashpot(i, j):
 
 To provide fast and efficient accesses of contact properties when using neighbor-lists, P4IRS keep the particles in the same indexes in both data structures.
 This prevents a lookup operation within the kernel for finding the contact index, and also keeps data access contiguous for the contact history data structure.
-When Linked Cells are used without a Verlet Lists, such optimizations are not possible, which should significantly impact the performance for the kernel.
-
+When Linked Cells are used without a Verlet Lists, this optimization is not possible, which should significantly increase the cost for accessing contact properties in a kernel.
 
 \subsection{Backend and Code Generation}
 \label{sec:backend}
@@ -660,7 +659,7 @@ Note that Python artifacts can help constructing the IR such as the iteration lo
 These are not directly built into the P4IRS AST, but rather executed during the lowering process to construct the list of assignments for all shapes and the summation of all array-access elements constructed in-place, respectively.
 
 After the IR is constructed for a specific routine, P4IRS then focus on determining which loops will be scheduled to the GPU.
-As a general case, every outer-most loop in a block that uses the \emph{@pairs\_device\_block} is a candidate to be replaced by a kernel launch to be run in parallel.
+As a general case, every outer-most loop in a block that uses the \emph{@pairs\_device\_block} decorator is a candidate to be replaced by a kernel launch to be run in parallel.
 In \autoref{lst:build_neigh}, both loops at lines 9 and 13 are candidates and their body instructions are then wrapped around a separate GPU kernel.
 The loops are then replaced by a kernel launch statement for the new generated kernel.
 Note that some candidates may not be offloaded to the GPU, the reason is that P4IRS can use internal heuristics to determine whether a loop should or should not be executed in the GPU.
