@@ -85,6 +85,10 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \newacro{PBC}{periodic boundary conditions}
 \newacro{HPM}{hardware performance monitoring}
 
+% Changes during review
+\newcommand{\RMchange}[1]{{\setlength{\fboxsep}{0pt}\colorbox{purple!70}{#1}}}
+%\newcommand{\RMchange}[1]{#1}
+
 %Predefined commands
 \newcommand{\bq}{\begin{equation}}
 \newcommand{\eq}{\end{equation}}
@@ -1051,6 +1055,22 @@ For the \ac{HN} case, the performance is not even close to a factor of two as on
 For A100, however, the performance difference is larger, where MD-Bench performance is about 14\% faster in comparison to P4IRS.
 When using the \ac{HN}, however, we achieve very close performance to MD-Bench with \ac{FN}, and it is noticeable that the speedup is very far from the factor of two as well.
 Despite the observed performance divergence in A100, it is possible to see that P4IRS code still has good performance in comparison to our hand-tuned CUDA implementation, supporting our claim in generating performance-portable kernels.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{c|c|c|c|c}
+%        \hline
+        Variant & pairs-fn & mdbench-fn & pairs-hn & mdbench-hn \\
+        \hline
+        Ice Lake & 0.962 & 1.019 & 1.662 & 1.595 \\
+        Milan & 0.908 & 0.883 & 1.354 & 1.367 \\
+        A40  & 26.452 & 27.025 & 29.688 & --- \\
+        A100 & 75.113 & 87.381 & 87.968 & --- \\
+%        \hline
+    \end{tabular}
+    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MD-Bench simulation runs on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
+    \label{tab:md_particle_updates_per_second_cpu}
+\end{table*}
 
 \begin{figure}[t]
 \centering
