@@ -1068,8 +1068,22 @@ Despite the observed performance divergence in A100, it is possible to see that 
         A100 & 75.113 & 87.381 & 87.968 & --- \\
 %        \hline
     \end{tabular}
-    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MD-Bench simulation runs on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
-    \label{tab:md_particle_updates_per_second_cpu}
+    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MD-Bench simulation runs of the MD benchmark on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
+    \label{tab:md_particle_updates_per_second_md}
+\end{table*}
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        Variant & pairs-fn & pairs-fn-nb & pairs-fn-2r & pairs-fn-nb-2r & pairs-fn-mk & pairs-fn-nb-mk & mesapd \\
+        \hline
+        Ice Lake & 76.573 & 48.549 & 164.202 & 101.062 & --- & --- & 47.304 \\
+        Milan & 113.229 & 68.008 & 225.374 & 134.969 & --- & --- & 64.347 \\
+        A40 & 68.866 & 83.06 & --- & --- & 63.835 & 79.828 & --- \\
+        A100 & 210.41 & 235.753 & --- & --- & 209.969 & 251.292 & --- \\
+    \end{tabular}
+    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MESA-PD simulation runs of the DEM benchmark on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
+    \label{tab:md_particle_updates_per_second_dem}
 \end{table*}
 
 \begin{figure}[t]
