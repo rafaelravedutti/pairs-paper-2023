@@ -86,7 +86,12 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \newacro{HPM}{hardware performance monitoring}
 
 % Changes during review
-\newcommand{\RMchange}[1]{{\setlength{\fboxsep}{0pt}\colorbox{purple!70}{#1}}}
+\usepackage{soul}
+\usepackage{xcolor}
+
+\DeclareRobustCommand{\RMchange}[1]{{\sethlcolor{cyan}\hl{#1}}}
+%\newcommand{\RMchange}[1]{{\colorbox{purple!70}{#1}}}
+%\newcommand{\RMchange}[1]{{\setlength{\fboxsep}{0pt}\colorbox{purple!70}{#1}}}
 %\newcommand{\RMchange}[1]{#1}
 
 %Predefined commands
@@ -829,9 +834,28 @@ And we also perform experiments to evaluate P4IRS weak-scalability in the follow
   \item \textbf{JUWELS Booster:} Each compute node has two AMD EPYC ``Rome'' 7402 CPU, with 48 cores (simultaneous multi-threading) at 2.8 GHz; 512 GB of DDR4 memory at 3200 MHz; Four Nvidia A100 GPU with 40 GB HBM2e memory; Four InfiniBand HDR (Connect-X6) interconnect channels.
 \end{itemize}
 
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{c|c|c}
+%        \hline
+        Target & Compiler & Flags \\
+        \hline
+        Ice Lake & ICC 2021.10.0 & \emph{-Ofast -xCORE-AVX512 -qopt-zmm-usage=high} \\
+        Milan & ICC 2021.10.0 & \emph{-Ofast -march=core-avx2} \\
+        A40 & NVCC 12.1.r12.1 & \emph{-Ofast -march=core-avx2} \\
+        A100 (single GPU) & NVCC 12.1.r12.1 & \emph{-Ofast -march=core-avx2} \\
+        A100 (JUWELS Booster) & NVCC 12.2.91 & \emph{-Ofast -march=core-avx2} \\
+        Rome (JUWELS Booster) & ICX 2023.2.0 & \emph{-Ofast -march=core-avx2} \\
+%        \hline
+    \end{tabular}
+    \caption{\RMchange{Compiler and flag specifications used for the experiments in this paper.}}
+    \label{tab:compilers}
+\end{table*}
+
+\autoref{tab:compilers} \RMchange{displays the compiler and flags used for the experiments in this paper.}
 The icc (ICC) 2021.10.0 20230609 compiler was used for CPU experiments (except in the JUWELS cluster), with the \emph{-Ofast -xCORE-AVX512 -qopt-zmm-usage=high} flags for Fritz / Ice Lake (AVX512) and \emph{-Ofast -march=core-avx2} flags for Milan (AVX2).
 For CUDA, we use the NVCC compiler V12.1.r12.1 for the single GPU experiments, and the same flags used for Milan (AVX2) since it is the host processor in the systems with the A40/A100 GPUs.
-In the JUWELS Booster, we used the Intel(R) oneAPI DPC++/C++ Compiler 2023.2.0 (2023.2.0.20230721) together with NVCC V12.2.91, and the same flags as used for Milan since both CPUs have AVX2 with FMA as the largest SIMD vector extension available.
+In the JUWELS Booster, we used the Intel(R) oneAPI DPC++/C++ \RMchange{"ICX"} Compiler 2023.2.0 (2023.2.0.20230721) \RMchange{as a backend compiler for} NVCC V12.2.91, and the same flags used for Milan since both CPUs have AVX2 with FMA as the largest SIMD vector extension available.
 We make use of the Likwid toolkit V5.3 (\cite{likwid}) to pin tasks to specific CPU cores and measure HPM counters in the target CPU (Ice Lake) for the single core experiments, where P4IRS is able to properly generate the instrumentation markers and MD-Bench kernels are already instrumented.
 
 Experiments for \ac{MD} use the standard Copper FCC lattice (see \autoref{fig:copper_fcc_lattice}) test-case from miniMD/MD-Bench, and we use our results from MD-Bench as a performance reference since it is a well optimized code for \ac{MD}.
