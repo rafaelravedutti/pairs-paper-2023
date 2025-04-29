@@ -675,6 +675,13 @@ The loops are then replaced by a kernel launch statement for the new generated k
 Note that some candidates may not be offloaded to the GPU, the reason is that P4IRS can use internal heuristics to determine whether a loop should or should not be executed in the GPU.
 Domain-knowledge can also be used in the GPU offloading analyses since elements like \emph{ParticleFor} and \emph{ParticleInteraction} can be used during the compiler passes before they are lowered.
 
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=0.75\textwidth]{pairs_architecture.pdf}
+  \caption{\RMchange{P4IRS architecture.}}
+  \label{fig:features}
+\end{figure*}
+
 \subsection{Runtime Module}
 
 Apart from the kernel implementations and functions to prepare the kernel launches and move data between host and accelerator processors, particle simulations also may need to call external libraries and deal with filesystem I/O.
