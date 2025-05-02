@@ -1126,19 +1126,8 @@ Despite the observed performance divergence in A100, it is possible to see that 
     \label{tab:md_particle_updates_per_second_md}
 \end{table*}
 
-\begin{table*}[htb]
-    \centering
-    \begin{tabular}{c|c|c|c|c|c|c|c}
-        Variant & pairs-fn & pairs-fn-nb & pairs-fn-2r & pairs-fn-nb-2r & pairs-fn-mk & pairs-fn-nb-mk & mesapd \\
-        \hline
-        Ice Lake & 76.573 & 48.549 & 164.202 & 101.062 & --- & --- & 47.304 \\
-        Milan & 113.229 & 68.008 & 225.374 & 134.969 & --- & --- & 64.347 \\
-        A40 & 68.866 & 83.06 & --- & --- & 63.835 & 79.828 & --- \\
-        A100 & 210.41 & 235.753 & --- & --- & 209.969 & 251.292 & --- \\
-    \end{tabular}
-    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MESA-PD simulation runs of the DEM benchmark on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
-    \label{tab:md_particle_updates_per_second_dem}
-\end{table*}
+\RMchange{\autoref{tab:md_particle_updates_per_second_md} summarizes the results in million particle updates per second running on a single CPU core and on a single GPU for the \ac{MD} case.
+Although this is not a fair comparison as we use a single CPU core, it demonstrates that we can achieve a significant performance improvement when running P4IRS code on a GPU, and the results are close (and better in some cases) when comparing P4IRS code to MD-Bench for both CPU and GPU.}
 
 \begin{figure}[t]
 \centering
@@ -1424,6 +1413,25 @@ For the Multi-Kernel approach, there are no significant improvements observed fo
 The time spent in other sections is significantly higher leading to worse performance when using the Multi-Kernel, but this can be happening due to impact caused by asynchronously launching more kernels into the GPU.
 For the A100, the same behavior applies for the standard Linked Cells, but when combining both NPC and MK approaches, it is possible to see an improvement of 13\% in the force calculation performance in comparison to only using NPC, leading to about 6\% performance improvement overall.
 This example also illustrates the usage of P4IRS for experimentation, as these different kernel versions can be generated with P4IRS without the effort of implementing each one of them for the specific interaction model used.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        Variant & pairs-fn & pairs-fn-nb & pairs-fn-2r & pairs-fn-nb-2r & pairs-fn-mk & pairs-fn-nb-mk & mesapd \\
+        \hline
+        Ice Lake & 76.573 & 48.549 & 164.202 & 101.062 & --- & --- & 47.304 \\
+        Milan & 113.229 & 68.008 & 225.374 & 134.969 & --- & --- & 64.347 \\
+        A40 & 68.866 & 83.06 & --- & --- & 63.835 & 79.828 & --- \\
+        A100 & 210.41 & 235.753 & --- & --- & 209.969 & 251.292 & --- \\
+    \end{tabular}
+    \caption{\RMchange{Summary of performance results (in million particle updates per second) for each P4IRS and MESA-PD simulation runs of the DEM benchmark on a single core of Ice Lake and Milan CPUs, and one A40 and A100 GPUs.}}
+    \label{tab:dem_particle_updates_per_second_dem}
+\end{table*}
+
+\RMchange{\autoref{tab:dem_particle_updates_per_second_dem} summarizes the results running on a single and two CPU cores, as well as on a single GPU, the results are shown in million particle updates per second.
+The smaller number of overall particle interactions combined with a more complex kernel makes the Linear Spring-Dashpot method less suitable for GPUs when using the standard Linked Cells strategy.
+Better performance is obtained when both the Neighbor-Lists per Cell and the Multi-Kernel approach are used for GPUs, but there are still room for improvement.
+Evaluating and designing new algorithms for calculating this specific kernel efficiently on GPUs is one of our next goals, and code generation can be particularly helpful because we can do experimentation with a single high-level description of the problem.}
 
 \begin{figure}[t]
 \centering
