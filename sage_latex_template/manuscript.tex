@@ -274,7 +274,7 @@ Integrators and forces can be implemented by using mathematical descriptions in 
 
 MESA-PD (\cite{mesapd3}) is a general particle dynamics framework that is built-in the waLBerla framework for the simulation of particles and fluids.
 Its design principle of separation of code and data allows to introduce arbitrary interaction models with ease, which makes it also useful for \ac{MD}.
-By using its code generation approach through Jinja templates, it can be adapted very effectively to any simulation scenario.
+By using its code generation approach through Jinja templates\footnote{\url{https://palletsprojects.com/projects/jinja/}}, it can be adapted very effectively to any simulation scenario.
 As successor of the ``physics engine'' (pe) rigid particle dynamics framework it inherits its scalability and advanced load balancing functionalities.
 One of the limitations of MESA-PD is that it does not support GPU code generation, and since its code generation approach is based on Jinja templates, the effort for implementing new functionalities may not be lower compared to other simulation packages without code generation techniques (for instance, most of its force kernels are not generated but rather implemented in C++).
 
