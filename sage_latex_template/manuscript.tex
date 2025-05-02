@@ -796,8 +796,8 @@ Note that there is no guarantee that the internal loop will be vectorized for CP
 Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code to use AVX/SSE instructions, which may not happen even when the code is amenable to vectorization.
 
 \RMchange{P4IRS is able to generate this algorithmic optimization automatically for the shapes involved in the simulation.
-This is possible by using the domain-knowledge provided in the AST, where the \emph{ParticleInteraction} symbol can be lowered to several loops that handle different pairs of shapes in the simulation.
-Note that P4IRS does not require complex and sophisticated analyses to identify these opportunities for splitting the interaction loop because its \ac{IR} already exposes the domain-knowledge necessary for applying this strategy.
+This is possible by using the domain knowledge provided in the AST, where the \emph{ParticleInteraction} symbol can be lowered to several loops that handle different pairs of shapes in the simulation.
+Note that P4IRS does not require complex and sophisticated analyses to identify these opportunities for splitting the interaction loop because its \ac{IR} already exposes the domain knowledge necessary for applying this strategy.
 As discussed, this is an important benefit of using a \ac{DSL} because the \ac{IR}s from general-purpose compilers need to work at a lower level in order to be able to represent any generic code.}
 
 Apart from splitting the inner-most loop, P4IRS makes it possible to split the outer-most loop and generate two distinct kernels, each one computing different types of interactions (in this case, Sphere-Sphere and Sphere-Halfspace variants), we name this strategy here as ``Multi-Kernel partition''.
@@ -1127,7 +1127,8 @@ Despite the observed performance divergence in A100, it is possible to see that 
 \end{table*}
 
 \RMchange{\autoref{tab:md_particle_updates_per_second_md} summarizes the results in million particle updates per second running on a single CPU core and on a single GPU for the \ac{MD} case.
-Although this is not a fair comparison as we use a single CPU core, it demonstrates that we can achieve a significant performance improvement when running P4IRS code on a GPU, and the results are close (and better in some cases) when comparing P4IRS code to MD-Bench for both CPU and GPU.}
+Note that our goal is not to compare the performance on a single CPU core against the performance on a single GPU since this is not a fair comparison.
+However, we want to demonstrate that we can achieve a significant performance improvement when running P4IRS code on a GPU, and the results are close (and better in some cases) when comparing P4IRS code to MD-Bench on all the systems listed.}
 
 \begin{figure}[t]
 \centering
@@ -1430,7 +1431,7 @@ This example also illustrates the usage of P4IRS for experimentation, as these d
 
 \RMchange{\autoref{tab:dem_particle_updates_per_second_dem} summarizes the results running on a single and two CPU cores, as well as on a single GPU, the results are shown in million particle updates per second.
 The smaller number of overall particle interactions combined with a more complex kernel makes the Linear Spring-Dashpot method less suitable for GPUs when using the standard Linked Cells strategy.
-Better performance is obtained when both the Neighbor-Lists per Cell and the Multi-Kernel approach are used for GPUs, but there are still room for improvement.
+Better performance is obtained when both the Neighbor-Lists per Cell and the Multi-Kernel approach are used for GPUs, but there is still room for improvement.
 Evaluating and designing new algorithms for calculating this specific kernel efficiently on GPUs is one of our next goals, and code generation can be particularly helpful because we can do experimentation with a single high-level description of the problem.}
 
 \begin{figure}[t]
