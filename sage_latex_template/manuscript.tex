@@ -75,6 +75,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \newacro{HN}{half neighbor-lists}
 \newacro{ILP}{instruction-level parallelism}
 \newacro{IR}{intermediate representation}
+\newacro{DSL}{domain-specific language}
 \newacro{AST}{abstract syntax tree}
 \newacro{ISA}{instruction set architecture}
 \newacro{LJ}{Lennard-Jones}
@@ -615,12 +616,12 @@ When Linked Cells are used without a Verlet Lists, this optimization is not poss
   \label{fig:pairs_arch}
 \end{figure*}
 
-\subsection{Intermediate Representation}
+\subsection{\RMchange{Intermediate Representation}}
 
 \RMchange{This and the following sections focus on describing the architecture from the P4IRS compiler.
 \autoref{fig:pairs_arch} depicts a general overview of the P4IRS architecture from the user inputs until the final binary.
 
-An important aspect of DSLs is to be able to use domain knowledge for their compiler transformations, thus enabling code optimizations that may not be detected by general purpose compilers.
+An important aspect of a \ac{DSL} is to be able to use domain knowledge for their compiler transformations, thus enabling code optimizations that may not be detected by general purpose compilers.
 In order to achieve this, P4IRS provides its own IR which can represent elements that are specific to particle computations.
 These particle-specific elements in the AST can then be used in P4IRS compilation passes, and at some point during the compilation are lowered, resulting in the low level AST that corresponds to the code implementation that matches the strategies given by the user.}
 
@@ -696,7 +697,7 @@ The loops are then replaced by a kernel launch statement for the new generated k
 Note that some candidates may not be offloaded to the GPU, the reason is that P4IRS can use internal heuristics to determine whether a loop should or should not be executed in the GPU.
 Domain-knowledge can also be used in the GPU offloading analyses since elements like \emph{ParticleFor} and \emph{ParticleInteraction} can be used during the compiler passes before they are lowered.
 
-\subsection{Runtime Library}
+\subsection{Runtime \RMchange{Library}}
 
 Apart from the kernel implementations and functions to prepare the kernel launches and move data between host and accelerator processors, particle simulations also may need to call external libraries and deal with filesystem I/O.
 A few case examples where this is required are, for instance, to write particle data to a file in a visualization format like VTK, and reading the initial state of the particle system to setup the simulation.
@@ -769,8 +770,8 @@ Note that when traversing the neighbors, their shapes are checked to determine w
   \end{algorithmic}
 \end{algorithm}
 
-To provide a simpler way to achieve vectorized code for such DEM kernels, we partition particles by shape in our acceleration data structures (Linked Cells and Verlet Lists), which allows distinguishing them during the force computation.
-After, we use code generation to apply a loop-splitting in the generated code for every pair of shapes, these resulting loops should be then easier to be vectorized since no branches are needed to calculate different contact elements for the particles being computed.
+To provide a simpler way to achieve vectorized code for such DEM kernels, \RMchange{it is possible to} partition particles by shape in the acceleration data structures (Linked Cells and Verlet Lists), which allows distinguishing them during the force computation.
+After, \RMchange{multiple loops can be used} in the code for handling different pair of shapes, \RMchange{and} \RMchange{vectorizing} these resulting loops should be easier since no branches are needed to calculate different contact elements for the particles being computed.
 Algorithm \ref{alg:no_branching} displays the same kernel as Algorithm \ref{alg:branching} without the branching issue.
 Note that the outer-most loop can also be split into two parts as well, which leads to two different kernels for each pair of shapes.
 For GPUs, this can be beneficial since different threads will be used for different pair of shapes (parallelism is done at the level of the outer-most loop) and no threads will be disabled due to traversing a different code path.
@@ -793,6 +794,11 @@ For GPUs, this can be beneficial since different threads will be used for differ
 
 Note that there is no guarantee that the internal loop will be vectorized for CPU, since there may still be branches and instructions in the force kernel that make it not possible.
 Besides, the backend compiler must be able to properly analyze and apply the transformations to actually generate the vectorized code to use AVX/SSE instructions, which may not happen even when the code is amenable to vectorization.
+
+\RMchange{P4IRS is able to generate this algorithmic optimization automatically for the shapes involved in the simulation.
+This is possible by using the domain-knowledge provided in the AST, where the \emph{ParticleInteraction} symbol can be lowered to several loops that handle different pairs of shapes in the simulation.
+Note that P4IRS does not require complex and sophisticated analyses to identify these opportunities for splitting the interaction loop because its \ac{IR} already exposes the domain-knowledge necessary for applying this strategy.
+As discussed, this is an important benefit of using a \ac{DSL} because the \ac{IR}s from general-purpose compilers need to work at a lower level in order to be able to represent any generic code.}
 
 Apart from splitting the inner-most loop, P4IRS makes it possible to split the outer-most loop and generate two distinct kernels, each one computing different types of interactions (in this case, Sphere-Sphere and Sphere-Halfspace variants), we name this strategy here as ``Multi-Kernel partition''.
 This requires data from the left-side particles to be loaded again, which is not necessarily a significant problem since they are contiguous in memory.
