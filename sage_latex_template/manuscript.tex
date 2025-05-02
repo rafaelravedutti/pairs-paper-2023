@@ -673,13 +673,12 @@ These are not directly built into the P4IRS AST, but rather executed during the 
 \subsection{Backend and Code Generation}
 \label{sec:backend}
 
+\RMchange{
 The final step of the P4IRS compiler is the code generation, which converts the optimized \ac{IR} to low-level hardware assembly instructions or to another high-level language (source-to-source compilation).
-%P4IRS uses its own \ac{IR} to facilitate this process, where internal routines to build the cell lists, neighbor lists and generate the communication buffers are deep-embedded into Python to further be mapped into the P4IRS \ac{AST}.
-%Afterwards, compiler analyses and transformations are performed to properly add parallelism and optimizations into the code.
 In its current state, P4IRS generates C++ and CUDA code with MPI for distributed-memory parallelism, but new backend languages, intermediate representations and technologies can be included without difficulties by extending the code generator.
 Although most of the code generation is straightforward for the \ac{IR} in its lowest level, there are some important points that are important to handle different backends and achieve performance-portability.
 
-\RMchange{P4IRS creates ``modules'' for one or more routines when building its IR}, and every module determines a point where data must be synchronized for the target it will execute on.
+P4IRS creates ``modules'' for one or more routines when building its IR}, and every module determines a point where data must be synchronized for the target it will execute on.
 For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties that are referred within the IR subtree.
 To avoid complex control-flow analyses to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
 Only when the bit is not set in the device, the copy method for the respective array or property is called.
