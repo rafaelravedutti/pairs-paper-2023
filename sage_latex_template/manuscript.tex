@@ -622,7 +622,10 @@ When Linked Cells are used without a Verlet Lists, this optimization is not poss
 \autoref{fig:pairs_arch} depicts a general overview of the P4IRS architecture from when the user inputs are given until the final binary is generated.
 
 An important aspect of a \ac{DSL} is to be able to use domain knowledge for their compiler transformations, thus enabling code optimizations that may not be detected by general purpose compilers.
-In order to achieve this, P4IRS provides its own IR which can represent elements that are specific to particle computations.
+In order to achieve this, P4IRS provides its own \ac{IR} which can represent elements that are specific to particle computations.
+Note that we use the term \ac{IR} in this paper to denominate the internal data structure utilized to represent the parsed code.
+Our \ac{IR} is not formally defined as is usually the case for most \ac{IR}s from general purpose compilers, and it is not our intention here to provide a formal and strong definition for it.
+Instead, we present an informal and rather simple \ac{AST} representation which contains elements associated with particle computations and data structures.
 These particle-specific elements in the AST can then be used in P4IRS compilation passes, and at some point during the compilation are lowered, resulting in the low level AST that corresponds to the code implementation that matches the strategies given by the user.}
 
 \begin{lstlisting}[language=Python,
@@ -1477,6 +1480,7 @@ The purpose of this work, however, is to demonstrate that we can achieve state-o
 
 The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU).
 This project has received funding from the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under project number 433735254.
+\RMchange{Additionally, this work has also received funding from the European High Performance Computing Joint Undertaking (JU) and Sweden, Germany, Spain, Greece, and Denmark under grant agreement No 101093393.}
 
 \section{Conclusion and Outlook}
 \label{sec:conclusion}
