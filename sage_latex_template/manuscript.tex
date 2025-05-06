@@ -658,7 +658,7 @@ class BuildNeighborLists(Lowerable):
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=0.75\textwidth]{pairs_ir.pdf}
-  \caption{\RMchange{P4IRS IR for the BuildNeighborLists example.}}
+  \caption{\RMchange{P4IRS IR for the BuildNeighborLists example. Red boxes represent elements that are specific to particle simulations, and are used for domain-specific transformations in the \ac{AST}, at some point these elements are lowered to generic, primitive elements that should be straightforward to map into code in a general-purpose language or even an IR such as the LLVM IR. Green boxes represent some of these lower level, generic elements. Blue boxes represent symbols from the simulation, and the dashed lines in red show when these symbols come from a particle-specific element. Elements in yellow represent constants, and both ``s'' elements represent a pattern that is repeated in the constructed \ac{AST} according to the referenced loop in their respective orange boxes.}}
   \label{fig:pairs_ir}
 \end{figure*}
 
