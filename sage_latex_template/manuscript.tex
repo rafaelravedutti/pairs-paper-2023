@@ -689,7 +689,7 @@ These are not directly built into the P4IRS AST, but rather executed during the 
 \RMchange{
 The final step of the P4IRS compiler is the code generation, which converts the optimized \ac{IR} to low-level hardware assembly instructions or to another high-level language (source-to-source compilation).
 In its current state, P4IRS generates C++ and CUDA code with MPI for distributed-memory parallelism, but new backend languages, intermediate representations and technologies can be included without difficulties by extending the code generator.
-Although most of the code generation is straightforward for the \ac{IR} in its lowest level, there are some important points that are important to handle different backends and achieve performance-portability.
+Although most of the code generation is straightforward for the \ac{IR} in its lowest level, there are important aspects that must be considered to handle different backends and achieve performance-portability.
 
 P4IRS creates ``modules'' for one or more routines when building its IR}, and every module determines a point where data must be synchronized for the target it will execute on.
 For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties that are referred within the IR subtree.
