@@ -655,12 +655,21 @@ class BuildNeighborLists(Lowerable):
       Assign(sim, numneighs[i][shape], n + 1)
 \end{lstlisting}
 
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=0.75\textwidth]{pairs_ir.pdf}
+  \caption{\RMchange{P4IRS IR for the BuildNeighborLists example.}}
+  \label{fig:pairs_ir}
+\end{figure*}
+
+
 \RMchange{The P4IRS IR can be constructed in two ways: (a) by a mapping from the Python IR generated through the \emph{compile()} method on Python functions and (b) by explicitly constructing the IR elements in-place.
 The former is used for user-defined particle interactions (like the \emph{lennard\_jones} method from \autoref{lst:pairslj}) and the latter is normally used internally by P4IRS to construct the IR for internal routines.}
 \autoref{lst:build_neigh} displays an example for constructing the intermediate representation that generates the code that builds the neighbor-lists for each particle in the system.
 The \emph{BuildNeighborLists} class is a separate, high-level element from the AST in P4IRS.
 During the compilation process, P4IRS performs analyses and transformations to lower this element by using its \emph{lower} method, and decorators such as the \emph{@pairs\_device\_block} are used to determine the target hardware where the code must be executed.
 
+\autoref{fig:pairs_ir} depicts a schematic diagram of the constructed P4IRS \ac{IR} for the \emph{BuildNeighborLists} example.
 \RMchange{Note the domain-specific elements in the IR such as \emph{ParticleInteraction} and \emph{ParticleFor}, as already discussed these can be used during compilation passes for obtaining domain knowledge, and at some point they are lowered according to the strategies specified by the user.
 For instance, the \emph{ParticleInteraction} abstract element can be lowered to a code representation that traverses pair of particles by either using the Linked Cells or Verlet Lists data structures.}
 %Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are used as higher-level elements of the AST.
