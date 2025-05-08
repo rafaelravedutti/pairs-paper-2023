@@ -1414,7 +1414,7 @@ It is also clear that P4IRS can generate more efficient DEM kernels for CPU in c
 \autoref{fig:dem_single_gpu_runtimes} displays the runtimes for the DEM test-case in both A40 and A100 GPUs, also evaluating the neighbor-lists per cell (see the \nameref{sec:neighbor_lists_per_cell} section) and multi-kernel (see the \nameref{sec:shape_partitioning} section) strategies.
 Most of the simulation time is spent on calculating the forces and executing other routines, which is likely transferring data into/from the GPUs.
 Note that since particles contain significant more properties (and some of them with dynamic types such as vectors and matrices), the communication and/or PBC buffers are significantly larger especially when particles need to be exchanged.
-It is also important to disclose that due to PBC particles are still exchanged and produce ghost versions of themselves (with proper PBC shifts) even when running in a single MPI rank, therefore the same routines for packing and unpacking data for communication are used.
+It is also important to disclose that due to PBC, particles are still exchanged and produce ghost versions of themselves (with proper PBC shifts) even when running in a single MPI rank, therefore the same routines for packing and unpacking data for communication are used.
 
 It is noticeable that in this case, building the neighbor-lists per cell actually increases the overall performance, as the improved runtime for the force calculation compensates the time for building the neighbor-lists.
 The force calculation with the neighbor-lists per cell is about 24\% faster the standard Linked Cells version in A40, and about 45\% faster in A100, hence the SIMD execution is improved as expected.
