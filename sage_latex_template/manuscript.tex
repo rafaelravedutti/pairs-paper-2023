@@ -461,9 +461,9 @@ P4IRS\footnote{\url{https://i10git.cs.fau.de/software/pairs}} is an open-source,
 It is released as a Python package and allows users to define kernels, integrators and other particle routines in a high-level and straightforward fashion without the need to implement any backend code.
 
 \autoref{fig:features} displays an overview of P4IRS.
-In the left side, the front-end library from P4IRS is displayed with the available features, all these are defined through a Python interface by the user for modeling the simulation and determining the optimization schedule.
+\RMchange{On} the left side, the front-end library from P4IRS is displayed with the available features, all these are defined through a Python interface by the user for modeling the simulation and determining the optimization schedule.
 In the middle, the backend with the internal methods (deep-embedded in Python) with the compiler transformations and analyses are shown, these make use of the front-end representation to produce the final backend code.
-In the right side, the final generated code is integrated and compiled together with the runtime library and functionalities to achieve parallelism and accesses to external features.
+\RMchange{On} the right side, the final generated code is integrated and compiled together with the runtime library and functionalities to achieve parallelism and access to external \RMchange{functions}.
 The next subsections explore the different P4IRS features in more detail.
 
 \subsection{Frontend and Features}
@@ -474,7 +474,7 @@ Functions can be provided through a method (line 1), and the parameters in the m
 In this way, many-body potentials can also be described through methods with more than two parameters.
 Some keywords are also provided by P4IRS for writing the kernels, in line 2 the \emph{squared\_distance} method is used for obtaining the squared distance for the atoms \emph{i} and \emph{j}, and in line 4 the \emph{delta} method is used for obtaining the delta vector.
 Also, in lines 3 and 4 it is possible to see accesses to feature properties called \emph{sigma6} and \emph{epsilon}, which are defined during the simulation setup as properties which depend on the atom types feature.
-In line 4, the \emph{apply} method is used for applying the computed term into the \emph{force} property of the particles, the method allows the identification of particle properties reductions and is also used when generating the kernel variant using the half neighbor-lists.
+In line 4, the \emph{apply} method is used for applying the computed term into the \emph{force} property of the particles, the method allows the identification of particle propert\RMchange{y} reductions and is also used when generating the kernel variant using the half neighbor-lists.
 
 \begin{lstlisting}[language=Python,
 		   label={lst:pairslj},
@@ -501,9 +501,9 @@ def euler(i):
 
 \autoref{lst:pairs_md_setup} shows the simulation setup for the \ac{MD} case. In the first part (lines 6-10), a \emph{simulation} instance is created, and its identifier, the list of particle shapes used, the number of time-steps and the floating-point precision are specified.
 Further, the properties needed for each particle in the simulation are specified (lines 13-16), together with their data types and (if needed) initial values.
-Some properties are also defined as volatile (in this case the \emph{force} at line 16) property, which means they are reseted after every time-step.
+Some properties are also defined as volatile (in this case the \emph{force} at line 16) property, which means \RMchange{that} they are reset after \RMchange{each} time-step.
 To add feature properties, it is first required to add the specified feature as shown in line 19 (in this example, each atom has a feature named \emph{type}), and then specify the feature name for these properties (see lines 20-21).
-Next, the simulation domain is specified (line 24) and the initial state of the system is defined by reading data from a file (lines 27-30), a list of properties must be given in the same order as they appear in the file, and the particles shape must also be included.
+Next, the simulation domain is specified (line 24) and the initial state of the system is defined by reading data from a file (lines 27-30), a list of properties must be given in the same order as they appear in the file, and the particle shape\RMchange{s} must also be included.
 Different entries can be used to read particles with different shapes in the same simulation.
 
 \begin{lstlisting}[language=Python,
@@ -562,13 +562,13 @@ psim.generate()
 After the properties and simulation declarations, the optimization settings (or schedule) are specified (see lines 33-35).
 These can be, for instance, whether the Verlet Lists strategy is used, the particle reneighboring frequency, and whether half neighbor-lists must be used.
 Note that, ideally, optimization strategies should not change the semantics of the generated program nor the simulation results, but since particle simulations are sensitive to the order of computation performed and the floating-point precision, it is possible that simulations with different optimization strategies lead to different results.
-This is not an issue for particle simulations as long as it is still possible to validate the simulations through macroscopic properties such as the temperature or pressure (for \ac{MD} simulations) or through analyses of the physical dynamics in the system (for \ac{DEM} simulations).
+This is not an issue for particle simulations as long as it is still possible to validate the simulations through macroscopic properties such as the temperature or pressure (for \ac{MD} simulations) or through analysis of the physical dynamics in the system (for \ac{DEM} simulations).
 
 The \emph{vtk\_output} directive (line 36) is used to write data to VTK files at every 20 time-steps.
 Finally, the kernels to be computed must be specified using the \emph{compute} method (lines 39-40).
 The cutoff radius must be specified for kernels with more than one parameter/particle and other parameters used in such kernels (such as the \emph{dt} in the Euler kernel) must also be provided as a Python dictionary.
 The final steps define the target and call the \emph{generate} method to then trigger the code generator.
-P4IRS provide targets with default settings via the \emph{target\_cpu} and \emph{target\_gpu} settings, but custom targets can be defined with their own options such as the thread and block configurations.
+P4IRS provide\RMchange{s} targets with default settings via the \emph{target\_cpu} and \emph{target\_gpu} settings, but custom targets can be defined with their own options such as the thread and block configurations.
 
 \subsection{Contact History and Contact Properties}
 \label{sec:contact_history}
@@ -606,7 +606,7 @@ def linear_spring_dashpot(i, j):
     is_sticking[i, j] = n_sticking
 \end{lstlisting}
 
-To provide fast and efficient accesses of contact properties when using neighbor-lists, P4IRS keep the particles in the same indexes in both data structures.
+To provide fast and efficient \RMchange{access to} contact properties when using neighbor-lists, P4IRS keep\RMchange{s} the particles in the same indexes in both data structures.
 This prevents a lookup operation within the kernel for finding the contact index, and also keeps data access contiguous for the contact history data structure.
 When Linked Cells are used without a Verlet Lists, this optimization is not possible, which should significantly increase the cost for accessing contact properties in a kernel.
 
@@ -672,15 +672,13 @@ During the compilation process, P4IRS performs analyses and transformations to l
 \autoref{fig:pairs_ir} depicts a schematic diagram of the constructed P4IRS \ac{IR} for the \emph{BuildNeighborLists} example.
 \RMchange{Note the domain-specific elements in the IR, such as \emph{ParticleInteraction} and \emph{ParticleFor}; as discussed earlier, these can be used during compilation passes to gain domain knowledge, and at some point they are lowered according to the user-specified strategies.
 For instance, the \emph{ParticleInteraction} abstract element can be lowered to a code representation that traverses pairs of particles using either the Linked Cells or Verlet Lists data structures.}
-%Other elements such as the \emph{ParticleFor} and \emph{ParticleInteraction} are used as higher-level elements of the AST.
-%These will be lowered at some point based on their strategies and given parameters.
 In this case, the \emph{ParticleInteraction} is lowered by using the linked-cells data structure to build the neighbor-lists as is done in traditional implementations.
 The interaction object also contains methods to access the current particle (i), the neighbor particle (j) and the shape for the neighbor particle (shape).
-The latter is particulary important for the shape-partitioning and multi-kernel code generation discussed in the \nameref{sec:shape_partitioning} section.
+The latter is particularly important for the shape-partitioning and multi-kernel code generation discussed in the \nameref{sec:shape_partitioning} section.
 
-Other primitive elements such as assignments (Assign) and array accesses, as well as subexpressions can be observed in \autoref{lst:build_neigh}.
+Other primitive elements such as assignments (Assign) and array accesses, as well as subexpressions, can be observed in \autoref{lst:build_neigh}.
 These are simple AST nodes which are not lowered during the compiler analyses and transformations, but can be in some cases optimized away.
-Note that Python artifacts can help constructing the IR such as the iteration loop at line 10, as well as the summation at line 18.
+Note that Python artifacts can help construct the IR such as the iteration loop at line 10, as well as the summation at line 18.
 These are not directly built into the P4IRS AST, but rather executed during the lowering process to construct the list of assignments for all shapes and the summation of all array-access elements constructed in-place, respectively.
 
 \subsection{Backend and Code Generation}
@@ -691,9 +689,9 @@ The final step of the P4IRS compiler is the code generation, which converts the 
 In its current state, P4IRS generates C++ and CUDA code with MPI for distributed memory parallelism, but new backend languages, intermediate representations and technologies can be included without difficulties by extending the code generator.
 Although most of the code generation is straightforward for the \ac{IR} at its lowest level, there are important aspects that need to be considered to handle different backends and achieve performance portability.
 
-P4IRS creates ``modules'' for one or more routines when building its IR}, and every module determines a point where data must be synchronized for the target it will execute on.
-For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties that are referred within the IR subtree.
-To avoid complex control-flow analyses to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
+P4IRS creates ``modules'' for one or more routines when building its IR}, and every module determines a point \RMchange{at which data must be synchronized for the target on which it will be executed.}
+For example, the code generated from the constructed IR in the \emph{lower} method from \emph{BuildNeighborLists} is preceded by the appropriate copy calls into the GPU for all the arrays and properties \RMchange{referenced} within the IR subtree.
+To avoid complex control-flow analysis to determine which properties and arrays actually have to be copied (since some of them can already be synchronized with the device), we provide bitmasks to represent each array and property defined in the simulation, and provide methods to check every array and property used within the intermediate representation.
 Only when the bit is not set in the device, the copy method for the respective array or property is called.
 Also, when properties or arrays are changed within the subtree, specific code is generated to clean up the respective bits.
 
@@ -702,7 +700,7 @@ In this case, the \emph{neighbor\_capacity} can be increased based on the \emph{
 The compiler handles the reallocation cases when the target is an accelerator such as a GPU, which needs the kernel to be re-executed after arrays are reallocated since it is not possible to reallocate them directly in the accelerator.
 P4IRS also takes care of avoiding memory access violation in the current kernel execution by wrapping the accesses around branches which assure the accessed indexes are smaller than the current capacity of the arrays.
 
-\RMchange{When} the IR is constructed for a specific routine, P4IRS then focus on determining which loops will be scheduled to the GPU.
+\RMchange{When} the IR is constructed for a specific routine, P4IRS then focus\RMchange{es} on determining which loops will be scheduled to the GPU.
 As a general case, every outer-most loop in a block that uses the \emph{@pairs\_device\_block} decorator is a candidate to be replaced by a kernel launch to be run in parallel.
 In \autoref{lst:build_neigh}, both loops at lines 9 and 13 are candidates and their body instructions are then wrapped around a separate GPU kernel.
 The loops are then replaced by a kernel launch statement for the new generated kernel.
@@ -750,8 +748,8 @@ void vtk_write_data(
 
 \autoref{lst:pairsruntime} shows an example for the routine to write data into VTK files, note that the first parameter is a \emph{PairsRuntime} object, and can be used to check whether properties exist, check if they are synced with the host device and (in case not) copy the data from the host.
 The meta-data object is \RMchange{fed} at the start of the simulation with the code generated by P4IRS, and it is therefore dependent on each simulation.
-It is important to enhance that accessing simulation data through the \emph{PairsRuntime} instance is not as efficient as accessing them directly in the generated code since the way of accessing the data structures (such as the property layouts) must be evaluated during runtime.
-Therefore, the usage of such instance must be avoided for performance-intensive routines.
+It is important to enhance that accessing simulation data through the \emph{PairsRuntime} instance is not as efficient as accessing \RMchange{it} directly in the generated code since the way of accessing the data structures (such as the property layouts) must be evaluated during runtime.
+Therefore, the use of such \RMchange{an} instance \RMchange{should} be avoided for performance-intensive routines.
 
 \RMchange{The runtime library must be linked to the generated binary during execution, so it must be properly built for the target hardware and platform, and either installed on the target system or its path must be included in the list of paths where dynamic libraries are searched for (for example, the \emph{LD\_LIBRARY\_PATH} environment variable on Linux systems).
 Although it is compiled separately from the generated code and should ideally be linked dynamically at runtime, it is possible to compile both together and statically link the runtime library code with the simulation code, thus generating a stand-alone, platform-specific binary that does not require further linking with the runtime code.}
