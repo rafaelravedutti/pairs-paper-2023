@@ -819,7 +819,7 @@ The reason is the properties for these obstacles are accessed separately from ot
 \label{sec:neighbor_lists_per_cell}
 
 When computing particle interactions with the Linked Cells algorithm, it is necessary to iterate at every surrounding cell and then every particle that belongs to them.
-This introduces a nested-loop, and the SIMD execution becomes restricted to the inner-most loop (i.e. particles within the same neighbor cell).
+This introduces a nested loop, and the SIMD execution becomes restricted to the inner-most loop (i.e. particles within the same neighbor cell).
 To mitigate this and provide more SIMD opportunities, it is possible to create a neighbor-list for each cell (instead of for each particle as in the Verlet Lists algorithm), and then merge the two loops into a single one that iterates over the neighbor list.
 In this way, the force for each particle is computed by traversing the neighbor list constructed for the cell it belongs to, without affecting the amount of interactions computed.
 
@@ -836,13 +836,13 @@ This is done by combining its runtime functions and code generation techniques, 
 Essentially, P4IRS communication is split into three routines:
 
 \begin{itemize}
-    \item \emph{borders:} define particles within the halo region which must be send to neighbor ranks as ``ghost'' particles; only non-volatile properties that are accessed in a neighbor particle within a kernel are sent.
+    \item \emph{borders:} defines particles within the halo region which must be send to neighbor ranks as ``ghost'' particles; only non-volatile properties that are accessed in a neighbor particle within a kernel are sent.
     \item \emph{synchronize:} uses the defined particle in the borders routine to exchange data; only non-volatile properties that are accessed in neighbor particles within a kernel and that change across time-steps are sent.
     \item \emph{exchange:} send particles that overlap the current rank's domain, it becomes a local particle in the neighbor rank; all properties except volatiles are sent; contact history data is also exchanged.
 \end{itemize}
 
-These methods make use of a domain-partitioner class that can be implemented in P4IRS runtime to determine which particles must be sent.
-The method is implemented in C++ and fill-in domain buffers that are used for evaluating if a particle is outside the domain or within the border using its position.
+These methods make use of a domain-partitioner class that can be implemented in the P4IRS runtime \RMchange{library} to determine which particles must be sent.
+The method is implemented in C++ and fill\RMchange{s} domain buffers that are used for evaluating if a particle is outside the domain or within the border using its position.
 This means that to include new domain partitioning schemes in P4IRS, it is only necessary to define a C++ runtime class, which can make use of external libraries and therefore can use the waLBerla block-forest domain-partitioning.
 Note that the reason for using buffers instead of evaluating the particle positions directly in the runtime code is performance, since particle packing and unpacking kernels should be executed in the target processor to achieve parallelism and to avoid copying data back and forth from the accelerator and host processors.
 
