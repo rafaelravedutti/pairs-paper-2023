@@ -414,8 +414,8 @@ From the algorithmic point of view, this means that a contact history data struc
 
 \begin{figure*}[htb]
     \centering
-    \subfigure[Linked Cells]{\label{fig:linked_cells}\includegraphics[width=0.25\textwidth]{linked_cells.pdf}}
-    \subfigure[Verlet Lists]{\label{fig:verlet_lists}\includegraphics[width=0.25\textwidth]{verlet_lists.pdf}}
+    \subfigure[Linked Cells]{\label{fig:linked_cells}\includegraphics[width=0.25\textwidth]{fig1a_linked_cells.pdf}}
+    \subfigure[Verlet Lists]{\label{fig:verlet_lists}\includegraphics[width=0.25\textwidth]{fig1b_verlet_lists.pdf}}
     \caption{Comparison between (a) Linked Cells and (b) Verlet Lists algorithms, in each case, the blue particles are used as the candidates to compute the forces with the red particle. In the Linked Cells, all particles in the neighbor cells are considered (considering the size of the cell is higher or equal than the cutoff radius). In the Verlet Lists, a list of particles is created by evaluating which particle distances are smaller than the cutoff radius plus a ``skin'' value, which represents a sphere in the 3D case.}
 \end{figure*}
 
@@ -452,7 +452,7 @@ At the end, this strategy is likely to be beneficial for more arithmetic-intensi
 
 \begin{figure*}[htb]
   \centering
-  \includegraphics[width=0.6\textwidth]{pairs_overview.png}
+  \includegraphics[width=0.6\textwidth]{fig2_pairs_overview.png}
   \caption{Overview of P4IRS architecture. The Frontend is defined in high-level Python language, and describes the computation and optimization strategies for the simulation. The compiler uses the data defined in the Frontend, combines with its internal kernel implementations and perform several analyses and transformations. Finally, it generates the backend code for the target hardware, which currently is either C++ or CUDA code with OpenMP and MPI support.}
   \label{fig:features}
 \end{figure*}
@@ -612,7 +612,7 @@ When Linked Cells are used without a Verlet Lists, this optimization is not poss
 
 \begin{figure*}[htb]
   \centering
-  \includegraphics[width=0.75\textwidth]{pairs_architecture.pdf}
+  \includegraphics[width=0.75\textwidth]{fig3_pairs_architecture.pdf}
   \caption{\RMchange{P4IRS architecture. The user specifies the Particle Computations to be performed, which are compiled to the Python AST and further mapped to the P4IRS IR. Optimization Choices and Simulation Setup methods are used to determine which internal kernels are utilized, and the P4IRS IR is constructed in-place for the Internal Particle Optimization Kernels based on the inputs. Many Compilation Passes are performed to transform the P4IRS IR before triggering the Code Generator, which generates the Optimized Kernels, Data Structures and the PairsSimulation interface class. If whole-program generation is not used, a backend Simulation Code is required, which uses the PairsSimulation interface to call P4IRS generated kernels. The final Binary is then generated with any backend compiler of the user's choice (i.e., GCC, CLANG, ...), and it must be linked with the Runtime Library. The Runtime Library uses the P4IRS Metadata structure to handle different particle data structures and to adapt to different simulations.}}
   \label{fig:pairs_arch}
 \end{figure*}
@@ -657,7 +657,7 @@ class BuildNeighborLists(Lowerable):
 
 \begin{figure*}[htb]
   \centering
-  \includegraphics[width=0.75\textwidth]{pairs_ir.pdf}
+  \includegraphics[width=0.75\textwidth]{fig4_pairs_ir.pdf}
   \caption{\RMchange{P4IRS IR for the BuildNeighborLists example. Red boxes represent elements that are specific to particle simulations, and are used for domain-specific transformations in the \ac{AST}, at some point these elements are lowered to generic, primitive elements that should be straightforward to map to code in a general-purpose language or even an IR such as the LLVM IR. Green boxes represent some of these lower level, generic elements. Blue boxes represent symbols from the simulation, and the dashed red lines show when these symbols come from a particle-specific element. Yellow boxes represent constants, and the two ``s'' elements represent patterns that are repeated in the constructed \ac{AST} according to the referenced loop in their respective orange boxes.}}
   \label{fig:pairs_ir}
 \end{figure*}
@@ -912,20 +912,20 @@ Since the amount of contacts is typically way less than atomic interactions, the
 
 \begin{figure*}[tb]
     \centering
-    \subfigure[t = 0]{\label{fig:md_ts0}\includegraphics[width=0.32\textwidth]{md_0.png}}
-    \subfigure[t = 100]{\label{fig:md_ts100}\includegraphics[width=0.32\textwidth]{md_100.png}}
-    \subfigure[t = 200]{\label{fig:md_ts200}\includegraphics[width=0.32\textwidth]{md_200.png}}
+    \subfigure[t = 0]{\label{fig:md_ts0}\includegraphics[width=0.32\textwidth]{fig5a_md_ts0.png}}
+    \subfigure[t = 100]{\label{fig:md_ts100}\includegraphics[width=0.32\textwidth]{fig5b_md_ts100.png}}
+    \subfigure[t = 200]{\label{fig:md_ts200}\includegraphics[width=0.32\textwidth]{fig5c_md_ts200.png}}
     \caption{The MD simulation example used in this paper, which is a Copper FCC lattice simulation with homogeneous distribution. Forces are computed with the van der Waals potential and PBC is used in all directions. In average, every atom contains roughly 76 neighbors through the whole simulation (200 time-steps).}
     \label{fig:copper_fcc_lattice}
 \end{figure*}
 
 \begin{figure*}[tb]
     \centering
-    \subfigure[t = 0]{\label{fig:dem_ts0}\includegraphics[width=0.48\textwidth]{dem_0.png}}
-    \subfigure[t = 2000]{\label{fig:dem_ts2000}\includegraphics[width=0.48\textwidth]{dem_2000.png}}
+    \subfigure[t = 0]{\label{fig:dem_ts0}\includegraphics[width=0.48\textwidth]{fig6a_dem_ts0.png}}
+    \subfigure[t = 2000]{\label{fig:dem_ts2000}\includegraphics[width=0.48\textwidth]{fig6b_dem_ts2000.png}}
     \vskip\baselineskip
-    \subfigure[t = 4000]{\label{fig:dem_ts4000}\includegraphics[width=0.48\textwidth]{dem_4000.png}}
-    \subfigure[t = 10000]{\label{fig:dem_ts10000}\includegraphics[width=0.48\textwidth]{dem_10000.png}}
+    \subfigure[t = 4000]{\label{fig:dem_ts4000}\includegraphics[width=0.48\textwidth]{fig6c_dem_ts4000.png}}
+    \subfigure[t = 10000]{\label{fig:dem_ts10000}\includegraphics[width=0.48\textwidth]{fig6d_dem_ts10000.png}}
     \caption{The DEM simulation example used in this paper which can be called ``Settling Spheres'' or ``Bed Generation''. Spherical particles fall into the ground (represented by a half-space) to generate a bed at the end of the simulation. Forces are computed for gravity, buoyancy and the Linear Spring-Dashpot method to achieve the desired result and PBC is used in the X and Y dimensions.}
     \label{fig:settling_spheres}
 \end{figure*}
